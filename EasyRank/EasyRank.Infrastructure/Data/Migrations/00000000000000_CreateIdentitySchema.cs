@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace EasyRank.Web.Data.Migrations
+namespace EasyRank.Infrastructure.Data.Migrations
 {
+    /// <inheritdoc/>
     public partial class CreateIdentitySchema : Migration
     {
+        /// <inheritdoc/>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -192,6 +194,7 @@ namespace EasyRank.Web.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
         }
 
+        /// <inheritdoc/>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
