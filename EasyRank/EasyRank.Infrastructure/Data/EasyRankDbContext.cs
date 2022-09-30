@@ -20,19 +20,6 @@ namespace EasyRank.Infrastructure.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
         /// </summary>
-
-        #pragma warning disable CS8618
-
-        // Non-nullable field must contain a non-null value when exiting constructor.
-        // Consider declaring as nullable.
-        public EasyRankDbContext()
-        {
-
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
-        /// </summary>
         /// <param name="options">Options for the database.</param>
 
         #pragma warning disable CS8618

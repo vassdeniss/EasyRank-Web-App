@@ -14,6 +14,7 @@ namespace EasyRank.Infrastructure.Models
     /// <summary>
     /// The main user class used for accounts.
     /// </summary>
+    [Comment("The 'user' model for the database.")]
     public class User
     {
         /// <summary>
