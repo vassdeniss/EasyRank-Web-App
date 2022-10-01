@@ -21,25 +21,20 @@ namespace EasyRank.Infrastructure.Data
         /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
         /// </summary>
         /// <param name="options">Options for the database.</param>
-
-        #pragma warning disable CS8618
-
-        // Non-nullable field must contain a non-null value when exiting constructor.
-        // Consider declaring as nullable.
         public EasyRankDbContext(DbContextOptions<EasyRankDbContext> options)
             : base(options)
         {
         }
 
         /// <summary>
-        /// Gets or sets the 'users' table from the database.
+        /// Gets or sets the 'Users' table from the database.
         /// </summary>
-
-        #pragma warning disable CS0114
-
-        // Member hides inherited member;
-        // missing override keyword
         public DbSet<User> Users { get; set; }
+
+        /// <summary>
+        /// Gets or sets the 'Comments' table from the database.
+        /// </summary>
+        public DbSet<Comment> Comments { get; set; }
 
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
