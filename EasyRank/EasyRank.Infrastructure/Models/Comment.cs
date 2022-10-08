@@ -17,7 +17,7 @@ namespace EasyRank.Infrastructure.Models
     /// <summary>
     /// The database model for user created comemnts.
     /// </summary>
-    [Comment("The 'comment' model for the database.")]
+    [Comment("The 'Comment' model for the database.")]
     public class Comment
     {
         /// <summary>
@@ -32,7 +32,7 @@ namespace EasyRank.Infrastructure.Models
         /// </summary>
         [Required]
         [Comment("Gets or sets the content of the comment.")]
-        [MaxLength(1_000)]
+        [MaxLength(500)]
         public string Content { get; set; } = null!;
 
         /// <summary>
@@ -45,11 +45,11 @@ namespace EasyRank.Infrastructure.Models
         /// <summary>
         /// Gets or sets the guid of the user who created the comment.
         /// </summary>
-        /// <remarks>Foreign key to the 'User' table.</remarks>
+        /// <remarks>Foreign key to the 'EasyRankUser' table.</remarks>
         [Required]
         [ForeignKey(nameof(CreatedByUser))]
         [Comment("Gets or sets the guid of the user who created the comment.")]
-        public Guid CreatedByUserGuid { get; set; }
+        public Guid CreatedByUserId { get; set; }
 
         /// <summary>
         /// Gets or sets the user who created the comment.
@@ -57,6 +57,19 @@ namespace EasyRank.Infrastructure.Models
         /// <remarks>Navigational property.</remarks>
         public virtual EasyRankUser CreatedByUser { get; set; } = null!;
 
-        // TODO: Comment location
+        /// <summary>
+        /// Gets or sets the guid of the ranking page where the comment was sent.
+        /// </summary>
+        /// <remarks>Foreign key to the 'RankPage' table.</remarks>
+        [Required]
+        [ForeignKey(nameof(RankPage))]
+        [Comment("Gets or sets the guid of the ranking page where the comment was sent.")]
+        public Guid RankPageId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ranking page where the comment was sent.
+        /// </summary>
+        /// <remarks>Navigational property.</remarks>
+        public virtual RankPage RankPage { get; set; } = null!;
     }
 }

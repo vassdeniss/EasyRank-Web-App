@@ -97,7 +97,7 @@ namespace EasyRank.Infrastructure.Data.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasComment("The 'easyRankUser' model for the database.");
+                    b.HasComment("The 'EasyRankUser' model for the database.");
                 });
 
             modelBuilder.Entity("EasyRank.Infrastructure.Models.Comment", b =>
@@ -109,11 +109,11 @@ namespace EasyRank.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
                         .HasComment("Gets or sets the content of the comment.");
 
-                    b.Property<Guid>("CreatedByUserGuid")
+                    b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uniqueidentifier")
                         .HasComment("Gets or sets the guid of the user who created the comment.");
 
@@ -121,13 +121,64 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasComment("Gets or sets the date & time a comment has been created on.");
 
+                    b.Property<Guid>("RankPageId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Gets or sets the guid of the ranking page where the comment was sent.");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserGuid");
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("RankPageId");
 
                     b.ToTable("Comments");
 
-                    b.HasComment("The 'comment' model for the database.");
+                    b.HasComment("The 'Comment' model for the database.");
+                });
+
+            modelBuilder.Entity("EasyRank.Infrastructure.Models.RankPage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Gets or sets the unique GUID identifier for a ranking page.");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Gets or sets the guid of the user who created the ranking page.");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasComment("Gets or sets the date & time a ranking page has been created on.");
+
+                    b.Property<string>("RankingName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasComment("Gets or sets the name of the ranking page.");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("RankPages");
+
+                    b.HasComment("The 'RankPage' model for the database.");
+                });
+
+            modelBuilder.Entity("EasyRankUserRankPage", b =>
+                {
+                    b.Property<Guid>("LikedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LikedRankingsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LikedById", "LikedRankingsId");
+
+                    b.HasIndex("LikedRankingsId");
+
+                    b.ToTable("EasyRankUserRankPage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -268,12 +319,46 @@ namespace EasyRank.Infrastructure.Data.Migrations
             modelBuilder.Entity("EasyRank.Infrastructure.Models.Comment", b =>
                 {
                     b.HasOne("EasyRank.Infrastructure.Models.Accounts.EasyRankUser", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserGuid")
+                        .WithMany("UserComments")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyRank.Infrastructure.Models.RankPage", "RankPage")
+                        .WithMany("Comments")
+                        .HasForeignKey("RankPageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("RankPage");
+                });
+
+            modelBuilder.Entity("EasyRank.Infrastructure.Models.RankPage", b =>
+                {
+                    b.HasOne("EasyRank.Infrastructure.Models.Accounts.EasyRankUser", "CreatedByUser")
+                        .WithMany("UserRankings")
+                        .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("EasyRankUserRankPage", b =>
+                {
+                    b.HasOne("EasyRank.Infrastructure.Models.Accounts.EasyRankUser", null)
+                        .WithMany()
+                        .HasForeignKey("LikedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyRank.Infrastructure.Models.RankPage", null)
+                        .WithMany()
+                        .HasForeignKey("LikedRankingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -325,6 +410,18 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EasyRank.Infrastructure.Models.Accounts.EasyRankUser", b =>
+                {
+                    b.Navigation("UserComments");
+
+                    b.Navigation("UserRankings");
+                });
+
+            modelBuilder.Entity("EasyRank.Infrastructure.Models.RankPage", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using EasyRank.Infrastructure.Data.Configurations;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 
@@ -33,10 +34,18 @@ namespace EasyRank.Infrastructure.Data
         /// </summary>
         public DbSet<Comment> Comments { get; set; }
 
+        /// <summary>
+        /// Gets or sets the 'RankPages' table from the database.
+        /// </summary>
+        public DbSet<RankPage> RankPages { get; set; }
+
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // Apply the 'Comment' entity model configuration.
+            builder.ApplyConfigurationsFromAssembly(typeof(CommentEntityTypeConfiguration).Assembly);
         }
     }
 }

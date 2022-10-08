@@ -49,7 +49,7 @@ namespace EasyRank.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 },
-                comment: "The 'easyRankUser' model for the database.");
+                comment: "The 'EasyRankUser' model for the database.");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -158,25 +158,77 @@ namespace EasyRank.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RankPages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the unique GUID identifier for a ranking page."),
+                    RankingName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false, comment: "Gets or sets the name of the ranking page."),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Gets or sets the date & time a ranking page has been created on."),
+                    CreatedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the guid of the user who created the ranking page.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RankPages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RankPages_AspNetUsers_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                },
+                comment: "The 'RankPage' model for the database.");
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the unique GUID identifier for a comment."),
-                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "Gets or sets the content of the comment."),
+                    Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false, comment: "Gets or sets the content of the comment."),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Gets or sets the date & time a comment has been created on."),
-                    CreatedByUserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the guid of the user who created the comment.")
+                    CreatedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the guid of the user who created the comment."),
+                    RankPageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Gets or sets the guid of the ranking page where the comment was sent.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_CreatedByUserGuid",
-                        column: x => x.CreatedByUserGuid,
+                        name: "FK_Comments_AspNetUsers_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_RankPages_RankPageId",
+                        column: x => x.RankPageId,
+                        principalTable: "RankPages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 },
-                comment: "The 'comment' model for the database.");
+                comment: "The 'Comment' model for the database.");
+
+            migrationBuilder.CreateTable(
+                name: "EasyRankUserRankPage",
+                columns: table => new
+                {
+                    LikedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LikedRankingsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EasyRankUserRankPage", x => new { x.LikedById, x.LikedRankingsId });
+                    table.ForeignKey(
+                        name: "FK_EasyRankUserRankPage_AspNetUsers_LikedById",
+                        column: x => x.LikedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EasyRankUserRankPage_RankPages_LikedRankingsId",
+                        column: x => x.LikedRankingsId,
+                        principalTable: "RankPages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -218,9 +270,24 @@ namespace EasyRank.Infrastructure.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_CreatedByUserGuid",
+                name: "IX_Comments_CreatedByUserId",
                 table: "Comments",
-                column: "CreatedByUserGuid");
+                column: "CreatedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_RankPageId",
+                table: "Comments",
+                column: "RankPageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EasyRankUserRankPage_LikedRankingsId",
+                table: "EasyRankUserRankPage",
+                column: "LikedRankingsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RankPages_CreatedByUserId",
+                table: "RankPages",
+                column: "CreatedByUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -244,7 +311,13 @@ namespace EasyRank.Infrastructure.Data.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "EasyRankUserRankPage");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "RankPages");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
