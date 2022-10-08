@@ -1,4 +1,5 @@
 using EasyRank.Infrastructure.Data;
+using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +12,19 @@ builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<EasyRankDbContext>();
+builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+
+    options.User.RequireUniqueEmail = true;
+
+    options.Password.RequiredLength = 7;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+}).AddEntityFrameworkStores<EasyRankDbContext>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

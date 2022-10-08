@@ -8,6 +8,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using EasyRank.Infrastructure.Models.Accounts;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Infrastructure.Models
@@ -53,7 +55,7 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the user who created the comment.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
-        public virtual User CreatedByUser { get; set; } = null!;
+        public virtual EasyRankUser CreatedByUser { get; set; } = null!;
 
         // TODO: Comment location
     }

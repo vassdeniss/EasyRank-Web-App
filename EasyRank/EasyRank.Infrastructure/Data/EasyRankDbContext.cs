@@ -6,7 +6,9 @@
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Models;
+using EasyRank.Infrastructure.Models.Accounts;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +17,7 @@ namespace EasyRank.Infrastructure.Data
     /// <summary>
     /// The databse context for the app.
     /// </summary>
-    public class EasyRankDbContext : IdentityDbContext
+    public class EasyRankDbContext : IdentityDbContext<EasyRankUser, IdentityRole<Guid>, Guid>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
@@ -25,11 +27,6 @@ namespace EasyRank.Infrastructure.Data
             : base(options)
         {
         }
-
-        /// <summary>
-        /// Gets or sets the 'Users' table from the database.
-        /// </summary>
-        public DbSet<User> Users { get; set; }
 
         /// <summary>
         /// Gets or sets the 'Comments' table from the database.

@@ -7,31 +7,17 @@
 
 using System.ComponentModel.DataAnnotations;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyRank.Infrastructure.Models
+namespace EasyRank.Infrastructure.Models.Accounts
 {
     /// <summary>
     /// The main user class used for accounts.
     /// </summary>
-    [Comment("The 'user' model for the database.")]
-    public class User
+    [Comment("The 'easyRankUser' model for the database.")]
+    public class EasyRankUser : IdentityUser<Guid>
     {
-        /// <summary>
-        /// Gets or sets the unique GUID identifier for a user.
-        /// </summary>
-        [Key]
-        [Comment("Gets or sets the unique GUID identifier for a user.")]
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the unique username for a user.
-        /// </summary>
-        [Required]
-        [MaxLength(20)]
-        [Comment("Gets or sets the unique username for a user.")]
-        public string Username { get; set; } = null!;
-
         /// <summary>
         /// Gets or sets the first name for a user.
         /// </summary>
@@ -45,14 +31,6 @@ namespace EasyRank.Infrastructure.Models
         [MaxLength(10)]
         [Comment("Gets or sets the last name for a user.")]
         public string? LastName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the unique email for a user.
-        /// </summary>
-        [Required]
-        [MaxLength(320)]
-        [Comment("Gets or sets the unique email for a user.")]
-        public string Email { get; set; } = null!;
 
         // TODO: Avatar
 
