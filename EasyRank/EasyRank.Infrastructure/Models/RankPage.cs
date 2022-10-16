@@ -12,6 +12,8 @@ using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.EntityFrameworkCore;
 
+using static EasyRank.Infrastructure.Models.DataConstraints.RankPage;
+
 namespace EasyRank.Infrastructure.Models
 {
     /// <summary>
@@ -27,6 +29,7 @@ namespace EasyRank.Infrastructure.Models
         {
             this.LikedBy = new HashSet<EasyRankUser>();
             this.Comments = new HashSet<Comment>();
+            this.Entries = new HashSet<RankEntry>();
         }
 
         /// <summary>
@@ -40,9 +43,9 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the name of the ranking page.
         /// </summary>
         [Required]
-        [MaxLength(30)]
+        [MaxLength(MaxRankTitle)]
         [Comment("Gets or sets the name of the ranking page.")]
-        public string RankingName { get; set; } = null!;
+        public string RankingTitle { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the date & time a ranking page has been created on.
@@ -78,6 +81,10 @@ namespace EasyRank.Infrastructure.Models
         /// <remarks>Navigational property.</remarks>
         public virtual ICollection<Comment> Comments { get; set; }
 
-        // TODO: Collection of entries
+        /// <summary>
+        /// Gets or sets every entry on the given rank page.
+        /// </summary>
+        /// <remarks>Navigational property.</remarks>
+        public virtual ICollection<RankEntry> Entries { get; set; }
     }
 }

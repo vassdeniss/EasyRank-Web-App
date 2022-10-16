@@ -1,32 +1,26 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="CommentEntityTypeConfiguration.cs" company="Denis Vasilev">
+// <copyright file="RankPageEntityTypeConfiguration.cs" company="Denis Vasilev">
 // Copyright (c) Denis Vasilev. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Models;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EasyRank.Infrastructure.Data.Configurations
 {
     /// <summary>
-    /// The fluent API configuration for the 'Comment' model.
+    /// The fluent API configuration for the 'RankPage' model.
     /// </summary>
-    public class CommentEntityTypeConfiguration : IEntityTypeConfiguration<Comment>
+    public class RankPageEntityTypeConfiguration : IEntityTypeConfiguration<RankPage>
     {
         /// <inheritdoc/>
-        public void Configure(EntityTypeBuilder<Comment> builder)
+        public void Configure(EntityTypeBuilder<RankPage> builder)
         {
-            builder.HasOne(c => c.RankPage)
-                .WithMany(r => r.Comments)
-                .HasForeignKey(c => c.RankPageId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(c => c.CreatedByUser)
-                .WithMany(u => u.UserComments)
+            builder.HasOne(p => p.CreatedByUser)
+                .WithMany(u => u.UserRankings)
                 .HasForeignKey(c => c.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

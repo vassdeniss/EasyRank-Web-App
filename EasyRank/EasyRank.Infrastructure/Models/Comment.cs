@@ -12,6 +12,8 @@ using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.EntityFrameworkCore;
 
+using static EasyRank.Infrastructure.Models.DataConstraints.Comment;
+
 namespace EasyRank.Infrastructure.Models
 {
     /// <summary>
@@ -32,7 +34,7 @@ namespace EasyRank.Infrastructure.Models
         /// </summary>
         [Required]
         [Comment("Gets or sets the content of the comment.")]
-        [MaxLength(500)]
+        [MaxLength(MaxCommentLength)]
         public string Content { get; set; } = null!;
 
         /// <summary>

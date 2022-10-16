@@ -39,6 +39,11 @@ namespace EasyRank.Infrastructure.Data
         /// </summary>
         public DbSet<RankPage> RankPages { get; set; }
 
+        /// <summary>
+        /// Gets or sets the 'RankEntries' table from the database.
+        /// </summary>
+        public DbSet<RankEntry> RankEntries { get; set; }
+
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -46,6 +51,12 @@ namespace EasyRank.Infrastructure.Data
 
             // Apply the 'Comment' entity model configuration.
             builder.ApplyConfigurationsFromAssembly(typeof(CommentEntityTypeConfiguration).Assembly);
+
+            // Apply the 'RankEntry' entity model configuration.
+            builder.ApplyConfigurationsFromAssembly(typeof(RankEntryEntityTypeConfiguration).Assembly);
+
+            // Apply the 'RankPage' entity model configuration.
+            builder.ApplyConfigurationsFromAssembly(typeof(RankPageEntityTypeConfiguration).Assembly);
         }
     }
 }
