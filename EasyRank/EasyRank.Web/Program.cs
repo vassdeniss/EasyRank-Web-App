@@ -1,7 +1,6 @@
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +23,11 @@ builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
 }).AddEntityFrameworkStores<EasyRankDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+});
 
 builder.Services.AddControllersWithViews();
 
