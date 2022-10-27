@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/EasyRank.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/darkly.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/general.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -21,12 +22,22 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Ranking" asp-action="Index">Rankings</a>
-                        </li>
+	                    <li class="nav-item">
+		                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+	                    </li>
+                        @if (this.User.Identity?.IsAuthenticated ?? false)
+                        {
+	                        <li class="nav-item dropdown">
+		                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			                        Dropdown
+		                        </a>
+		                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+			                        <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
+			                        </li>
+		                        </ul>
+	                        </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -46,7 +57,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

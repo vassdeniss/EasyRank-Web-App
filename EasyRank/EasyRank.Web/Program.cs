@@ -1,7 +1,15 @@
+using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services;
+using EasyRank.Services.Contracts;
+using EasyRank.Web.Controllers;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +18,8 @@ var connectionString = builder.Configuration.GetConnectionString("DockerConnecti
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddAutoMapper(typeof(IRankService).Assembly, typeof(RankController).Assembly);
 
 builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
 {
@@ -30,6 +40,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IRepository, EasyRankRepository>();
+builder.Services.AddTransient<IRankService, RankService>();
 
 var app = builder.Build();
 

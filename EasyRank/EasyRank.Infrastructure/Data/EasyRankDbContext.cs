@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EasyRank.Infrastructure.Data
 {
     /// <summary>
-    /// The databse context for the app.
+    /// The database context for the app.
     /// </summary>
     public class EasyRankDbContext : IdentityDbContext<EasyRankUser, IdentityRole<Guid>, Guid>
     {
@@ -27,6 +27,7 @@ namespace EasyRank.Infrastructure.Data
         public EasyRankDbContext(DbContextOptions<EasyRankDbContext> options)
             : base(options)
         {
+
         }
 
         /// <summary>
@@ -44,6 +45,14 @@ namespace EasyRank.Infrastructure.Data
         /// </summary>
         public DbSet<RankEntry> RankEntries { get; set; }
 
+        private EasyRankUser GuestUser { get; set; }
+
+        private RankPage RankPage { get; set; }
+
+        private RankEntry RankEntityStarWars { get; set; }
+
+        private RankEntry RankEntityStarWarsTwo { get; set; }
+
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -57,6 +66,71 @@ namespace EasyRank.Infrastructure.Data
 
             // Apply the 'RankPage' entity model configuration.
             builder.ApplyConfigurationsFromAssembly(typeof(RankPageEntityTypeConfiguration).Assembly);
+
+            // Database seed
+            PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
+
+            this.GuestUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = "guest",
+                NormalizedUserName = "GUEST",
+                Email = "guest@mail.com",
+                NormalizedEmail = "GUEST@MAIL.COM",
+                FirstName = "Guest",
+                LastName = "User",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString("D")
+            };
+
+            this.GuestUser.PasswordHash = hasher.HashPassword(this.GuestUser, "guestPassword");
+
+            builder.Entity<EasyRankUser>()
+                .HasData(this.GuestUser);
+
+            this.RankPage = new RankPage
+            {
+                Id = Guid.NewGuid(),
+                RankingTitle = "Top 10 Best Movies of 2022",
+                CreatedOn = DateTime.Today,
+                CreatedByUserId = this.GuestUser.Id
+            };
+
+            this.RankEntityStarWars = new RankEntry
+            {
+                Id = Guid.NewGuid(),
+                Placement = 10,
+                Title = "Star Wars",
+                Description = "Good stuff",
+                RankPageId = this.RankPage.Id
+            };
+
+            this.RankEntityStarWarsTwo = new RankEntry
+            {
+                Id = Guid.NewGuid(),
+                Placement = 9,
+                Title = "Star Wars2",
+                Description = "Good stuff again",
+                RankPageId = this.RankPage.Id
+            };
+
+            builder.Entity<RankEntry>()
+                .HasData(this.RankEntityStarWars);
+
+            builder.Entity<RankEntry>()
+                .HasData(this.RankEntityStarWarsTwo);
+
+            builder.Entity<RankPage>()
+                .HasData(this.RankPage);
+
+            builder.Entity<RankPage>()
+                .HasData(new RankPage
+                {
+                    Id = Guid.NewGuid(),
+                    RankingTitle = "Top 5 Favorite Characters",
+                    CreatedOn = DateTime.Today,
+                    CreatedByUserId = this.GuestUser.Id
+                });
         }
     }
 }

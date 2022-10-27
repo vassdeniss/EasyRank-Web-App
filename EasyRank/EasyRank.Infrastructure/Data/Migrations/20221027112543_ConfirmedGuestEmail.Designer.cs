@@ -4,6 +4,7 @@ using EasyRank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyRank.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EasyRankDbContext))]
-    partial class EasyRankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221027112543_ConfirmedGuestEmail")]
+    partial class ConfirmedGuestEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,9 +104,9 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9ff24061-b984-4be1-a40a-d9235017619c"),
+                            Id = new Guid("9b5ee4e1-eb05-4e12-a4b1-e7556b831747"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5cfc5275-059d-4c0f-95e1-d13e91636355",
+                            ConcurrencyStamp = "cd91d375-5e26-4b9b-8259-9fd9c9ea91b4",
                             Email = "guest@mail.com",
                             EmailConfirmed = true,
                             FirstName = "Guest",
@@ -112,9 +114,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@MAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAEAACcQAAAAELt/8OSuBVNMvyzj/5Y/vhtmPPIG/6iHs0uPUMzsojv67pm3SAdL6AGafME0mXw46w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECe54P8NvnsNbsM2hs1/6IQNE/EqBrqATXYDaxuGNKi7gNqTGubDMvXAtPWvaKWYCQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f5a49fe9-631a-4f8a-bc4b-74855287d8e9",
                             TwoFactorEnabled = false,
                             UserName = "guest"
                         });
@@ -196,24 +197,6 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.ToTable("RankEntries");
 
                     b.HasComment("The 'RankEntry' model for the database.");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9c774152-d29d-41bf-bf68-dd970de2fa3d"),
-                            Description = "Good stuff",
-                            Placement = 10,
-                            RankPageId = new Guid("add9e3e3-d51c-431c-ab91-2c6ce70db5da"),
-                            Title = "Star Wars"
-                        },
-                        new
-                        {
-                            Id = new Guid("9f78c718-c581-40cf-a1ae-f11ffe06bf31"),
-                            Description = "Good stuff again",
-                            Placement = 9,
-                            RankPageId = new Guid("add9e3e3-d51c-431c-ab91-2c6ce70db5da"),
-                            Title = "Star Wars2"
-                        });
                 });
 
             modelBuilder.Entity("EasyRank.Infrastructure.Models.RankPage", b =>
@@ -248,17 +231,10 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("add9e3e3-d51c-431c-ab91-2c6ce70db5da"),
-                            CreatedByUserId = new Guid("9ff24061-b984-4be1-a40a-d9235017619c"),
-                            CreatedOn = new DateTime(2022, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
+                            Id = new Guid("aae6c5ae-9ea7-4d75-92c2-9fd1ef55e267"),
+                            CreatedByUserId = new Guid("9b5ee4e1-eb05-4e12-a4b1-e7556b831747"),
+                            CreatedOn = new DateTime(2022, 10, 27, 14, 25, 42, 876, DateTimeKind.Local).AddTicks(8821),
                             RankingTitle = "Top 10 Best Movies of 2022"
-                        },
-                        new
-                        {
-                            Id = new Guid("c40570a9-7133-411a-aeaa-b8b288de2986"),
-                            CreatedByUserId = new Guid("9ff24061-b984-4be1-a40a-d9235017619c"),
-                            CreatedOn = new DateTime(2022, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            RankingTitle = "Top 5 Favorite Characters"
                         });
                 });
 

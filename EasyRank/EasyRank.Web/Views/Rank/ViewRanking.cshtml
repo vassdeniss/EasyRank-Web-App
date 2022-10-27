@@ -1,0 +1,15 @@
+﻿@model RankPageViewModel
+@{
+	ViewData["Title"] = Model.RankingTitle;
+}
+
+<h1>@Model.RankingTitle</h1>
+<p>@Model.CreatedOn</p>
+<p>@Model.CreatedByUserName</p>
+<p>like count</p>
+@foreach (RankEntryViewModel revm in @Model.Entries)
+{
+	<p>#@revm.Placement @revm.Title</p>
+	<p>@revm.Image</p>
+	<p>@revm.Description</p>
+}

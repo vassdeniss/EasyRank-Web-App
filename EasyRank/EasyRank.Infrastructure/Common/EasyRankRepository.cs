@@ -1,4 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿// -----------------------------------------------------------------------
+// <copyright file="EasyRankRepository.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System.Linq.Expressions;
 
 using EasyRank.Infrastructure.Data;
 
@@ -182,7 +189,7 @@ namespace EasyRank.Infrastructure.Common
         }
 
         /// <summary>
-        /// Saves all made changes in trasaction.
+        /// Saves all made changes in transaction.
         /// </summary>
         /// <returns>Error code.</returns>
         public async Task<int> SaveChangesAsync()

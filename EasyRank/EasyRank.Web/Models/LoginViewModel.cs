@@ -2,6 +2,9 @@
 
 namespace EasyRank.Web.Models
 {
+    /// <summary>
+    /// The view model for when the user is logging in.
+    /// </summary>
     public class LoginViewModel
     {
         /// <summary>

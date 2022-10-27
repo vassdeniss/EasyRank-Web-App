@@ -15,7 +15,7 @@ using static EasyRank.Infrastructure.Models.DataConstraints.RankEntryConstraints
 namespace EasyRank.Infrastructure.Models
 {
     /// <summary>
-    /// The database model for indiviual rank entries.
+    /// The database model for individual rank entries.
     /// </summary>
     [Comment("The 'RankEntry' model for the database.")]
     public class RankEntry
@@ -46,7 +46,7 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the image link for a rank entry.
         /// </summary>
         [MaxLength(MaxImageLinkLength)]
-        [Column(TypeName = "varchar(2048)")]
+        [Unicode(false)]
         [Comment("Gets or sets the image link for a rank entry.")]
         public string? Image { get; set; }
 

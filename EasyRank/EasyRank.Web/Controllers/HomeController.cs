@@ -10,11 +10,12 @@ using System.Diagnostics;
 using EasyRank.Web.Models;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace EasyRank.Web.Controllers
 {
     /// <summary>
-    /// Main contoller of the app.
+    /// Main controller of the app.
     /// </summary>
     public class HomeController : Controller
     {
