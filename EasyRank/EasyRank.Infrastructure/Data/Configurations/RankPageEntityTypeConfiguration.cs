@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Models;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

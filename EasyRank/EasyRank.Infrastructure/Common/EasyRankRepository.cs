@@ -5,7 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Data;
 
@@ -15,8 +19,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace EasyRank.Infrastructure.Common
 {
     /// <summary>
-    /// Implementation of repository access methods
-    /// for Relational Database Engine.
+    /// Implementation of repository access methods for Relational Database Engine.
     /// </summary>
     public class EasyRankRepository : IRepository
     {

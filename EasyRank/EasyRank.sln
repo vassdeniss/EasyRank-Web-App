@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Web", "EasyRank.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Infrastructure", "EasyRank.Infrastructure\EasyRank.Infrastructure.csproj", "{936C318D-021A-4EF4-B047-2335763983A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Services", "EasyRank.Services\EasyRank.Services.csproj", "{B58D68C4-59E1-4393-B0A0-72E02C944135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Services", "EasyRank.Services\EasyRank.Services.csproj", "{B58D68C4-59E1-4393-B0A0-72E02C944135}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9A49E8BB-7B75-4E89-8C4F-EF98E69B8591}"
+	ProjectSection(SolutionItems) = preProject
+		stylecop.json = stylecop.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
