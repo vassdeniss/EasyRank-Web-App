@@ -4,6 +4,7 @@ using EasyRank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyRank.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EasyRankDbContext))]
-    partial class EasyRankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221101133113_AddedImageAltProperty")]
+    partial class AddedImageAltProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,9 +104,9 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5510f606-b1b3-4dad-af86-ffda6eb612fb",
+                            ConcurrencyStamp = "8fd3eb65-84a3-405f-86f9-02e71753f9cc",
                             Email = "guest@mail.com",
                             EmailConfirmed = true,
                             FirstName = "Guest",
@@ -112,9 +114,9 @@ namespace EasyRank.Infrastructure.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@MAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOd/iRXht42DWtqn46EE0dwwR+WoUJh+vUTx4VNz+YFBzNsfSW+ODjKOMmhRtyeFmQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMTZCwIJP63KJqCoU3QhIF7fgTn/FPaU55fAwmvtEqyDYaraD16pv2F1ptdl1RAUDw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2ecdd7ef-cc88-43a6-b365-1713edf56348",
+                            SecurityStamp = "4582c410-90dc-4ca8-8071-e863f08dde23",
                             TwoFactorEnabled = false,
                             UserName = "guest"
                         });
@@ -206,21 +208,20 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b28f2bf7-210f-4305-b9c2-30c8db0af661"),
+                            Id = new Guid("6de457e5-3b57-42ce-a8e4-f3eb9c1d781c"),
                             Description = "Good stuff",
                             ImageAlt = "Picture of star wars",
                             Placement = 10,
-                            RankPageId = new Guid("5532aba4-c459-4057-86be-1effb970cac8"),
+                            RankPageId = new Guid("55b54646-d26f-4bdc-8f9a-fa15090f5152"),
                             Title = "Star Wars"
                         },
                         new
                         {
-                            Id = new Guid("5f91e369-79c2-43ee-84cd-a1e7a2949167"),
+                            Id = new Guid("5e7db3fd-e17a-412f-b408-af3f1a4307cf"),
                             Description = "Good stuff again",
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Picture of star wars2",
+                            ImageAlt = "Picture of star wars",
                             Placement = 9,
-                            RankPageId = new Guid("5532aba4-c459-4057-86be-1effb970cac8"),
+                            RankPageId = new Guid("55b54646-d26f-4bdc-8f9a-fa15090f5152"),
                             Title = "Star Wars2"
                         });
                 });
@@ -240,18 +241,6 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasComment("Gets or sets the date & time a ranking page has been created on.");
 
-                    b.Property<string>("Image")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)")
-                        .HasComment("Gets or sets the image link for a rank entry.");
-
-                    b.Property<string>("ImageAlt")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("Gets or sets the alternative text if the image is broken.");
-
                     b.Property<string>("RankingTitle")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -269,83 +258,86 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5532aba4-c459-4057-86be-1effb970cac8"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("55b54646-d26f-4bdc-8f9a-fa15090f5152"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 10 Best Movies of 2022"
                         },
                         new
                         {
-                            Id = new Guid("45a35159-9e1f-4a91-860c-1ad3dd20f7f8"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("3ab60b78-381e-414d-a1e5-41a263c6abd2"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("d068d347-b187-432d-bc9b-c45b74ad570b"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("4589435d-fd7d-45ab-b76e-34b872d36088"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("85235e21-2d1f-49ee-94e8-6b2535b93830"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("370321b8-e49e-4438-bdf2-448683c56ccd"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("ee4c578b-bb76-4c57-81c0-a65e1a518aba"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("a00d1a3e-ea39-48e8-bcbf-558d655d4934"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("4caa6a17-6869-411c-af73-52f0130f23f0"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("1b592efb-68d6-4012-985e-2644da86f2ae"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("cf45e749-1575-4d64-9c8b-3f7ab7ea30a2"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("a98526a4-5bbb-4d23-992a-c46bd8f549bb"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("c0d7ac01-5fc4-4341-99cb-a025e671271a"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("e3cee434-c52a-448e-b0ca-fca8e7d6671e"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
                             RankingTitle = "Top 5 Favorite Characters"
                         },
                         new
                         {
-                            Id = new Guid("0b656c22-7356-40e7-abcf-86e4d7a008a0"),
-                            CreatedByUserId = new Guid("ca047fd4-d52c-4ccb-bab0-50a6f7d1c0f9"),
+                            Id = new Guid("a3684dd3-2047-43f8-a8d3-bec47c483652"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
                             CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                            ImageAlt = "Yoda",
+                            RankingTitle = "Top 5 Favorite Characters"
+                        },
+                        new
+                        {
+                            Id = new Guid("f5cb5fd5-ca23-4244-a7fb-8095aa691617"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
+                            CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            RankingTitle = "Top 5 Favorite Characters"
+                        },
+                        new
+                        {
+                            Id = new Guid("05df0840-413c-4a48-99a8-958d889d5b4d"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
+                            CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            RankingTitle = "Top 5 Favorite Characters"
+                        },
+                        new
+                        {
+                            Id = new Guid("7792eeef-d88b-4021-9d3d-835ee80cc2ad"),
+                            CreatedByUserId = new Guid("e2c90f1e-7807-4fc7-8ed1-3fe36bf6f535"),
+                            CreatedOn = new DateTime(2022, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             RankingTitle = "Top 5 Favorite Characters"
                         });
                 });

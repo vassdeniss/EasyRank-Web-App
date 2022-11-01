@@ -3,13 +3,13 @@
 	ViewData["Title"] = Model.RankingTitle;
 }
 
-<h1>@Model.RankingTitle</h1>
-<p>@Model.CreatedOn</p>
-<p>@Model.CreatedByUserName</p>
-<p>like count</p>
-@foreach (RankEntryViewModel revm in @Model.Entries)
+@foreach (RankEntryViewModel revm in Model.Entries)
 {
-	<p>#@revm.Placement @revm.Title</p>
-	<p>@revm.Image</p>
-	<p>@revm.Description</p>
+	<div class="card" style="width: 100%; margin-bottom: 70px">
+		<img src="@revm.Image" class="card-img-top" alt="@revm.ImageAlt" width="100%" height="300px" style="object-fit: cover">
+		<div class="card-body">
+			<h3 class="card-title">#@revm.Placement<br/>@revm.Title</h3>
+			<p class="card-text">@revm.Description</p>
+		</div>
+	</div>
 }

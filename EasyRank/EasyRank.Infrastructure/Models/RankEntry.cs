@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +37,7 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the title for a rank entry.
         /// </summary>
         [Required]
-        [MaxLength(MaxEntryTitle)]
+        [MaxLength(MaxEntryTitleLength)]
         [Comment("Gets or sets the title for a rank entry.")]
         public string Title { get; set; } = null!;
 
@@ -51,10 +50,18 @@ namespace EasyRank.Infrastructure.Models
         public string? Image { get; set; }
 
         /// <summary>
+        /// Gets or sets the alternative text if the image is broken.
+        /// </summary>
+        [Required]
+        [MaxLength(MaxImageAltLength)]
+        [Comment("Gets or sets the alternative text if the image is broken.")]
+        public string ImageAlt { get; set; } = null!;
+
+        /// <summary>
         /// Gets or sets the description for a rank entry.
         /// </summary>
         [Required]
-        [MaxLength(MaxEntryDescription)]
+        [MaxLength(MaxEntryDescriptionLength)]
         [Comment("Gets or sets the description for a rank entry.")]
         public string Description { get; set; } = null!;
 

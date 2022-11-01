@@ -39,7 +39,17 @@ namespace EasyRank.Infrastructure.Models
             /// <summary>
             /// The upper bound constant number for the rank title.
             /// </summary>
-            public const int MaxRankTitle = 30;
+            public const int MaxRankTitleLength = 30;
+
+            /// <summary>
+            /// The upper bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MaxImageAltLength = 50;
+
+            /// <summary>
+            /// The upper bound constant number for the entry image length.
+            /// </summary>
+            public const int MaxImageLinkLength = 2048;
         }
 
         /// <summary>
@@ -50,12 +60,17 @@ namespace EasyRank.Infrastructure.Models
             /// <summary>
             /// The upper bound constant number for the entry title.
             /// </summary>
-            public const int MaxEntryTitle = 30;
+            public const int MaxEntryTitleLength = 30;
 
             /// <summary>
             /// The upper bound constant number for the entry description.
             /// </summary>
-            public const int MaxEntryDescription = 1000;
+            public const int MaxEntryDescriptionLength = 1000;
+
+            /// <summary>
+            /// The upper bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MaxImageAltLength = 50;
 
             /// <summary>
             /// The upper bound constant number for the entry image length.

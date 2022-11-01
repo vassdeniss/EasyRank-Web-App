@@ -26,10 +26,10 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            ICollection<RankPageBasicServiceModel> serviceModel = await this.rankService.GetAllRankings();
+            ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsAsync();
 
-            ICollection<RankPageBasicViewModel> model =
-                this.mapper.Map<ICollection<RankPageBasicViewModel>>(serviceModel);
+            ICollection<RankPageViewModel> model =
+                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
         }
@@ -37,7 +37,7 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ViewRanking(Guid rankId)
         {
-            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuid(rankId);
+            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
 
             RankPageViewModel model = this.mapper.Map<RankPageViewModel>(serviceModel);
 

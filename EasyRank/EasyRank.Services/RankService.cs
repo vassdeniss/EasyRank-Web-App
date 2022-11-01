@@ -21,13 +21,15 @@ namespace EasyRank.Services
             this.repo = repo;
         }
 
-        public async Task<ICollection<RankPageBasicServiceModel>> GetAllRankings()
+        public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
         {
             return await this.repo.AllReadonly<RankPage>()
                 .Include(rp => rp.CreatedByUser)
-                .Select(p => new RankPageBasicServiceModel
+                .Select(p => new RankPageServiceModel
                 {
                     Id = p.Id,
+                    Image = p.Image,
+                    ImageAlt = p.ImageAlt,
                     RankingTitle = p.RankingTitle,
                     CreatedOn = p.CreatedOn.ToString("dd MMMM yyyy"),
                     LikeCount = p.LikedBy.Count,
@@ -37,7 +39,7 @@ namespace EasyRank.Services
                 .ToListAsync();
         }
 
-        public async Task<RankPageServiceModel> GetRankPageByGuid(Guid rankGuid)
+        public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
                 .Include(rp => rp.Entries)
@@ -48,6 +50,8 @@ namespace EasyRank.Services
                 = new RankPageServiceModel
                 {
                     RankingTitle = rankPage.RankingTitle,
+                    Image = rankPage.Image,
+                    ImageAlt = rankPage.ImageAlt,
                     CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
                     LikeCount = rankPage.LikedBy.Count,
                     CreatedByUserName = rankPage.CreatedByUser.UserName,
@@ -57,6 +61,7 @@ namespace EasyRank.Services
                         Placement = re.Placement,
                         Title = re.Title,
                         Image = re.Image,
+                        ImageAlt = re.ImageAlt,
                         Description = re.Description
                     })
                     .ToList()

@@ -1,24 +1,85 @@
-﻿@model ICollection<RankPageBasicViewModel>
+﻿@model ICollection<RankPageViewModel>
 @{
-    ViewData["Title"] = "All Rankings";
+	Layout = null;
 }
 
-<div class="text-center row">
-    @foreach (RankPageBasicViewModel rank in this.Model)
-    {
-        <div class="card col-4" style="width: 20rem; margin: 10px">
-            @* <img class="card-img-top" style="width: 18rem;" src="@rank." *@
-            <div class="card-body">
-                <h5 class="card-title mt-1">@rank.RankingTitle</h5>
-                <p class="mb-0">Created by: @rank.CreatedByUserName</p>
-                <p class="mb-0">Likes: @rank.LikeCount</p>
-                <p class="mb-0">Comments: @rank.CommentCount</p>
-                <p class="mb-0">Created On: @rank.CreatedOn</p>
-            </div>
-            
-            <form class="input-group-sm" asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@rank.Id">
-                <input type="submit" value="View Ranking" class="fs-6 btn btn-success mb-3 p-2"/>
-            </form>
-        </div>
-    }
-</div>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title>EasyRank All Rankings</title>
+	    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+		<link rel="stylesheet" href="~/css/darkly.css" asp-append-version="true" />
+	    <link rel="stylesheet" href="~/css/general.css" asp-append-version="true" />
+	</head>
+	<body>
+		<header>
+			<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+				<div class="container-fluid">
+					<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EasyRank</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+					        aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+						<ul class="navbar-nav flex-grow-1">
+							<li class="nav-item">
+								<a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+							</li>
+							@if (this.User.Identity?.IsAuthenticated ?? false)
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Rankings
+									</a>
+									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
+										</li>
+									</ul>
+								</li>
+							}
+						</ul>
+						<partial name="_LoginPartial" />
+					</div>
+				</div>
+			</nav>
+		</header>
+
+	    <div class="container-fluid mx-4">
+	        <main role="main" class="pb-3">
+		        <div class="text-center row">
+			        @foreach (RankPageViewModel rank in this.Model)
+			        {
+				        <div class="card m-2 p-0" style="width: 15rem;">
+					        <img class="card-img-top" style="object-fit: fill;" src="@rank.Image" alt="@rank.ImageAlt">
+					        <div class="card-body">
+						        <h5 class="card-title mt-1">@rank.RankingTitle</h5>
+						        <h6 class="mb-0">Created by: @rank.CreatedByUserName</h6>
+						        <p class="mb-0">Likes: @rank.LikeCount</p>
+						        <p class="mb-0">Comments: @rank.CommentCount</p>
+						        <p class="mb-0" style="font-size: 14px;">Created On: @rank.CreatedOn</p>
+					        </div>
+	            
+					        <form class="input-group-sm" asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@rank.Id">
+						        <input type="submit" value="View Ranking" class="fs-6 btn btn-success mb-3 p-2"/>
+					        </form>
+				        </div>
+			        }
+		        </div>
+	        </main>
+	    </div>
+
+		<footer class="border-top footer text-muted">
+			<div class="container">
+				&copy; 2022 - EasyRank.Web
+			</div>
+		</footer>
+
+	    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+	    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+	</body>
+</html>

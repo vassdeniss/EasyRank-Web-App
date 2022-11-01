@@ -8,6 +8,8 @@
 
         public string? Image { get; set; }
 
+        public string ImageAlt { get; set; } = null!;
+
         public string Description { get; set; } = null!;
     }
 }

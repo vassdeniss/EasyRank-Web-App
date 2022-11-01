@@ -40,10 +40,26 @@ namespace EasyRank.Infrastructure.Models
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the image link for a rank page.
+        /// </summary>
+        [MaxLength(MaxImageLinkLength)]
+        [Unicode(false)]
+        [Comment("Gets or sets the image link for a rank entry.")]
+        public string? Image { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alternative text if the image is broken.
+        /// </summary>
+        [Required]
+        [MaxLength(MaxImageAltLength)]
+        [Comment("Gets or sets the alternative text if the image is broken.")]
+        public string ImageAlt { get; set; } = null!;
+
+        /// <summary>
         /// Gets or sets the name of the ranking page.
         /// </summary>
         [Required]
-        [MaxLength(MaxRankTitle)]
+        [MaxLength(MaxRankTitleLength)]
         [Comment("Gets or sets the name of the ranking page.")]
         public string RankingTitle { get; set; } = null!;
 

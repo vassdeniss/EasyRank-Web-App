@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 using AutoMapper;
 
 using EasyRank.Services.Models;
@@ -24,11 +22,7 @@ namespace EasyRank.Web.Profiles
         /// </summary>
         public ControllerMappingProfile()
         {
-            // Map 'RankPageServiceModel' -> 'RankPageViewModel'
-            this.CreateMap<RankPageBasicServiceModel, RankPageBasicViewModel>();
-
             this.CreateMap<RankPageServiceModel, RankPageViewModel>();
-
             this.CreateMap<RankEntryServiceModel, RankEntryViewModel>();
         }
     }

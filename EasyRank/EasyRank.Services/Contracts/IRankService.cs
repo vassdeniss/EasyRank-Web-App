@@ -8,8 +8,8 @@ namespace EasyRank.Services.Contracts
 {
     public interface IRankService
     {
-        Task<ICollection<RankPageBasicServiceModel>> GetAllRankings();
+        Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync();
 
-        Task<RankPageServiceModel> GetRankPageByGuid(Guid rankGuid);
+        Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid);
     }
 }
