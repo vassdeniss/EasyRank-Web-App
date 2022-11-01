@@ -40,7 +40,7 @@ namespace EasyRank.Services.Models
         /// </summary>
         public string CreatedOn { get; set; } = null!;
 
-        //public ICollection<EasyRankUser> LikedBy { get; set; } = null!;
+        // public ICollection<EasyRankUser> LikedBy { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the like count of the ranking page.
@@ -57,7 +57,7 @@ namespace EasyRank.Services.Models
         /// </summary>
         public int CommentCount { get; set; }
 
-        //public ICollection<Comment> Comments { get; set; } = null!;
+        // public ICollection<Comment> Comments { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets every entry on the given rank page.

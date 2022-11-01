@@ -2,13 +2,13 @@
 @inject SignInManager<EasyRankUser> SignInManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
+@if (this.SignInManager.IsSignedIn(User))
 {
 	<li class="nav-item">
 		<a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
 	</li>
 	<li class="nav-item">
-        <form class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <form class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = "" })">
             <button type="submit" class="nav-link btn btn-link text-light">Logout</button>
         </form>
     </li>

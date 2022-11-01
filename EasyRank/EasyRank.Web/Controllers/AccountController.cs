@@ -26,11 +26,12 @@ namespace EasyRank.Web.Controllers
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
+        /// Constructor for the account controller.
         /// </summary>
         /// <param name="userManager">The user manager for the controller.</param>
         /// <param name="signInManager">The sign in manager for the controller.</param>
         public AccountController(
-            UserManager<EasyRankUser> userManager, 
+            UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager)
         {
             this.userManager = userManager;
@@ -41,7 +42,7 @@ namespace EasyRank.Web.Controllers
         /// The register action for the controller.
         /// </summary>
         /// <returns>A register view with an empty 'RegisterViewModel'.</returns>
-        /// <remarks>Get method.</remarks>
+        /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
@@ -56,7 +57,7 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>A register view with an empty 'RegisterViewModel'.</returns>
         /// <param name="model">The 'RegisterViewModel' for the view.</param>
-        /// <remarks>Post method.</remarks>
+        /// <remarks>Post method. Guest access allowed.</remarks>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -72,7 +73,7 @@ namespace EasyRank.Web.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 UserName = model.Username,
-                EmailConfirmed = true // DEVELOPMENT PLEASE REMOVE ON PRODUCTION
+                EmailConfirmed = true, // DEVELOPMENT PLEASE REMOVE ON PRODUCTION
             };
 
             IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
@@ -97,14 +98,14 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>A login view with an empty 'LoginViewModel'.</returns>
         /// <param name="returnUrl">The return url for the view.</param>
-        /// <remarks>Get method.</remarks>
+        /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
             LoginViewModel model = new LoginViewModel
             {
-                ReturnUrl = returnUrl
+                ReturnUrl = returnUrl,
             };
 
             return this.View(model);
@@ -114,7 +115,7 @@ namespace EasyRank.Web.Controllers
         /// The login action for the controller.
         /// </summary>
         /// <returns>A redirect to either a return url, to home, or back to the login page in case of an error.</returns>
-        /// <remarks>Post method.</remarks>
+        /// <remarks>Post method. Guest access allowed.</remarks>
         /// <param name="model">The 'LoginViewModel' for the view.</param>
         [HttpPost]
         [AllowAnonymous]

@@ -1,12 +1,13 @@
 ﻿@model RankPageViewModel
+
 @{
-	ViewData["Title"] = Model.RankingTitle;
+	ViewData["Title"] = this.Model.RankingTitle;
 }
 
-@foreach (RankEntryViewModel revm in Model.Entries)
+@foreach (RankEntryViewModel revm in this.Model.Entries)
 {
 	<div class="card" style="width: 100%; margin-bottom: 70px">
-		<img src="@revm.Image" class="card-img-top" alt="@revm.ImageAlt" width="100%" height="300px" style="object-fit: cover">
+		<img src="@revm.Image" class="card-img-top" alt="@revm.ImageAlt" style="object-fit: cover">
 		<div class="card-body">
 			<h3 class="card-title">#@revm.Placement<br/>@revm.Title</h3>
 			<p class="card-text">@revm.Description</p>

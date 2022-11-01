@@ -29,6 +29,7 @@ namespace EasyRank.Services
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RankService"/> class.
+        /// Constructor for the rank service class.
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
         public RankService(IRepository repo)

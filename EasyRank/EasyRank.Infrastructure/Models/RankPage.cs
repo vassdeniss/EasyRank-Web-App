@@ -26,6 +26,7 @@ namespace EasyRank.Infrastructure.Models
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RankPage"/> class.
+        /// Constructor for the rank page class.
         /// </summary>
         public RankPage()
         {

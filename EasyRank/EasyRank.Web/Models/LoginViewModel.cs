@@ -1,4 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// -----------------------------------------------------------------------
+// <copyright file="LoginViewModel.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System.ComponentModel.DataAnnotations;
 
 namespace EasyRank.Web.Models
 {
@@ -27,7 +34,7 @@ namespace EasyRank.Web.Models
         /// <summary>
         /// Gets or sets the return url of the login.
         /// </summary>
-        [UIHint("hidden")]
+        [UIHint("Hidden")]
         public string? ReturnUrl { get; set; }
     }
 }

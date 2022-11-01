@@ -24,12 +24,12 @@ namespace EasyRank.Infrastructure.Data
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
+        /// Constructor for the EasyRank database context.
         /// </summary>
         /// <param name="options">Options for the database.</param>
         public EasyRankDbContext(DbContextOptions<EasyRankDbContext> options)
             : base(options)
         {
-
         }
 
         /// <summary>

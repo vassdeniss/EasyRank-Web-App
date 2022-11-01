@@ -23,6 +23,7 @@ namespace EasyRank.Infrastructure.Models.Accounts
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EasyRankUser"/> class.
+        /// Constructor for the user class.
         /// </summary>
         public EasyRankUser()
         {

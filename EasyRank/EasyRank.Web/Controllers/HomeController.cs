@@ -23,7 +23,7 @@ namespace EasyRank.Web.Controllers
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
-        /// Constructor of the home controller.
+        /// Constructor for the home controller.
         /// </summary>
         /// <param name="logger">The logger for the home controller.</param>
         public HomeController(ILogger<HomeController> logger)
@@ -41,7 +41,7 @@ namespace EasyRank.Web.Controllers
         {
             return this.View(new ErrorViewModel
             {
-                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }

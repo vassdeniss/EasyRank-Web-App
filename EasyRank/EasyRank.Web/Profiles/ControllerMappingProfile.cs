@@ -19,6 +19,7 @@ namespace EasyRank.Web.Profiles
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ControllerMappingProfile"/> class.
+        /// Constructor for the controller mapping profile class.
         /// </summary>
         public ControllerMappingProfile()
         {
