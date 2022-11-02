@@ -8,7 +8,7 @@
 namespace EasyRank.Web.Models
 {
     /// <summary>
-    /// The ui side model for the rank entry.
+    /// The UI side model for the rank entry.
     /// </summary>
     public class RankEntryViewModel
     {
