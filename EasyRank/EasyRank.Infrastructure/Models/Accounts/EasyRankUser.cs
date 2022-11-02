@@ -47,6 +47,12 @@ namespace EasyRank.Infrastructure.Models.Accounts
         public string? LastName { get; set; }
 
         /// <summary>
+        /// Gets or sets the profile picture of the user.
+        /// </summary>
+        [Comment("Gets or sets the profile picture of the user.")]
+        public byte[]? ProfilePicture { get; set; }
+
+        /// <summary>
         /// Gets or sets every comment which the user has made.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
@@ -64,7 +70,5 @@ namespace EasyRank.Infrastructure.Models.Accounts
         /// </summary>
         /// <remarks>Navigational property.</remarks>
         public virtual ICollection<RankPage> LikedRankings { get; set; }
-
-        // TODO: Avatar
     }
 }
