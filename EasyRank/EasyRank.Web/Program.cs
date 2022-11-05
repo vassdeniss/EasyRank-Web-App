@@ -20,7 +20,6 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DockerConnection");
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -54,11 +53,9 @@ builder.Services.AddScoped<IRankService, RankService>();
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
 }
 else
 {

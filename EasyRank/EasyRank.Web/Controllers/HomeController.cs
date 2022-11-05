@@ -10,7 +10,6 @@ using System.Diagnostics;
 using EasyRank.Web.Models;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace EasyRank.Web.Controllers
 {
@@ -19,18 +18,10 @@ namespace EasyRank.Web.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> logger;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="HomeController"/> class.
-        /// Constructor for the home controller.
+        /// Method 'Index' for the controller. Visualizes the home page of the app.
         /// </summary>
-        /// <param name="logger">The logger for the home controller.</param>
-        public HomeController(ILogger<HomeController> logger)
-        {
-            this.logger = logger;
-        }
-
+        /// <returns>The home page view.</returns>
         public IActionResult Index()
         {
             return this.View();

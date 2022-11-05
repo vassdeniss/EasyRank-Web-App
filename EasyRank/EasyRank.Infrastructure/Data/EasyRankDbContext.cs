@@ -107,7 +107,7 @@ namespace EasyRank.Infrastructure.Data
                 Title = "Star Wars",
                 ImageAlt = "Picture of star wars",
                 Description = "Good stuff",
-                RankPageId = this.RankPage.Id
+                RankPageId = this.RankPage.Id,
             };
 
             this.RankEntityStarWarsTwo = new RankEntry
@@ -117,8 +117,8 @@ namespace EasyRank.Infrastructure.Data
                 Title = "Star Wars2",
                 Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
                 ImageAlt = "Picture of star wars2",
-                Description = "Good stuff again",
-                RankPageId = this.RankPage.Id
+                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
+                RankPageId = this.RankPage.Id,
             };
 
             builder.Entity<RankEntry>()

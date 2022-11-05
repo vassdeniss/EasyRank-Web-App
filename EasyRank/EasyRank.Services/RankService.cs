@@ -91,6 +91,7 @@ namespace EasyRank.Services
                         ImageAlt = re.ImageAlt,
                         Description = re.Description,
                     })
+                    .OrderByDescending(e => e.Placement)
                     .ToList(),
                 };
 
