@@ -1,9 +1,0 @@
-﻿a:hover,
-.nav-item .btn-link:hover {
-    color: orange !important;
-}
-
-.dropdown-item:active:focus {
-    color: #ffffff !important;
-    background-color: darkorange;
-}

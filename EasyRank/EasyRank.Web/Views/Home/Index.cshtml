@@ -1,3 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Main Page";
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<EasyRankUser> UserManager
+@{
+	ViewData["Title"] = "Main Page";
 }
+
+<div class="w-75 mx-auto">
+	@if (!this.User.Identity!.IsAuthenticated)
+	{
+		<h1 class="text-center">EasyRank</h1>
+		<h2 class="text-center">Ranking your favorite movie topics has never been easier.</h2>
+		<hr class="bg-dark" />
+		<h3 class="mt-4">
+			<a href="/Account/Login">Login</a> if you are already a part of our community
+		</h3>
+		<h5>(Testing user credentials: guest@mail.com / guestPassword)</h5>
+		<h3 class="mt-4">
+			<a href="/Account/Register">Register</a> to start creating your very own rankings today!
+		</h3>
+	}
+	else
+	{
+		if (this.UserManager.GetUserAsync(this.User).Result.ProfilePicture != null)
+		{
+			<div style="text-align: center;" class="mb-3">
+				<img src="data:image/*; base64, @Convert.ToBase64String(this.UserManager.GetUserAsync(User).Result.ProfilePicture!)" style="width: 150px; height: 150px; object-fit: cover; border-radius: 30px;" />
+			</div>
+		}
+		<h1 class="text-center">Welcome, <b>@this.ViewBag.PersonName!</b></h1>
+		<hr class="bg-secondary" />
+		<h3 class="mt-4 text-secondary text-center">We over at <b>EasyRank</b> wish you a very safe and filled with ranking day!</h3>
+		<h4 class="mt-4 text-center">View <a href="/Rank/All">all rankings</a>.</h4>
+		@*<h3 class="mt-4">Create a <a href="/Events/Create">new event</a>.</h3>*@
+	}
+
+	@*	<hr class="hr-2 bg-dark" />
+	<h5 class="mt-4">We already have <b></b> events on our Eventures App!</h5>
+
+	@if (Model.UserEventsCount > -1)
+	{
+	<h5 class="mt-4">You have <b></b> event(s)!</h5>
+	}*@
+</div>

@@ -16,3 +16,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+a:hover,
+.nav-item .btn-link:hover {
+    color: lime !important;
+}
+
+.dropdown-item:active:focus {
+    color: #ffffff !important;
+    background-color: darkgreen;
+}
+
+@media screen and (max-width: 575px) {
+    header img {
+        display: none;
+    }
+}
