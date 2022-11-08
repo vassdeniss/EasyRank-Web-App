@@ -17,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -30,15 +29,15 @@ builder.Services.AddAutoMapper(typeof(IRankService).Assembly, typeof(RankControl
 
 builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = builder.Configuration.GetValue<bool>("Account:RequireConfirmedAccount");
 
-    options.User.RequireUniqueEmail = true;
+    options.User.RequireUniqueEmail = builder.Configuration.GetValue<bool>("Account:RequireUniqueEmail");
 
-    options.Password.RequiredLength = 7;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireDigit = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = true;
+    options.Password.RequiredLength = builder.Configuration.GetValue<int>("Account:RequiredLength");
+    options.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("Account:RequireNonAlphanumeric");
+    options.Password.RequireDigit = builder.Configuration.GetValue<bool>("Account:RequireDigit");
+    options.Password.RequireUppercase = builder.Configuration.GetValue<bool>("Account:RequireUppercase");
+    options.Password.RequireLowercase = builder.Configuration.GetValue<bool>("Account:RequireLowercase");
 })
     .AddEntityFrameworkStores<EasyRankDbContext>();
 
