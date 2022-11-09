@@ -5,6 +5,12 @@
 	this.ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
+<style>
+    #delete-account-button:hover {
+	    color: white !important;
+    }
+</style>
+
 <h3>@this.ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 
@@ -12,17 +18,17 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-3" style="margin-left: 0">
                 <input asp-for="Input.FirstName" class="form-control" />
                 <label asp-for="Input.FirstName"></label>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-3" style="margin-left: 0">
                 <input asp-for="Input.LastName" class="form-control" />
                 <label asp-for="Input.LastName"></label>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-3" style="margin-left: 0">
                 <input asp-for="Input.Username" class="form-control" />
                 <label asp-for="Input.Username"></label>
                 <span asp-validation-for="Input.Username" class="text-danger"></span>
@@ -32,7 +38,8 @@
                 <input asp-for="Input.PhoneNumber" class="form-control" />
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>*@
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+			<button id="update-profile-button" type="submit" class="btn btn-primary me-3">Save</button>
+			<a id="delete-account-button" asp-page="DeletePersonalData" class="btn btn-danger">Delete Account</a>
         </div>
         <div class="col-md-6">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
