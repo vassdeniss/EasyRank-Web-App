@@ -22,6 +22,10 @@ namespace EasyRank.Web.Controllers
     {
         private readonly UserManager<EasyRankUser> userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="userManager">The manager responsible for users.</param>
         public HomeController(UserManager<EasyRankUser> userManager)
         {
             this.userManager = userManager;
@@ -33,29 +37,31 @@ namespace EasyRank.Web.Controllers
         /// <returns>The home page view.</returns>
         public IActionResult Index()
         {
-            if (this.User.Identity!.IsAuthenticated)
+            if (!this.User.Identity!.IsAuthenticated)
             {
-                EasyRankUser user = this.userManager.GetUserAsync(this.User).Result;
-                string username = user.UserName;
-                string? firstName = user.FirstName;
-                string? lastName = user.LastName;
+                return this.View();
+            }
 
-                if (firstName == null && lastName == null)
-                {
-                    this.ViewBag.PersonName = username;
-                }
-                else if (firstName != null && lastName == null)
-                {
-                    this.ViewBag.PersonName = firstName;
-                }
-                else if (firstName == null && lastName != null)
-                {
-                    this.ViewBag.PersonName = $"Mr. / Ms. {lastName}";
-                }
-                else
-                {
-                    this.ViewBag.PersonName = $"{firstName} {lastName}";
-                }
+            EasyRankUser user = this.userManager.GetUserAsync(this.User).Result;
+            string username = user.UserName;
+            string? firstName = user.FirstName;
+            string? lastName = user.LastName;
+
+            if (firstName == null && lastName == null)
+            {
+                this.ViewBag.PersonName = username;
+            }
+            else if (firstName != null && lastName == null)
+            {
+                this.ViewBag.PersonName = firstName;
+            }
+            else if (firstName == null && lastName != null)
+            {
+                this.ViewBag.PersonName = $"Mr. / Ms. {lastName}";
+            }
+            else
+            {
+                this.ViewBag.PersonName = $"{firstName} {lastName}";
             }
 
             return this.View();

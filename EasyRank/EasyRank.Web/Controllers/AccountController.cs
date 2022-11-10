@@ -73,7 +73,6 @@ namespace EasyRank.Web.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 UserName = model.Username,
-                EmailConfirmed = true, // DEVELOPMENT PLEASE REMOVE ON PRODUCTION
             };
 
             IdentityResult result = await this.userManager.CreateAsync(user, model.Password);

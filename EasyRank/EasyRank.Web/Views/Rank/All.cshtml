@@ -12,12 +12,10 @@
 	    <title>EasyRank All Rankings</title>
 	    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-		<link rel="stylesheet" href="~/css/darkly.css" asp-append-version="true" />
-	    <link rel="stylesheet" href="~/css/general.css" asp-append-version="true" />
 	</head>
 	<body>
 		<header>
-			<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+			<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
 				<div class="container-fluid">
 					<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EasyRank</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -54,7 +52,7 @@
 		        <div class="text-center row">
 			        @foreach (RankPageViewModel rank in this.Model)
 			        {
-				        <div class="card m-2 p-0" style="width: 15rem;">
+				        <div class="card border-secondary m-2 p-0" style="width: 15rem;">
 					        <img class="card-img-top" style="object-fit: fill;" src="@rank.Image" alt="@rank.ImageAlt">
 					        <div class="card-body">
 						        <h5 class="card-title mt-1">@rank.RankingTitle</h5>

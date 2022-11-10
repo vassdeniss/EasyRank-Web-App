@@ -13,7 +13,6 @@
 		<h3 class="mt-4">
 			<a href="/Account/Login">Login</a> if you are already a part of our community
 		</h3>
-		<h5>(Testing user credentials: guest@mail.com / guestPassword)</h5>
 		<h3 class="mt-4">
 			<a href="/Account/Register">Register</a> to start creating your very own rankings today!
 		</h3>
@@ -30,13 +29,13 @@
 		<hr class="bg-secondary" />
 		<h3 class="mt-4 text-secondary text-center">We over at <b>EasyRank</b> wish you a very safe and filled with ranking day!</h3>
 		<h4 class="mt-4 text-center">View <a href="/Rank/All">all rankings</a>.</h4>
-		@*<h3 class="mt-4">Create a <a href="/Events/Create">new event</a>.</h3>*@
+		@*<h3 class="mt-4">Create a <a href="/Rank/Create">new rank</a>.</h3>*@
 	}
 
 	@*	<hr class="hr-2 bg-dark" />
-	<h5 class="mt-4">We already have <b></b> events on our Eventures App!</h5>
+	<h5 class="mt-4">We already have <b></b> ranks on EasyRank!</h5>
 
-	@if (Model.UserEventsCount > -1)
+	@if (Model.UserRanksCount > -1)
 	{
 	<h5 class="mt-4">You have <b></b> event(s)!</h5>
 	}*@

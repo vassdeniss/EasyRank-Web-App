@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - EasyRank</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/EasyRank.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
 </head>
 <body>
@@ -26,10 +25,14 @@
 						@if (this.User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Rankings</a>
-								<div class="dropdown-menu dropdown-menu-dark">
-									<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
-								</div>
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Rankings
+								</a>
+								<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
+									</li>
+								</ul>
 							</li>
 						}
 					</ul>

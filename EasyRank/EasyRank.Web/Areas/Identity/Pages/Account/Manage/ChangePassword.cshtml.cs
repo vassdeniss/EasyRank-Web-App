@@ -94,11 +94,11 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
                 return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
             }
 
-            bool hasPassword = await this.userManager.HasPasswordAsync(user);
-            if (!hasPassword)
-            {
-                return this.RedirectToPage("./SetPassword");
-            }
+            //bool hasPassword = await this.userManager.HasPasswordAsync(user);
+            //if (!hasPassword)
+            //{
+            //    return this.RedirectToPage("./SetPassword");
+            //}
 
             return this.Page();
         }
