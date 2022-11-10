@@ -15,92 +15,102 @@ using Microsoft.Extensions.Logging;
 
 namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
 {
+    /// <summary>
+    /// The razor page responsible for deleting a users account.
+    /// </summary>
     public class DeletePersonalDataModel : PageModel
     {
-        private readonly UserManager<EasyRankUser> _userManager;
-        private readonly SignInManager<EasyRankUser> _signInManager;
-        private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly UserManager<EasyRankUser> userManager;
+        private readonly SignInManager<EasyRankUser> signInManager;
+        private readonly ILogger<DeletePersonalDataModel> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeletePersonalDataModel"/> class.
+        /// </summary>
+        /// <param name="userManager">The manager responsible for users.</param>
+        /// <param name="signInManager">The manager responsible for sign ins.</param>
+        /// <param name="logger">The logger to log messages.</param>
         public DeletePersonalDataModel(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
             ILogger<DeletePersonalDataModel> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// Gets or sets the property used as a model for the view.
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// The view model for the account deletion.
         /// </summary>
         public class InputModel
         {
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            /// Gets or sets the current password of the user.
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public bool RequirePassword { get; set; }
+        //public bool RequirePassword { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        /// <summary>
+        /// The get method for the razor page.
+        /// </summary>
+        /// <returns>A view for deleting the users account.</returns>
+        public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
-            return Page();
+            //RequirePassword = await this.userManager.HasPasswordAsync(user);
+            return this.Page();
         }
 
+        /// <summary>
+        /// The post method for the razor page.
+        /// </summary>
+        /// <returns>The home view after the user has been deleted.</returns>
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
-            if (RequirePassword)
-            {
-                if (!await _userManager.CheckPasswordAsync(user, Input.Password))
-                {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
-                    return Page();
-                }
-            }
+            //RequirePassword = await this.userManager.HasPasswordAsync(user);
+            //if (RequirePassword)
+            //{
+            //    if (!await this.userManager.CheckPasswordAsync(user, Input.Password))
+            //    {
+            //        ModelState.AddModelError(string.Empty, "Incorrect password.");
+            //        return Page();
+            //    }
+            //}
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            IdentityResult result = await this.userManager.DeleteAsync(user);
+            string userId = await this.userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+                throw new InvalidOperationException("Unexpected error occurred deleting user.");
             }
 
-            await _signInManager.SignOutAsync();
+            await this.signInManager.SignOutAsync();
 
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            this.logger.LogInformation($"User with ID '{userId}' deleted themselves.");
 
-            return Redirect("~/");
+            return this.Redirect("~/");
         }
     }
 }
