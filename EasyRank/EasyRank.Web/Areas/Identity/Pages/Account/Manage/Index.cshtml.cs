@@ -16,11 +16,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
 {
+    /// <summary>
+    /// The razor page responsible for changing basic account settings.
+    /// </summary>
     public class IndexModel : PageModel
     {
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndexModel"/> class.
+        /// </summary>
+        /// <param name="userManager">The manager responsible for users.</param>
+        /// <param name="signInManager">The manager responsible for sign ins.</param>
         public IndexModel(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager)
@@ -29,59 +37,27 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
             this.signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Gets or sets the username of the user.
+        /// </summary>
         public string Username { get; set; }
 
+        /// <summary>
+        /// Gets or sets the property that displays a message on success or on error.
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
+        /// <summary>
+        /// Gets or sets the property used as a model for the view.
+        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public class InputModel
-        {
-            [StringLength(20, MinimumLength = 3)]
-            [Display(Name = "Username")]
-            public string Username { get; set; }
-
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
-
-            //[Phone]
-            //[Display(Name = "Phone number")]
-            //public string PhoneNumber { get; set; }
-
-            [Display(Name = "Profile Picture")]
-            public byte[] ProfilePicture { get; set; }
-        }
-
-        private async Task LoadAsync(EasyRankUser user)
-        {
-            string userName = await this.userManager.GetUserNameAsync(user);
-            //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
-
-            string firstName = user.FirstName;
-            string lastName = user.LastName;
-            byte[] profilePicture = user.ProfilePicture;
-
-            //this.Username = userName;
-
-            this.Input = new InputModel
-            {
-                Username = userName,
-                FirstName = firstName,
-                LastName = lastName,
-                ProfilePicture = profilePicture,
-            };
-
-            //this.Input = new InputModel
-            //{
-            //    PhoneNumber = phoneNumber,
-            //};
-        }
-
+        /// <summary>
+        /// The get method for the razor page.
+        /// </summary>
+        /// <returns>A view for changing basic user account settings.</returns>
         public async Task<IActionResult> OnGetAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -94,6 +70,10 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
             return this.Page();
         }
 
+        /// <summary>
+        /// The post method for the razor page.
+        /// </summary>
+        /// <returns>The same page for changing user settings with a success / failure message.</returns>
         public async Task<IActionResult> OnPostAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -164,9 +144,15 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
 
             await this.signInManager.RefreshSignInAsync(user);
             this.StatusMessage = "Your profile has been updated";
+
             return this.RedirectToPage();
         }
 
+        /// <summary>
+        /// The post method for the razor page.
+        /// </summary>
+        /// <returns>The same page for changing user settings with a deleted profile picture.</returns>
+        /// <remarks>Post for when profile picture is getting deleted.</remarks>
         public async Task<IActionResult> OnPostDeleteProfilePictureAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -187,7 +173,61 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
 
             await this.signInManager.RefreshSignInAsync(user);
             this.StatusMessage = "Your profile has been updated";
+
             return this.RedirectToPage();
+        }
+
+        private async Task LoadAsync(EasyRankUser user)
+        {
+            string userName = await this.userManager.GetUserNameAsync(user);
+            //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
+
+            string firstName = user.FirstName;
+            string lastName = user.LastName;
+            byte[] profilePicture = user.ProfilePicture;
+
+            this.Input = new InputModel
+            {
+                Username = userName,
+                FirstName = firstName,
+                LastName = lastName,
+                ProfilePicture = profilePicture,
+            };
+        }
+
+        /// <summary>
+        /// The view model for the email change.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            /// Gets or sets the users username.
+            /// </summary>
+            [StringLength(20, MinimumLength = 3)]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
+            /// <summary>
+            /// Gets or sets the users first name.
+            /// </summary>
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the users last name.
+            /// </summary>
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            //[Phone]
+            //[Display(Name = "Phone number")]
+            //public string PhoneNumber { get; set; }
+
+            /// <summary>
+            /// Gets or sets the users profile picture.
+            /// </summary>
+            [Display(Name = "Profile Picture")]
+            public byte[] ProfilePicture { get; set; }
         }
     }
 }
