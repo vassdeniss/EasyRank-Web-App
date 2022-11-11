@@ -20,6 +20,8 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
 
         //public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string Rankings => "Rankings";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
@@ -29,6 +31,8 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
         //public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
 
         //public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
+
+        public static string RankingsNavClass(ViewContext viewContext) => PageNavClass(viewContext, Rankings);
 
         public static string PageNavClass(ViewContext viewContext, string page)
         {
