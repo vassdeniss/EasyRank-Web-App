@@ -47,6 +47,11 @@ namespace EasyRank.Web.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
+            if (this.User.Identity!.IsAuthenticated)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
             RegisterViewModel model = new RegisterViewModel();
 
             return this.View(model);
@@ -102,6 +107,11 @@ namespace EasyRank.Web.Controllers
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
+            if (this.User.Identity!.IsAuthenticated)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
             LoginViewModel model = new LoginViewModel
             {
                 ReturnUrl = returnUrl,
