@@ -46,19 +46,6 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        /// The view model for the account deletion.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            /// Gets or sets the current password of the user.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-        }
-
         //public bool RequirePassword { get; set; }
 
         /// <summary>
@@ -99,6 +86,12 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
             //    }
             //}
 
+            if (!await this.userManager.CheckPasswordAsync(user, this.Input.Password))
+            {
+                this.ModelState.AddModelError(string.Empty, "Incorrect password.");
+                return this.Page();
+            }
+
             IdentityResult result = await this.userManager.DeleteAsync(user);
             string userId = await this.userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
@@ -111,6 +104,19 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
             this.logger.LogInformation($"User with ID '{userId}' deleted themselves.");
 
             return this.Redirect("~/");
+        }
+
+        /// <summary>
+        /// The view model for the account deletion.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            /// Gets or sets the current password of the user.
+            /// </summary>
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
         }
     }
 }

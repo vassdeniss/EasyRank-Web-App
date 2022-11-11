@@ -46,41 +46,10 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
         public InputModel Input { get; set; }
 
         /// <summary>
-        /// Gets or sets the property that displays on success edit or on error.
+        /// Gets or sets the property that displays a message on success or on error.
         /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
-
-        /// <summary>
-        /// The view model for the password change.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            /// Gets or sets the current password of the user.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Current password")]
-            public string OldPassword { get; set; }
-
-            /// <summary>
-            /// Gets or sets the new password set by the user.
-            /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "New password")]
-            public string NewPassword { get; set; }
-
-            /// <summary>
-            /// Gets or sets the property that must hold the same value as the new password.
-            /// </summary>
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm new password")]
-            [Compare(nameof(NewPassword), ErrorMessage = "The new password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-        }
 
         /// <summary>
         /// The get method for the razor page.
@@ -144,6 +113,37 @@ namespace EasyRank.Web.Areas.Identity.Pages.Account.Manage
             this.StatusMessage = "Your password has been changed.";
 
             return this.RedirectToPage();
+        }
+
+        /// <summary>
+        /// The view model for the password change.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            /// Gets or sets the current password of the user.
+            /// </summary>
+            [Required]
+            [DataType(DataType.Password)]
+            [Display(Name = "Current password")]
+            public string OldPassword { get; set; }
+
+            /// <summary>
+            /// Gets or sets the new password set by the user.
+            /// </summary>
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "New password")]
+            public string NewPassword { get; set; }
+
+            /// <summary>
+            /// Gets or sets the property that must hold the same value as the new password.
+            /// </summary>
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm new password")]
+            [Compare(nameof(NewPassword), ErrorMessage = "The new password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
         }
     }
 }
