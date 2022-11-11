@@ -44,7 +44,7 @@ namespace EasyRank.Web.Models
         /// Gets or sets the username of the user.
         /// </summary>
         [Required]
-        [StringLength(20, MinimumLength = 5)]
+        [StringLength(20, MinimumLength = 3)]
         [Display(Name = "Username")]
         public string Username { get; set; } = null!;
 

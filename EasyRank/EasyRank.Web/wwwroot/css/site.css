@@ -35,6 +35,10 @@ a:hover,
     line-height: 60px;
 }
 
+.alert-warning {
+    background-color: #d3a10b;
+}
+
 @media screen and (max-width: 575px) {
     header img {
         display: none;
