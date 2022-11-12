@@ -67,7 +67,7 @@ namespace EasyRank.Services
         /// Implementation of the GetRankPageByGuidAsync interface method
         /// used for retrieving a rank page from the database by its GUID.
         /// </summary>
-        /// <returns>A rank page service model.</returns>
+        /// <returns>An extended rank page service model.</returns>
         /// <param name="rankGuid">GUID used to search for the rank page.</param>
         public async Task<RankPageServiceModelExtended> GetRankPageByGuidAsync(Guid rankGuid)
         {
@@ -102,6 +102,12 @@ namespace EasyRank.Services
             return rankPageServiceModelExtended;
         }
 
+        /// <summary>
+        /// Implementation of the GetAllRankingsByUserAsync interface method
+        /// used for retrieving a collection of rank pages for a specified user from the database.
+        /// </summary>
+        /// <returns>A collection of rank page service models.</returns>
+        /// <param name="userId">GUID used to search for the users rankings.</param>
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
             ICollection<RankPage> rankPages = await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
