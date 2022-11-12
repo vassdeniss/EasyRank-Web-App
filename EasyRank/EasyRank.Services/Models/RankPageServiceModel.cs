@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace EasyRank.Services.Models
 {
@@ -40,8 +39,6 @@ namespace EasyRank.Services.Models
         /// </summary>
         public string CreatedOn { get; set; } = null!;
 
-        // public ICollection<EasyRankUser> LikedBy { get; set; } = null!;
-
         /// <summary>
         /// Gets or sets the like count of the ranking page.
         /// </summary>
@@ -56,12 +53,5 @@ namespace EasyRank.Services.Models
         /// Gets or sets the comment count for the ranking page.
         /// </summary>
         public int CommentCount { get; set; }
-
-        // public ICollection<Comment> Comments { get; set; } = null!;
-
-        /// <summary>
-        /// Gets or sets every entry on the given rank page.
-        /// </summary>
-        public ICollection<RankEntryServiceModel> Entries { get; set; } = null!;
     }
 }

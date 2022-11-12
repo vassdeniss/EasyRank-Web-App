@@ -54,10 +54,5 @@ namespace EasyRank.Web.Models
         /// Gets or sets the comment count for the ranking page.
         /// </summary>
         public int CommentCount { get; set; }
-
-        /// <summary>
-        /// Gets or sets every entry on the given rank page.
-        /// </summary>
-        public ICollection<RankEntryViewModel> Entries { get; set; } = null!;
     }
 }

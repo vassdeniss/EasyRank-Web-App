@@ -25,6 +25,7 @@ namespace EasyRank.Web.Profiles
         {
             this.CreateMap<RankPageServiceModel, RankPageViewModel>();
             this.CreateMap<RankEntryServiceModel, RankEntryViewModel>();
+            this.CreateMap<RankPageServiceModelExtended, RankPageViewModelExtended>();
         }
     }
 }

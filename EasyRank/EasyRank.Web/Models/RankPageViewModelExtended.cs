@@ -18,6 +18,11 @@ namespace EasyRank.Web.Models
     public class RankPageViewModelExtended : RankPageViewModel
     {
         /// <summary>
+        /// Gets or sets every entry on the given rank page.
+        /// </summary>
+        public ICollection<RankEntryViewModel> Entries { get; set; } = null!;
+
+        /// <summary>
         /// Gets or sets the collection of users who liked the rank page.
         /// </summary>
         public ICollection<EasyRankUser> LikedBy { get; set; } = null!;

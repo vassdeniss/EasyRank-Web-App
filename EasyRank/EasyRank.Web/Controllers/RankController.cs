@@ -62,9 +62,9 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ViewRanking(Guid rankId)
         {
-            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
+            RankPageServiceModelExtended serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
 
-            RankPageViewModel model = this.mapper.Map<RankPageViewModel>(serviceModel);
+            RankPageViewModelExtended model = this.mapper.Map<RankPageViewModelExtended>(serviceModel);
 
             return this.View(model);
         }

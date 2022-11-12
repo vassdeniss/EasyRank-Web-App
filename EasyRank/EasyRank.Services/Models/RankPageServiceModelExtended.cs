@@ -15,8 +15,13 @@ namespace EasyRank.Services.Models
     /// <summary>
     /// Extended model of the service rank page holding more needed properties.
     /// </summary>
-    public class RankPageServiceModelExtended
+    public class RankPageServiceModelExtended : RankPageServiceModel
     {
+        /// <summary>
+        /// Gets or sets every entry on the given rank page.
+        /// </summary>
+        public ICollection<RankEntryServiceModel> Entries { get; set; } = null!;
+
         /// <summary>
         /// Gets or sets the collection of users who liked the rank page.
         /// </summary>

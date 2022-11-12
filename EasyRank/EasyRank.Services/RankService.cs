@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 
@@ -44,20 +45,22 @@ namespace EasyRank.Services
         /// <returns>A collection of rank page service models.</returns>
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
         {
-            return await this.repo.AllReadonly<RankPage>()
+            ICollection<RankPage> rankPages = await this.repo.AllReadonly<RankPage>()
                 .Include(rp => rp.CreatedByUser)
-                .Select(p => new RankPageServiceModel
-                {
-                    Id = p.Id,
-                    Image = p.Image,
-                    ImageAlt = p.ImageAlt,
-                    RankingTitle = p.RankingTitle,
-                    CreatedOn = p.CreatedOn.ToString("dd MMMM yyyy"),
-                    LikeCount = p.LikedBy.Count,
-                    CreatedByUserName = p.CreatedByUser.UserName,
-                    CommentCount = p.Comments.Count,
-                })
                 .ToListAsync();
+
+            return rankPages.Select(p => new RankPageServiceModel
+            {
+                Id = p.Id,
+                Image = p.Image,
+                ImageAlt = p.ImageAlt,
+                RankingTitle = p.RankingTitle,
+                CreatedOn = p.CreatedOn.ToString("dd MMMM yyyy"),
+                LikeCount = p.LikedBy.Count,
+                CreatedByUserName = p.CreatedByUser.UserName,
+                CommentCount = p.Comments.Count,
+            })
+            .ToList();
         }
 
         /// <summary>
@@ -66,64 +69,55 @@ namespace EasyRank.Services
         /// </summary>
         /// <returns>A rank page service model.</returns>
         /// <param name="rankGuid">GUID used to search for the rank page.</param>
-        public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
+        public async Task<RankPageServiceModelExtended> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
                 .Include(rp => rp.Entries)
                 .Include(rp => rp.CreatedByUser)
                 .FirstAsync();
 
-            RankPageServiceModel rankPageServiceModel
-                = new RankPageServiceModel
+            RankPageServiceModelExtended rankPageServiceModelExtended = new RankPageServiceModelExtended
+            {
+                RankingTitle = rankPage.RankingTitle,
+                Image = rankPage.Image,
+                ImageAlt = rankPage.ImageAlt,
+                CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
+                LikeCount = rankPage.LikedBy.Count,
+                CreatedByUserName = rankPage.CreatedByUser.UserName,
+                CommentCount = rankPage.Comments.Count,
+                Entries = rankPage.Entries.Select(re => new RankEntryServiceModel
                 {
-                    RankingTitle = rankPage.RankingTitle,
-                    Image = rankPage.Image,
-                    ImageAlt = rankPage.ImageAlt,
-                    CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
-                    LikeCount = rankPage.LikedBy.Count,
-                    CreatedByUserName = rankPage.CreatedByUser.UserName,
-                    CommentCount = rankPage.Comments.Count,
-                    Entries = rankPage.Entries.Select(re => new RankEntryServiceModel
-                    {
-                        Placement = re.Placement,
-                        Title = re.Title,
-                        Image = re.Image,
-                        ImageAlt = re.ImageAlt,
-                        Description = re.Description,
-                    })
-                    .OrderByDescending(e => e.Placement)
-                    .ToList(),
-                };
+                    Placement = re.Placement,
+                    Title = re.Title,
+                    Image = re.Image,
+                    ImageAlt = re.ImageAlt,
+                    Description = re.Description,
+                })
+                .OrderByDescending(e => e.Placement)
+                .ToList(),
+                Comments = new List<Comment>(), // TODO: Fix
+                LikedBy = new List<EasyRankUser>(), // TODO: Fix
+            };
 
-            return rankPageServiceModel;
+            return rankPageServiceModelExtended;
         }
 
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
-            return await this.repo
-                .AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
-                .Include(rp => rp.CreatedByUser)
-                .Select(rp => new RankPageServiceModel
-                {
-                    RankingTitle = rp.RankingTitle,
-                    Image = rp.Image,
-                    ImageAlt = rp.ImageAlt,
-                    CreatedOn = rp.CreatedOn.ToString("dd MMMM yyyy"),
-                    LikeCount = rp.LikedBy.Count,
-                    CreatedByUserName = rp.CreatedByUser.UserName,
-                    CommentCount = rp.Comments.Count,
-                    //Entries = rankPage.Entries.Select(re => new RankEntryServiceModel
-                    //    {
-                    //        Placement = re.Placement,
-                    //        Title = re.Title,
-                    //        Image = re.Image,
-                    //        ImageAlt = re.ImageAlt,
-                    //        Description = re.Description,
-                    //    })
-                    //    .OrderByDescending(e => e.Placement)
-                    //    .ToList(),
-                })
+            ICollection<RankPage> rankPages = await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
                 .ToListAsync();
+
+            return rankPages.Select(rp => new RankPageServiceModel
+            {
+                RankingTitle = rp.RankingTitle,
+                Image = rp.Image,
+                ImageAlt = rp.ImageAlt,
+                CreatedOn = rp.CreatedOn.ToString("dd MMMM yyyy"),
+                LikeCount = rp.LikedBy.Count,
+                CreatedByUserName = rp.CreatedByUser.UserName,
+                CommentCount = rp.Comments.Count,
+            })
+            .ToList();
         }
     }
 }
