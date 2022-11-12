@@ -1,0 +1,45 @@
+﻿@model EmailViewModel
+@{
+	this.Layout = "_AccountLayout";
+	this.ViewData["Title"] = "Manage Email";
+	this.ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h3>@this.ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="@this.TempData["StatusMessage"]" />
+<div class="row">
+	<div class="col-md-6">
+		<form id="email-form" method="post">
+			<div asp-validation-summary="All" class="text-danger"></div>
+			@if ((bool)this.TempData["ConfirmedEmail"]!)
+			{
+				<div class="form-floating input-group">
+					<input asp-for="Email" class="form-control" disabled style="cursor: not-allowed;" />
+					<input type="hidden" name="email" value="@this.Model.Email" />
+					<div class="input-group-append">
+						<span class="h-100 input-group-text text-success font-weight-bold">✓</span>
+					</div>
+					<label asp-for="Email" class="form-label"></label>
+				</div>
+			}
+			else
+			{
+				<div class="form-floating">
+					<input asp-for="Email" class="form-control" disabled style="cursor: not-allowed;" />
+					<input type="hidden" name="email" value="@this.Model.Email" />
+					<label asp-for="Email" class="form-label"></label>
+					<button asp-controller="Manage" asp-action="SendVerificationEmail" type="submit" class="btn btn-link">Send verification email</button>
+				</div>
+			}
+			<div class="form-floating">
+				<input asp-for="NewEmail" class="form-control" autocomplete="email" aria-required="true" />
+				<label asp-for="NewEmail" class="form-label"></label>
+			</div>
+			<button asp-controller="Manage" asp-action="Email" type="submit" class="w-100 btn btn-lg btn-primary">Change email</button>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

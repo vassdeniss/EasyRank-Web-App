@@ -8,6 +8,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
@@ -15,7 +17,9 @@ using EasyRank.Web.Models.Manage;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace EasyRank.Web.Controllers
 {
@@ -24,13 +28,16 @@ namespace EasyRank.Web.Controllers
     {
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
+        private readonly IEmailSender emailSender;
 
         public ManageController(
-            UserManager<EasyRankUser> userManager, 
-            SignInManager<EasyRankUser> signInManager)
+            UserManager<EasyRankUser> userManager,
+            SignInManager<EasyRankUser> signInManager,
+            IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.emailSender = emailSender;
         }
 
         /// <summary>
@@ -47,7 +54,22 @@ namespace EasyRank.Web.Controllers
                 return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
             }
 
-            return this.View(await this.LoadAsync(user));
+            string userName = await this.userManager.GetUserNameAsync(user);
+            //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
+
+            string firstName = user.FirstName!;
+            string lastName = user.LastName!;
+            byte[] profilePicture = user.ProfilePicture!;
+
+            ManageViewModel model = new ManageViewModel
+            {
+                Username = userName,
+                FirstName = firstName,
+                LastName = lastName,
+                ProfilePicture = profilePicture,
+            };
+
+            return this.View(model);
         }
 
         /// <summary>
@@ -66,7 +88,7 @@ namespace EasyRank.Web.Controllers
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(await this.LoadAsync(user));
+                return this.View(model);
             }
 
             //var phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
@@ -136,19 +158,13 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Post for when profile picture is getting deleted.</remarks>
         [HttpPost]
         [Route("DeleteProfilePicture")]
-        public async Task<IActionResult> DeleteProfilePictureAsync(ManageViewModel model)
+        public async Task<IActionResult> DeleteProfilePictureAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
             if (user == null)
             {
                 return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
             }
-
-            //if (!this.ModelState.IsValid)
-            //{
-            //    await this.LoadAsync(user);
-            //    return this.Page();
-            //}
 
             user.ProfilePicture = null;
 
@@ -223,6 +239,131 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
+        /// The change email action for the controller.
+        /// </summary>
+        /// <returns>A change email view for changing the users email.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        [Route("Email")]
+        public async Task<IActionResult> EmailAsync()
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            string email = await this.userManager.GetEmailAsync(user);
+
+            this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
+
+            EmailViewModel model = new EmailViewModel
+            {
+                Email = email,
+                NewEmail = email,
+            };
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The change email action for the controller.
+        /// </summary>
+        /// <returns>A redirect back to the change email page with either a success or error message.</returns>
+        /// <param name="model">The email view model for the view.</param>
+        /// <remarks>Post for when email is getting changed.</remarks>
+        [HttpPost]
+        [Route("Email")]
+        public async Task<IActionResult> EmailAsync(EmailViewModel model)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            string email = await this.userManager.GetEmailAsync(user);
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            if (model.NewEmail != email)
+            {
+                EasyRankUser userWithGivenEmail = await this.userManager.FindByEmailAsync(model.NewEmail);
+                if (userWithGivenEmail != null)
+                {
+                    this.TempData["StatusMessage"] = "Error: Email taken!";
+                    return this.RedirectToAction("Email");
+                }
+
+                string userId = await this.userManager.GetUserIdAsync(user);
+                string code = await this.userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                string callbackUrl = this.Url.Page(
+                    "/Account/ConfirmEmailChange", // TODO: CHeck functionality
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, email = model.NewEmail, code = code },
+                    protocol: this.Request.Scheme)!;
+
+                await this.emailSender.SendEmailAsync(
+                    model.NewEmail,
+                    "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                this.TempData["StatusMessage"] = "Confirmation link to change email sent. Please check your email!";
+                return this.RedirectToAction("Email");
+            }
+
+            this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
+            this.TempData["StatusMessage"] = "Error: Your email is unchanged.";
+            return this.RedirectToAction("Email");
+        }
+
+        /// <summary>
+        /// The verify email action for the controller.
+        /// </summary>
+        ///// <returns>The same page for changing the users email.</returns>
+        ///// <remarks>Post for when email is getting verified.</remarks>
+        [HttpPost]
+        [Route("VerifyEmail")]
+        public async Task<IActionResult> SendVerificationEmailAsync(EmailViewModel model)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            string userId = await this.userManager.GetUserIdAsync(user);
+            string email = await this.userManager.GetEmailAsync(user);
+            string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            string callbackUrl = this.Url.Page(
+                "/Account/ConfirmEmail", // TODO: Test
+                pageHandler: null,
+                values: new { area = "Identity", userId = userId, code = code },
+                protocol: this.Request.Scheme)!;
+
+            await this.emailSender.SendEmailAsync(
+                email,
+                "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
+            this.TempData["StatusMessage"] = "Verification email sent. Please check your email.";
+            return this.RedirectToAction("Email");
+        }
+
+        /// <summary>
         /// The change password action for the controller.
         /// </summary>
         /// <returns>A change password view for changing the users password.</returns>
@@ -250,6 +391,7 @@ namespace EasyRank.Web.Controllers
         /// The change password action for the controller.
         /// </summary>
         /// <returns>A redirect back to the change password page with either a success or error message.</returns>
+        /// <param name="model">The change password view model for the view.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("ChangePassword")]
@@ -290,24 +432,6 @@ namespace EasyRank.Web.Controllers
             this.TempData["StatusMessage"] = "Your password has been changed.";
 
             return this.RedirectToAction("ChangePassword");
-        }
-
-        private async Task<ManageViewModel> LoadAsync(EasyRankUser user)
-        {
-            string userName = await this.userManager.GetUserNameAsync(user);
-            //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
-
-            string firstName = user.FirstName!;
-            string lastName = user.LastName!;
-            byte[] profilePicture = user.ProfilePicture!;
-
-            return new ManageViewModel
-            {
-                Username = userName,
-                FirstName = firstName,
-                LastName = lastName,
-                ProfilePicture = profilePicture,
-            };
         }
     }
 }
