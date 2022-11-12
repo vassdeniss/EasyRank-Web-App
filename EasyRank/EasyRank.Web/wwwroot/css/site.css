@@ -39,6 +39,10 @@ a:hover,
     background-color: #d3a10b;
 }
 
+.alert-success {
+    background-color: #29A829;
+}
+
 @media screen and (max-width: 575px) {
     header img {
         display: none;

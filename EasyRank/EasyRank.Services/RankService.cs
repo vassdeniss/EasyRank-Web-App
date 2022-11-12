@@ -97,5 +97,33 @@ namespace EasyRank.Services
 
             return rankPageServiceModel;
         }
+
+        public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
+        {
+            return await this.repo
+                .AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
+                .Include(rp => rp.CreatedByUser)
+                .Select(rp => new RankPageServiceModel
+                {
+                    RankingTitle = rp.RankingTitle,
+                    Image = rp.Image,
+                    ImageAlt = rp.ImageAlt,
+                    CreatedOn = rp.CreatedOn.ToString("dd MMMM yyyy"),
+                    LikeCount = rp.LikedBy.Count,
+                    CreatedByUserName = rp.CreatedByUser.UserName,
+                    CommentCount = rp.Comments.Count,
+                    //Entries = rankPage.Entries.Select(re => new RankEntryServiceModel
+                    //    {
+                    //        Placement = re.Placement,
+                    //        Title = re.Title,
+                    //        Image = re.Image,
+                    //        ImageAlt = re.ImageAlt,
+                    //        Description = re.Description,
+                    //    })
+                    //    .OrderByDescending(e => e.Placement)
+                    //    .ToList(),
+                })
+                .ToListAsync();
+        }
     }
 }

@@ -1,0 +1,69 @@
+﻿@model ManageViewModel
+@{
+	this.Layout = "_AccountLayout";
+	this.ViewData["Title"] = "Profile";
+	this.ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<style>
+    #delete-account-button:hover {
+	    color: white !important;
+    }
+</style>
+
+<h3>@this.ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="@this.TempData["StatusMessage"]" />
+<form id="profile-form" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating mb-3" style="margin-left: 0">
+                <input asp-for="FirstName" class="form-control" />
+                <label asp-for="FirstName"></label>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3" style="margin-left: 0">
+                <input asp-for="LastName" class="form-control" />
+                <label asp-for="LastName"></label>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3" style="margin-left: 0">
+                <input asp-for="Username" class="form-control" />
+                <label asp-for="Username"></label>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+@*            <div class="form-group">
+                <label asp-for="Input.PhoneNumber"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>*@
+			<button asp-controller="Manage" asp-action="Index" type="submit" class="btn btn-primary me-3">Save</button>
+			<a asp-controller="Manage" asp-action="DeleteAccount" id="delete-account-button" class="btn btn-danger">Delete Account</a>
+        </div>
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+				<label asp-for="ProfilePicture" style="width: 100%; margin-bottom: 10px;"></label>
+                @if (this.Model.ProfilePicture != null)
+                {
+                    <button asp-controller="Manage" asp-action="DeleteProfilePicture" style="margin-bottom: 10px;" type="submit" class="btn btn-danger">Delete profile picture</button>
+                    <img id="profile-picture" style="width: 350px; height: 350px; object-fit: cover; margin-bottom: 5px;" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))">
+                }
+                else
+                {
+                    <img id="profile-picture" style="width:350px; height: 350px; object-fit: cover; margin-bottom: 5px;" src="" alt="No Profile Picture">
+                }
+                <input type="file"
+                       accept=".png,.jpg,.jpeg,.gif,.tif"
+                       asp-for="ProfilePicture"
+                       class="form-control"
+                       onchange="document.getElementById('profile-picture').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

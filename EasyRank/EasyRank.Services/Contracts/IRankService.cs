@@ -30,5 +30,7 @@ namespace EasyRank.Services.Contracts
         /// <returns>Service model.</returns>
         /// <param name="rankGuid">The GUID to be used with the method.</param>
         Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid);
+
+        Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId);
     }
 }

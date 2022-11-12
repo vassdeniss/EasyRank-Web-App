@@ -1,8 +1,12 @@
 ﻿@page "/Account/Rankings"
-@*@model RankingsModel*@
+@model RankingModel
 @{
 	this.ViewData["Title"] = "Your Rankings";
-	this.ViewData["ActivePage"] = ManageNavPages.Rankings;
+	//this.ViewData["ActivePage"] = ManageNavPages.Rankings;
 }
 
 <h3>@this.ViewData["Title"]</h3>
+@*@foreach (var a in Input)
+{
+	<h1>@a</h1>
+}*@
