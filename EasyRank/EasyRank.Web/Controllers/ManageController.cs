@@ -222,6 +222,76 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// The change password action for the controller.
+        /// </summary>
+        /// <returns>A change password view for changing the users password.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePasswordAsync()
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            //bool hasPassword = await this.userManager.HasPasswordAsync(user);
+            //if (!hasPassword)
+            //{
+            //    return this.RedirectToPage("./SetPassword");
+            //}
+
+            return this.View();
+        }
+
+        /// <summary>
+        /// The change password action for the controller.
+        /// </summary>
+        /// <returns>A redirect back to the change password page with either a success or error message.</returns>
+        /// <remarks>Post method.</remarks>
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View();
+            }
+
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            if (model.OldPassword == model.NewPassword)
+            {
+                this.TempData["StatusMessage"] = "Error: Password is the same!";
+                return this.View();
+            }
+
+            IdentityResult changePasswordResult = await this.userManager.ChangePasswordAsync(user,
+                model.OldPassword,
+                model.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (IdentityError error in changePasswordResult.Errors)
+                {
+                    this.ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return this.View();
+            }
+
+            await this.signInManager.RefreshSignInAsync(user);
+            //this.logger.LogInformation("User changed their password successfully.");
+            this.TempData["StatusMessage"] = "Your password has been changed.";
+
+            return this.RedirectToAction("ChangePassword");
+        }
+
         private async Task<ManageViewModel> LoadAsync(EasyRankUser user)
         {
             string userName = await this.userManager.GetUserNameAsync(user);
