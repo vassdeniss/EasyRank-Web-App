@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace EasyRank.Web.Controllers
 {
+    /// <summary>
+    /// The controller responsible for account management.
+    /// </summary>
     [Route("Account/Manage")]
     public class ManageController : BaseController
     {
@@ -30,6 +33,12 @@ namespace EasyRank.Web.Controllers
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ManageController"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager for the controller.</param>
+        /// <param name="signInManager">The sign in manager for the controller.</param>
+        /// <param name="emailSender">The email sender for the controller.</param>
         public ManageController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
@@ -41,9 +50,10 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The get method for the razor page.
+        /// The index action for the controller.
         /// </summary>
         /// <returns>A view for changing basic user account settings.</returns>
+        /// <remarks>Get method.</remarks>
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> IndexAsync()
@@ -73,9 +83,11 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The post method for the razor page.
+        /// The index action for the controller.
         /// </summary>
-        /// <returns>The same page for changing user settings with a success / failure message.</returns>
+        /// <returns>Redirects to the same page with either a success / failure message.</returns>
+        /// <param name="model">The manage view model for the view.</param>
+        /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> IndexAsync(ManageViewModel model)
@@ -137,6 +149,14 @@ namespace EasyRank.Web.Controllers
             {
                 IFormFile file = this.Request.Form.Files.First();
 
+                string[] acceptedExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".tif" };
+
+                if (!acceptedExtensions.Contains(Path.GetExtension(file.FileName)))
+                {
+                    this.TempData["StatusMessage"] = "Error: Unsupported file!";
+                    return this.RedirectToAction("Index");
+                }
+
                 using MemoryStream memoryStream = new MemoryStream();
 
                 await file.CopyToAsync(memoryStream);
@@ -152,10 +172,10 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The post method for the razor page.
+        /// The delete profile picture action for the controller.
         /// </summary>
-        /// <returns>The same page for changing user settings with a deleted profile picture.</returns>
-        /// <remarks>Post for when profile picture is getting deleted.</remarks>
+        /// <returns>Redirects to the same page with the profile picture deleted.</returns>
+        /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("DeleteProfilePicture")]
         public async Task<IActionResult> DeleteProfilePictureAsync()
@@ -177,9 +197,10 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The get method for the razor page.
+        /// The delete account action for the controller.
         /// </summary>
         /// <returns>A view for deleting the users account.</returns>
+        /// <remarks>Get method.</remarks>
         [HttpGet]
         [Route("DeleteAccount")]
         public async Task<IActionResult> DeleteAccountAsync()
@@ -195,9 +216,11 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The post method for the razor page.
+        /// The delete account action for the controller.
         /// </summary>
         /// <returns>The home view after the user has been deleted.</returns>
+        /// <param name="model">The delete account view model for the view.</param>
+        /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("DeleteAccount")]
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
@@ -225,7 +248,7 @@ namespace EasyRank.Web.Controllers
             }
 
             IdentityResult result = await this.userManager.DeleteAsync(user);
-            string userId = await this.userManager.GetUserIdAsync(user);
+            //string userId = await this.userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException("Unexpected error occurred deleting user.");
@@ -271,7 +294,7 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>A redirect back to the change email page with either a success or error message.</returns>
         /// <param name="model">The email view model for the view.</param>
-        /// <remarks>Post for when email is getting changed.</remarks>
+        /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("Email")]
         public async Task<IActionResult> EmailAsync(EmailViewModel model)
@@ -325,8 +348,9 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The verify email action for the controller.
         /// </summary>
-        ///// <returns>The same page for changing the users email.</returns>
-        ///// <remarks>Post for when email is getting verified.</remarks>
+        /// <returns>A redirect back to the change email page with either a success or error message.</returns>
+        /// <param name="model">The email view model for the view.</param>
+        /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("VerifyEmail")]
         public async Task<IActionResult> SendVerificationEmailAsync(EmailViewModel model)

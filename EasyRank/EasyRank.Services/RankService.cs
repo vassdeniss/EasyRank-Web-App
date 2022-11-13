@@ -7,8 +7,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+
+using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
@@ -27,15 +30,20 @@ namespace EasyRank.Services
     public class RankService : IRankService
     {
         private readonly IRepository repo;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RankService"/> class.
         /// Constructor for the rank service class.
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
-        public RankService(IRepository repo)
+        /// <param name="mapper">Instance of an AutoMapper.</param>
+        public RankService(
+            IRepository repo,
+            IMapper mapper)
         {
             this.repo = repo;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -45,22 +53,10 @@ namespace EasyRank.Services
         /// <returns>A collection of rank page service models.</returns>
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
         {
-            ICollection<RankPage> rankPages = await this.repo.AllReadonly<RankPage>()
-                .Include(rp => rp.CreatedByUser)
-                .ToListAsync();
-
-            return rankPages.Select(p => new RankPageServiceModel
-            {
-                Id = p.Id,
-                Image = p.Image,
-                ImageAlt = p.ImageAlt,
-                RankingTitle = p.RankingTitle,
-                CreatedOn = p.CreatedOn.ToString("dd MMMM yyyy"),
-                LikeCount = p.LikedBy.Count,
-                CreatedByUserName = p.CreatedByUser.UserName,
-                CommentCount = p.Comments.Count,
-            })
-            .ToList();
+            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+                await this.repo.AllReadonly<RankPage>()
+                    .Include(rp => rp.CreatedByUser)
+                    .ToListAsync());
         }
 
         /// <summary>
@@ -110,20 +106,9 @@ namespace EasyRank.Services
         /// <param name="userId">GUID used to search for the users rankings.</param>
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
-            ICollection<RankPage> rankPages = await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
-                .ToListAsync();
-
-            return rankPages.Select(rp => new RankPageServiceModel
-            {
-                RankingTitle = rp.RankingTitle,
-                Image = rp.Image,
-                ImageAlt = rp.ImageAlt,
-                CreatedOn = rp.CreatedOn.ToString("dd MMMM yyyy"),
-                LikeCount = rp.LikedBy.Count,
-                CreatedByUserName = rp.CreatedByUser.UserName,
-                CommentCount = rp.Comments.Count,
-            })
-            .ToList();
+            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+                await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
+                    .ToListAsync()); ;
         }
     }
 }
