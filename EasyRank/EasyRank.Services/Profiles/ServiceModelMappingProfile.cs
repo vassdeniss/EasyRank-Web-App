@@ -41,7 +41,9 @@ namespace EasyRank.Services.Profiles
                     mo => mo.MapFrom(
                         s => s.Comments.Count));
 
-            this.CreateMap<RankPage, RankPageServiceModelExtended>();
+            //this.CreateMap<RankPage, RankPageServiceModelExtended>();
+
+
         }
     }
 }

@@ -108,6 +108,7 @@ namespace EasyRank.Services
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
+                    .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync()); ;
         }
     }

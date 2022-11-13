@@ -12,6 +12,12 @@
 	    <title>EasyRank All Rankings</title>
 	    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+		
+		<style>
+			.row {
+				justify-content: center;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
@@ -30,7 +36,7 @@
 							@if (this.User.Identity?.IsAuthenticated ?? false)
 							{
 								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 										Rankings
 									</a>
 									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
@@ -47,7 +53,7 @@
 			</nav>
 		</header>
 
-	    <div class="container-fluid mx-4">
+	    <div class="container-fluid">
 	        <main role="main" class="pb-3">
 		        <div class="text-center row">
 			        @foreach (RankPageViewModel rank in this.Model)

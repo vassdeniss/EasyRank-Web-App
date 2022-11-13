@@ -6,14 +6,20 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.Contracts;
+using EasyRank.Services.Models;
 using EasyRank.Web.Models.Manage;
+using EasyRank.Web.Models.Rank;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +38,8 @@ namespace EasyRank.Web.Controllers
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
+        private readonly IMapper mapper;
+        private readonly IRankService rankService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageController"/> class.
@@ -39,14 +47,20 @@ namespace EasyRank.Web.Controllers
         /// <param name="userManager">The user manager for the controller.</param>
         /// <param name="signInManager">The sign in manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
+        /// <param name="mapper">Instance of an AutoMapper.</param>
+        /// <param name="rankService">Instance of the rank service.</param>
         public ManageController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMapper mapper,
+            IRankService rankService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
+            this.mapper = mapper;
+            this.rankService = rankService;
         }
 
         /// <summary>
@@ -456,6 +470,24 @@ namespace EasyRank.Web.Controllers
             this.TempData["StatusMessage"] = "Your password has been changed.";
 
             return this.RedirectToAction("ChangePassword");
+        }
+
+        [HttpGet]
+        [Route("MyRanks")]
+        public async Task<IActionResult> MyRanksAsync()
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+            }
+
+            ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsByUserAsync(user.Id);
+
+            ICollection<RankPageViewModel> model =
+                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+
+            return this.View(model);
         }
     }
 }

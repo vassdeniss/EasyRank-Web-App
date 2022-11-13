@@ -35,10 +35,12 @@ a:hover,
     line-height: 60px;
 }
 
+.btn-warning,
 .alert-warning {
     background-color: #d3a10b;
 }
 
+.btn-success,
 .alert-success {
     background-color: #29A829;
 }

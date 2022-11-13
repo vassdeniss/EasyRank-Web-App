@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EasyRank.Web.Models.Rank
 {
@@ -42,6 +43,7 @@ namespace EasyRank.Web.Models.Rank
         /// <summary>
         /// Gets or sets the like count of the ranking page.
         /// </summary>
+        [Display(Name = "Likes")]
         public int LikeCount { get; set; }
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace EasyRank.Web.Models.Rank
         /// <summary>
         /// Gets or sets the comment count for the ranking page.
         /// </summary>
+        [Display(Name = "Comments")]
         public int CommentCount { get; set; }
     }
 }
