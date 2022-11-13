@@ -7,7 +7,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace EasyRank.Web.Models
+namespace EasyRank.Web.Models.Account
 {
     /// <summary>
     /// The view model for when the user is logging in.
@@ -34,7 +34,6 @@ namespace EasyRank.Web.Models
         /// <summary>
         /// Gets or sets the return url of the login.
         /// </summary>
-        [UIHint("Hidden")]
         public string? ReturnUrl { get; set; }
     }
 }

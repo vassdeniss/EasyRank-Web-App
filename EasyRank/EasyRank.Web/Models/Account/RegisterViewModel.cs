@@ -7,7 +7,10 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace EasyRank.Web.Models
+using static EasyRank.Web.Models.ViewModelConstraints.RegisterConstraints;
+using static EasyRank.Web.Models.ViewModelConstraints.CommonConstraints;
+
+namespace EasyRank.Web.Models.Account
 {
     /// <summary>
     /// The view model for when the user is registering.
@@ -36,7 +39,7 @@ namespace EasyRank.Web.Models
         /// </summary>
         [Required]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password))]
+        [Compare(nameof(Password), ErrorMessage = ConfirmPasswordErrorMessage)]
         [Display(Name = "Confirm Password")]
         public string PasswordConfirm { get; set; } = null!;
 
@@ -44,7 +47,7 @@ namespace EasyRank.Web.Models
         /// Gets or sets the username of the user.
         /// </summary>
         [Required]
-        [StringLength(20, MinimumLength = 3)]
+        [StringLength(MaxUsernameLength, MinimumLength = MinUsernameLength)]
         [Display(Name = "Username")]
         public string Username { get; set; } = null!;
 
@@ -52,7 +55,7 @@ namespace EasyRank.Web.Models
         /// Gets or sets the first name of the user.
         /// </summary>
         /// <remarks>Optional.</remarks>
-        [StringLength(8)]
+        [StringLength(MaxFirstNameLength)]
         [Display(Name = "First Name (Optional)")]
         public string? FirstName { get; set; }
 
@@ -60,7 +63,7 @@ namespace EasyRank.Web.Models
         /// Gets or sets the last name of the user.
         /// </summary>
         /// <remarks>Optional.</remarks>
-        [StringLength(10)]
+        [StringLength(MaxLastNameLength)]
         [Display(Name = "Last Name (Optional)")]
         public string? LastName { get; set; }
     }

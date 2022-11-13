@@ -8,7 +8,7 @@
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
-using EasyRank.Web.Models;
+using EasyRank.Web.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

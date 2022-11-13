@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace EasyRank.Web.Models
+namespace EasyRank.Web.Models.Rank
 {
     /// <summary>
     /// The UI side model for the rank entry.

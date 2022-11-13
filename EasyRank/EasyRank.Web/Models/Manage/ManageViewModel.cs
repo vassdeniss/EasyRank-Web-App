@@ -7,7 +7,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using static EasyRank.Web.Models.ViewModelConstraints.ManageConstraints;
+using static EasyRank.Web.Models.ViewModelConstraints.CommonConstraints;
 
 namespace EasyRank.Web.Models.Manage
 {

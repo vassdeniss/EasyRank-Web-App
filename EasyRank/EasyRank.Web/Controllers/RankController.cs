@@ -13,7 +13,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
-using EasyRank.Web.Models;
+using EasyRank.Web.Models.Rank;
 
 using Microsoft.AspNetCore.Mvc;
 

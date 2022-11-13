@@ -8,7 +8,7 @@
 using AutoMapper;
 
 using EasyRank.Services.Models;
-using EasyRank.Web.Models;
+using EasyRank.Web.Models.Rank;
 
 namespace EasyRank.Web.Profiles
 {

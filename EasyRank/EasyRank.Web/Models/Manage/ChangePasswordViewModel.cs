@@ -8,6 +8,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using static EasyRank.Web.Models.ViewModelConstraints.ChangePasswordConstraints;
+using static EasyRank.Web.Models.ViewModelConstraints.CommonConstraints;
 
 namespace EasyRank.Web.Models.Manage
 {
