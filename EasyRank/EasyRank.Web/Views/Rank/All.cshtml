@@ -65,12 +65,18 @@
 						        <h6 class="mb-0">Created by: @rank.CreatedByUserName</h6>
 						        <p class="mb-0">Likes: @rank.LikeCount</p>
 						        <p class="mb-0">Comments: @rank.CommentCount</p>
-						        <p class="mb-0" style="font-size: 14px;">Created On: @rank.CreatedOn</p>
 					        </div>
-
-					        <form class="input-group-sm" asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@rank.Id">
-						        <input type="submit" value="View Ranking" class="fs-6 btn btn-success mb-3 p-2"/>
-					        </form>
+					        <div class="card-body">
+						        <a asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@rank.Id" class="card-link">View</a>
+						        @if (this.User.Identity?.Name == rank.CreatedByUserName)
+						        {
+							        <a asp-controller="Rank" asp-action="EditRanking" asp-route-rankId="@rank.Id" class="card-link">Edit</a>
+							        <a asp-controller="Rank" asp-action="DeleteRanking" asp-route-rankId="@rank.Id" class="card-link">Delete</a>
+						        }
+					        </div>
+					        <div class="card-footer text-muted" style="font-size: 14px; text-align: center;">
+								Created On: @rank.CreatedOn
+					        </div>
 				        </div>
 			        }
 		        </div>

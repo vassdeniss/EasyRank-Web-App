@@ -6,7 +6,7 @@
 @foreach (RankEntryViewModel entry in this.Model.Entries)
 {
 	<div class="card border-secondary" style="width: 100%; margin-bottom: 70px">
-		<img src="@entry.Image" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
+		<img src="@entry.Image" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 70%; height: 350px">
 		<div class="card-body">
 			<h3 class="card-title">#@entry.Placement<br/>@entry.Title</h3>
 			<p class="card-text">@entry.Description</p>

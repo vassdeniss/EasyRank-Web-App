@@ -59,7 +59,7 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>A view with a specific rank page.</returns>
         /// <param name="rankId">The GUID of the requested page.</param>
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> ViewRanking(Guid rankId)
         {
             RankPageServiceModelExtended serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
