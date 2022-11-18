@@ -3,13 +3,108 @@
 	ViewData["Title"] = this.Model.RankingTitle;
 }
 
+<style>
+	.card {
+		width: 80%;
+		margin-bottom: 70px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.comment {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.columnedFlex {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.author-avatar-empty,
+	.author-avatar {
+		width: 40px;
+		height: 40px;
+		object-fit: cover;
+		border-radius: 30px;
+	}
+
+	.author-avatar-empty {
+		min-height: 40px;
+		min-width: 40px;
+	}
+
+	p {
+		word-break: break-word;
+		white-space: normal;
+	}
+</style>
+
 @foreach (RankEntryViewModel entry in this.Model.Entries)
 {
-	<div class="card border-secondary" style="width: 100%; margin-bottom: 70px">
-		<img src="@entry.Image" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 70%; height: 350px">
+	<div class="card border-secondary">
+		<img src="@entry.Image" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
 		<div class="card-body">
 			<h3 class="card-title">#@entry.Placement<br/>@entry.Title</h3>
 			<p class="card-text">@entry.Description</p>
 		</div>
 	</div>
+}
+
+<h3 class="mb-3">Comments:</h3>
+
+@if (this.User.Identity!.IsAuthenticated)
+{
+	<form asp-controller="Comment" asp-action="Create" asp-route-rankId="@this.Model.Id">
+		@await this.Html.PartialAsync("_CommentFormPartial", new CommentFormModel())
+		@if (this.TempData.ContainsKey("Error"))
+		{
+			<span class="text-danger">@this.TempData["Error"]</span>
+		}
+		<button type="submit" class="w-100 btn btn-lg btn-primary my-3">Send</button>
+	</form>
+}
+else
+{
+	<div class="col-12">
+		<textarea class="form-control" rows="2" placeholder="Enter comment here..." disabled style="cursor: not-allowed;"></textarea>
+		<span class="text-danger"></span>
+	</div>
+	<a asp-controller="Account" asp-action="Login" style="display: inline-block;" class="mb-3">Log-In to post comments!</a>
+}
+
+@if (!this.Model.Comments.Any())
+{
+	<h4>None! Be the first one to comment!</h4>
+}
+else
+{
+	foreach (CommentViewModel comment in this.Model.Comments)
+	{
+		<div class="comment">
+			@if (comment.ProfilePicture!.Any())
+			{
+				<img class="author-avatar" src="data:image/*; base64, @Convert.ToBase64String(comment.ProfilePicture!)" />
+			}
+			else
+			{
+				<div class="author-avatar-empty"></div>
+			}
+			@if (comment.Username == this.Model.CreatedByUserName)
+			{
+				<div class="columnedFlex">
+					<h6 class="text-secondary">@comment.Username <b>(Author)</b> &#x2022; @comment.PostedOn</h6>
+					<p>@comment.Content</p>
+				</div>
+			}
+			else
+			{
+				<div class="columnedFlex">
+					<h6 class="text-success">@comment.Username &#x2022; @comment.PostedOn</h6>
+					<p>@comment.Content</p>
+				</div>
+			}
+		</div>
+	}
 }

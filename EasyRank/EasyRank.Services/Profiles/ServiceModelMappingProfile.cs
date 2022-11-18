@@ -43,7 +43,19 @@ namespace EasyRank.Services.Profiles
 
             //this.CreateMap<RankPage, RankPageServiceModelExtended>();
 
-
+            this.CreateMap<Comment, CommentServiceModel>()
+                .ForMember(
+                    d => d.ProfilePicture,
+                    mo => mo.MapFrom(
+                        s => s.CreatedByUser.ProfilePicture))
+                .ForMember(
+                    d => d.Username,
+                    mo => mo.MapFrom(
+                        s => s.CreatedByUser.UserName))
+                .ForMember(
+                    d => d.PostedOn,
+                    mo => mo.MapFrom(
+                        s => s.CreatedOn.ToString("dd/MM/yyyy")));
         }
     }
 }

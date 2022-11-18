@@ -50,6 +50,33 @@ namespace EasyRank.Web.Models
         }
 
         /// <summary>
+        /// Class for holding 'Comment' view model constraints.
+        /// </summary>
+        public class CommentConstraints
+        {
+            /// <summary>
+            /// The upper bound constant number for the length of the comment.
+            /// </summary>
+            public const int MaxCommentLength = 1000;
+
+            /// <summary>
+            /// The lower bound constant number for the length of the comment.
+            /// </summary>
+            public const int MinCommentLength = 30;
+
+            /// <summary>
+            /// The error message when the comment is empty.
+            /// </summary>
+            public const string CommentEmptyErrorMessage = "The comment cannot be empty.";
+
+            /// <summary>
+            /// The error message when the comments length does not satisfy the given length.
+            /// </summary>
+            public const string CommentLengthErrorMessage = 
+                "The comments must be at least {2} characters long so they add substantively to the discussion. Click the \"I like!\" button if you just want to say \"Good job!\".";
+        }
+
+        /// <summary>
         /// Class for holding common view model constraints.
         /// </summary>
         public class CommonConstraints

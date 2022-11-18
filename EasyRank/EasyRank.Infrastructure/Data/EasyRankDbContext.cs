@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace EasyRank.Infrastructure.Data
 {
     /// <summary>
@@ -49,6 +51,8 @@ namespace EasyRank.Infrastructure.Data
 
         private EasyRankUser GuestUser { get; set; }
 
+        private EasyRankUser GuestUserTwo { get; set; }
+
         private RankPage RankPage { get; set; }
 
         private RankEntry RankEntityStarWars { get; set; }
@@ -82,13 +86,28 @@ namespace EasyRank.Infrastructure.Data
                 FirstName = "Guest",
                 LastName = "User",
                 EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString("D")
+                SecurityStamp = Guid.NewGuid().ToString("D"),
             };
 
             this.GuestUser.PasswordHash = hasher.HashPassword(this.GuestUser, "guestPassword");
 
+            this.GuestUserTwo = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = "guestTwo",
+                NormalizedUserName = "GUESTTWO",
+                Email = "guestTwo@mail.com",
+                NormalizedEmail = "GUESTTWO@MAIL.COM",
+                FirstName = "GuestTwo",
+                LastName = "UserTwo",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+            };
+
+            this.GuestUserTwo.PasswordHash = hasher.HashPassword(this.GuestUserTwo, "guestPasswordTwo");
+
             builder.Entity<EasyRankUser>()
-                .HasData(this.GuestUser);
+                .HasData(this.GuestUser, this.GuestUserTwo);
 
             this.RankPage = new RankPage
             {
@@ -97,7 +116,7 @@ namespace EasyRank.Infrastructure.Data
                 ImageAlt = "Yoda",
                 RankingTitle = "Top 10 Best Movies of 2022",
                 CreatedOn = DateTime.Today,
-                CreatedByUserId = this.GuestUser.Id
+                CreatedByUserId = this.GuestUser.Id,
             };
 
             this.RankEntityStarWars = new RankEntry
@@ -130,16 +149,35 @@ namespace EasyRank.Infrastructure.Data
             builder.Entity<RankPage>()
                 .HasData(this.RankPage);
 
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
+            builder.Entity<Comment>()
+                .HasData(
+                    new Comment
+                    {
+                        Id = Guid.NewGuid(),
+                        Content =
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        CreatedOn = DateTime.Now.AddDays(-3),
+                        CreatedByUserId = this.GuestUser.Id,
+                        RankPageId = this.RankPage.Id,
+                    },
+                    new Comment
+                    {
+                        Id = Guid.NewGuid(),
+                        Content =
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        CreatedOn = DateTime.Now.AddDays(2),
+                        CreatedByUserId = this.GuestUser.Id,
+                        RankPageId = this.RankPage.Id,
+                    },
+                    new Comment
+                    {
+                        Id = Guid.NewGuid(),
+                        Content =
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        CreatedOn = DateTime.Now.AddDays(-10),
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        RankPageId = this.RankPage.Id,
+                    });
 
             builder.Entity<RankPage>()
                 .HasData(new RankPage
@@ -183,6 +221,17 @@ namespace EasyRank.Infrastructure.Data
                     RankingTitle = "Top 5 Favorite Characters",
                     CreatedOn = DateTime.Today,
                     CreatedByUserId = this.GuestUser.Id
+                });
+
+            builder.Entity<RankPage>()
+                .HasData(new RankPage
+                {
+                    Id = Guid.NewGuid(),
+                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                    ImageAlt = "Yoda",
+                    RankingTitle = "Top 5 Favorite Characters",
+                    CreatedOn = DateTime.Today,
+                    CreatedByUserId = this.GuestUserTwo.Id
                 });
 
             builder.Entity<RankPage>()

@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,6 +55,8 @@ namespace EasyRank.Services
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>()
                     .Include(rp => rp.CreatedByUser)
+                    .Include(rp => rp.Comments)
+                    .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync());
         }
 
@@ -68,12 +69,15 @@ namespace EasyRank.Services
         public async Task<RankPageServiceModelExtended> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+                .Include(rp => rp.Comments)
+                .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
                 .Include(rp => rp.CreatedByUser)
                 .FirstAsync();
 
             RankPageServiceModelExtended rankPageServiceModelExtended = new RankPageServiceModelExtended
             {
+                Id = rankGuid,
                 RankingTitle = rankPage.RankingTitle,
                 Image = rankPage.Image,
                 ImageAlt = rankPage.ImageAlt,
@@ -91,7 +95,9 @@ namespace EasyRank.Services
                 })
                 .OrderByDescending(e => e.Placement)
                 .ToList(),
-                Comments = new List<Comment>(), // TODO: Fix
+                Comments = this.mapper.Map<ICollection<CommentServiceModel>>(rankPage.Comments
+                        .OrderByDescending(c => c.CreatedOn))
+                    .ToList(),
                 LikedBy = new List<EasyRankUser>(), // TODO: Fix
             };
 
@@ -108,6 +114,7 @@ namespace EasyRank.Services
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
+                    .Include(rp => rp.Comments)
                     .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync()); ;
         }

@@ -1,0 +1,9 @@
+﻿@model CommentFormModel
+
+<div class="col-12">
+	<textarea asp-for="Content" class="form-control" rows="2" placeholder="Enter comment here..."></textarea>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

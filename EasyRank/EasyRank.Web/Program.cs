@@ -13,11 +13,11 @@ using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +54,7 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddScoped<IRepository, EasyRankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 WebApplication app = builder.Build();
 

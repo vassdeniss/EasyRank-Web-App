@@ -28,7 +28,7 @@ namespace EasyRank.Infrastructure.Models
             /// <summary>
             /// The upper bound constant number for the length of the comment.
             /// </summary>
-            public const int MaxCommentLength = 500;
+            public const int MaxCommentLength = 1000;
         }
 
         /// <summary>

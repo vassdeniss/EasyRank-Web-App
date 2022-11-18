@@ -7,7 +7,6 @@
 
 using System.Collections.Generic;
 
-using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 
 namespace EasyRank.Services.Models
@@ -28,8 +27,8 @@ namespace EasyRank.Services.Models
         public ICollection<EasyRankUser> LikedBy { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets the collection of users who commented on the rank page.
+        /// Gets or sets the collection of comment view models on the rank page.
         /// </summary>
-        public ICollection<Comment> Comments { get; set; } = null!;
+        public ICollection<CommentServiceModel> Comments { get; set; } = null!;
     }
 }

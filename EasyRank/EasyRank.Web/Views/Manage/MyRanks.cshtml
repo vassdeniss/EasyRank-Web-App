@@ -15,6 +15,7 @@
 					<th scope="col">Created On</th>
 					<th scope="col">Likes</th>
 					<th scope="col">Comments</th>
+					<th scope="col">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -25,6 +26,13 @@
 						<td>@rankPage.CreatedOn</td>
 						<td>@rankPage.LikeCount</td>
 						<td>@rankPage.CommentCount</td>
+						<td>
+							<a asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@rankPage.Id">View</a>
+							<span class="text-primary mx-3">|</span>
+							<a asp-controller="Rank" asp-action="EditRanking" asp-route-rankId="@rankPage.Id">Edit</a>
+							<span class="text-primary mx-3">|</span>
+							<a asp-controller="Rank" asp-action="DeleteRanking" asp-route-rankId="@rankPage.Id">Delete</a>
+						</td>
 					</tr>
 				}
 			</tbody>
