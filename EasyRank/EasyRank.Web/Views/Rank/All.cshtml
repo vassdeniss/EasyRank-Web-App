@@ -71,9 +71,9 @@
 						        @if (this.User.Identity?.Name == rank.CreatedByUserName)
 						        {
 							        <span class="text-primary mx-3">|</span>
-							        <a asp-controller="Rank" asp-action="EditRanking" asp-route-rankId="@rank.Id" class="card-link">Edit</a>
+							        <a asp-controller="Rank" asp-action="EditRanking" asp-route-rankRankPageId="@rank.Id" class="card-link">Edit</a>
 							        <span class="text-primary mx-3">|</span>
-							        <a asp-controller="Rank" asp-action="DeleteRanking" asp-route-rankId="@rank.Id" class="card-link">Delete</a>
+							        <a asp-controller="Rank" asp-action="DeleteRanking" asp-route-rankRankPageId="@rank.Id" class="card-link">Delete</a>
 						        }
 					        </div>
 					        <div class="card-footer text-muted" style="font-size: 14px; text-align: center;">

@@ -8,6 +8,8 @@
 using System;
 using System.Threading.Tasks;
 
+using EasyRank.Services.Models;
+
 namespace EasyRank.Services.Contracts
 {
     /// <summary>
@@ -26,5 +28,17 @@ namespace EasyRank.Services.Contracts
             string content,
             Guid createdByUserId,
             Guid rankPageId);
+
+        Task<CommentServiceModel?> GetCommentByIdAsync(Guid commentId);
+
+        Task EditCommentAsync(
+            Guid commentId,
+            string content);
+
+        Task DeleteCommentAsync(Guid commentId);
+
+        Task<bool> IsCurrentUserNameOwner(
+            Guid rankId,
+            Guid userId);
     }
 }

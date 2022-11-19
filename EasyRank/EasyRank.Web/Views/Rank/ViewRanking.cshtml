@@ -1,4 +1,5 @@
-﻿@model RankPageViewModelExtended
+﻿@using System.Security.Claims
+@model RankPageViewModelExtended
 @{
 	ViewData["Title"] = this.Model.RankingTitle;
 }
@@ -38,6 +39,13 @@
 	p {
 		word-break: break-word;
 		white-space: normal;
+		margin-bottom: 8px;
+	}
+
+	.actions-flex {
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 8px;
 	}
 </style>
 
@@ -71,7 +79,7 @@ else
 		<textarea class="form-control" rows="2" placeholder="Enter comment here..." disabled style="cursor: not-allowed;"></textarea>
 		<span class="text-danger"></span>
 	</div>
-	<a asp-controller="Account" asp-action="Login" style="display: inline-block;" class="mb-3">Log-In to post comments!</a>
+	<a asp-controller="Account" asp-action="Login" style="display: inline-block;" class="text-warning mb-3">Log-In to post comments!</a>
 }
 
 @if (!this.Model.Comments.Any())
@@ -91,20 +99,28 @@ else
 			{
 				<div class="author-avatar-empty"></div>
 			}
-			@if (comment.Username == this.Model.CreatedByUserName)
-			{
-				<div class="columnedFlex">
+			<div class="columnedFlex">
+				@if (comment.Username == this.Model.CreatedByUserName)
+				{
 					<h6 class="text-secondary">@comment.Username <b>(Author)</b> &#x2022; @comment.PostedOn</h6>
-					<p>@comment.Content</p>
-				</div>
-			}
-			else
-			{
-				<div class="columnedFlex">
+				}
+				else
+				{
 					<h6 class="text-success">@comment.Username &#x2022; @comment.PostedOn</h6>
-					<p>@comment.Content</p>
+				}
+				<p>@comment.Content</p>
+				<div class="actions-flex">
+					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name))
+					{
+						<a class="text-warning" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id" asp-route-rankId="@this.Model.Id">Edit</a>
+						<span class="text-primary mx-3">|</span>
+					}
+					@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+					{
+						<a class="text-warning" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id" asp-route-rankId="@this.Model.Id">Delete</a>
+					}
 				</div>
-			}
+			</div>
 		</div>
 	}
 }

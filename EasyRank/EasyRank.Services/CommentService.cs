@@ -8,9 +8,14 @@
 using System;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Services.Contracts;
+using EasyRank.Services.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
 {
@@ -21,15 +26,20 @@ namespace EasyRank.Services
     public class CommentService : ICommentService
     {
         private readonly IRepository repo;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentService"/> class.
         /// Constructor for the comment service class.
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
-        public CommentService(IRepository repo)
+        /// <param name="mapper">Instance of an AutoMapper.</param>
+        public CommentService(
+            IRepository repo,
+            IMapper mapper)
         {
             this.repo = repo;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -55,6 +65,41 @@ namespace EasyRank.Services
 
             await this.repo.AddAsync<Comment>(comment);
             await this.repo.SaveChangesAsync();
+        }
+
+        public async Task<CommentServiceModel?> GetCommentByIdAsync(Guid commentId)
+        {
+            return this.mapper.Map<CommentServiceModel>(
+                await this.repo.AllReadonly<Comment>(c => c.Id == commentId)
+                    .Include(c => c.CreatedByUser)
+                    .FirstOrDefaultAsync());
+        }
+
+        public async Task EditCommentAsync(Guid commentId, string content)
+        {
+            Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            comment.Content = content;
+
+            await this.repo.SaveChangesAsync();
+        }
+
+        public async Task DeleteCommentAsync(Guid commentId)
+        {
+            Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            comment.IsDeleted = true;
+
+            await this.repo.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsCurrentUserNameOwner(Guid rankId, Guid userId)
+        {
+            RankPage page = (await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankId)
+                .Include(rp => rp.CreatedByUser)
+                .FirstOrDefaultAsync())!;
+
+            return page.CreatedByUser.Id == userId;
         }
     }
 }

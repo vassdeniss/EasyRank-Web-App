@@ -158,8 +158,8 @@ namespace EasyRank.Infrastructure.Common
         }
 
         /// <summary>
-        /// Disposing the context when it is not neede
-        /// Don't have to call this method explicitely
+        /// Disposing the context when it is not needed
+        /// Don't have to call this method explicitly
         /// Leave it to the IoC container.
         /// </summary>
         public void Dispose()

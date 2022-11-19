@@ -1,0 +1,19 @@
+﻿@model CommentFormModelExtended
+@{
+	this.ViewData["Title"] = "Delete Comment";
+}
+
+<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+	<h4 class="alert-heading">Warning!</h4>
+	<p>
+		<strong>This will permanently delete your comment, and this cannot be recovered.</strong>
+	</p>
+</div>
+
+<form asp-controller="Comment" asp-action="Delete">
+	<textarea asp-for="Content" class="form-control" rows="2" disabled style="cursor: not-allowed;">@this.Model.Content</textarea>
+	<input type="hidden" asp-for="Id" value="@this.Model.Id" />
+	<input type="hidden" asp-for="RankPageId" value="@this.Model.RankPageId" />
+	<input type="hidden" asp-for="Content" value="@this.Model.Content" />
+	<button type="submit" class="w-100 btn btn-lg btn-primary my-3">Delete</button>
+</form>

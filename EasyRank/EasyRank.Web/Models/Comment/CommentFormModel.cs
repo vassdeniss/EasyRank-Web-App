@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 using static EasyRank.Web.Models.ViewModelConstraints.CommentConstraints;

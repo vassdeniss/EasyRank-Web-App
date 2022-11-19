@@ -96,6 +96,7 @@ namespace EasyRank.Services
                 .OrderByDescending(e => e.Placement)
                 .ToList(),
                 Comments = this.mapper.Map<ICollection<CommentServiceModel>>(rankPage.Comments
+                        .Where(c => c.IsDeleted == false)
                         .OrderByDescending(c => c.CreatedOn))
                     .ToList(),
                 LikedBy = new List<EasyRankUser>(), // TODO: Fix

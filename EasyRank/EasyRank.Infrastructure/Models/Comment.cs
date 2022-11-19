@@ -46,6 +46,13 @@ namespace EasyRank.Infrastructure.Models
         public DateTime CreatedOn { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a comment has been deleted.
+        /// </summary>
+        [Required]
+        [Comment("Gets or sets a value indicating whether a comment has been deleted.")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the guid of the user who created the comment.
         /// </summary>
         /// <remarks>Foreign key to the 'EasyRankUser' table.</remarks>

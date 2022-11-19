@@ -1,4 +1,4 @@
-﻿@*@inject SignInManager<IdentityUser> SignInManager
+﻿@*@inject SignInManager<RankPageIdentityUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }*@

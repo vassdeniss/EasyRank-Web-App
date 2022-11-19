@@ -1,0 +1,20 @@
+﻿@model CommentFormModelExtended
+@{
+	this.ViewData["Title"] = "Edit Comment";
+}
+
+<form asp-controller="Comment" asp-action="Edit">
+	<textarea asp-for="Content" class="form-control" rows="2" placeholder="Enter edited comment here..."></textarea>
+	<span asp-validation-for="Content" class="text-danger"></span>
+	@if (this.TempData.ContainsKey("Error"))
+	{
+		<span class="text-danger">@this.TempData["Error"]</span>
+	}
+	<input type="hidden" asp-for="Id" value="@this.Model.Id" />
+	<input type="hidden" asp-for="RankPageId" value="@this.Model.RankPageId" />
+	<button type="submit" class="w-100 btn btn-lg btn-primary my-3">Edit</button>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

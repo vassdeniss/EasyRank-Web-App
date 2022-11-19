@@ -55,10 +55,6 @@ namespace EasyRank.Infrastructure.Data
 
         private RankPage RankPage { get; set; }
 
-        private RankEntry RankEntityStarWars { get; set; }
-
-        private RankEntry RankEntityStarWarsTwo { get; set; }
-
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -119,35 +115,67 @@ namespace EasyRank.Infrastructure.Data
                 CreatedByUserId = this.GuestUser.Id,
             };
 
-            this.RankEntityStarWars = new RankEntry
-            {
-                Id = Guid.NewGuid(),
-                Placement = 10,
-                Title = "Star Wars",
-                ImageAlt = "Picture of star wars",
-                Description = "Good stuff",
-                RankPageId = this.RankPage.Id,
-            };
-
-            this.RankEntityStarWarsTwo = new RankEntry
-            {
-                Id = Guid.NewGuid(),
-                Placement = 9,
-                Title = "Star Wars2",
-                Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                ImageAlt = "Picture of star wars2",
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
-                RankPageId = this.RankPage.Id,
-            };
-
             builder.Entity<RankEntry>()
-                .HasData(this.RankEntityStarWars);
-
-            builder.Entity<RankEntry>()
-                .HasData(this.RankEntityStarWarsTwo);
+                .HasData(
+                    new RankEntry
+                    {
+                        Id = Guid.NewGuid(),
+                        Placement = 10,
+                        Title = "Star Wars",
+                        ImageAlt = "Picture of star wars",
+                        Description = "Good stuff",
+                        RankPageId = this.RankPage.Id,
+                    },
+                    new RankEntry
+                    {
+                        Id = Guid.NewGuid(),
+                        Placement = 9,
+                        Title = "Star Wars2",
+                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        ImageAlt = "Picture of star wars2",
+                        Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
+                        RankPageId = this.RankPage.Id,
+                    });
 
             builder.Entity<RankPage>()
-                .HasData(this.RankPage);
+                .HasData(
+                    this.RankPage,
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUser.Id,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUser.Id,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUser.Id
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                    });
 
             builder.Entity<Comment>()
                 .HasData(
@@ -159,6 +187,7 @@ namespace EasyRank.Infrastructure.Data
                         CreatedOn = DateTime.Now.AddDays(-3),
                         CreatedByUserId = this.GuestUser.Id,
                         RankPageId = this.RankPage.Id,
+                        IsDeleted = false,
                     },
                     new Comment
                     {
@@ -168,6 +197,7 @@ namespace EasyRank.Infrastructure.Data
                         CreatedOn = DateTime.Now.AddDays(2),
                         CreatedByUserId = this.GuestUser.Id,
                         RankPageId = this.RankPage.Id,
+                        IsDeleted = false,
                     },
                     new Comment
                     {
@@ -177,73 +207,8 @@ namespace EasyRank.Infrastructure.Data
                         CreatedOn = DateTime.Now.AddDays(-10),
                         CreatedByUserId = this.GuestUserTwo.Id,
                         RankPageId = this.RankPage.Id,
+                        IsDeleted = false,
                     });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUserTwo.Id
-                });
-
-            builder.Entity<RankPage>()
-                .HasData(new RankPage
-                {
-                    Id = Guid.NewGuid(),
-                    Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
-                    ImageAlt = "Yoda",
-                    RankingTitle = "Top 5 Favorite Characters",
-                    CreatedOn = DateTime.Today,
-                    CreatedByUserId = this.GuestUser.Id
-                });
         }
     }
 }
