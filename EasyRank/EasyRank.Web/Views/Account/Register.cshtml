@@ -13,35 +13,36 @@
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
-                <input asp-for="Email" class="form-control bg-dark text-bg-light" autocomplete="email" aria-required="true" />
+                <input asp-for="Email" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="email" aria-required="true" />
                 <label asp-for="Email" class="text-light"></label>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="Password" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
+                <input asp-for="Password" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
                 <label asp-for="Password" class="text-light"></label>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="PasswordConfirm" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
+                <input asp-for="PasswordConfirm" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
                 <label asp-for="PasswordConfirm" class="text-light"></label>
                 <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="Username" class="form-control bg-dark text-bg-light" autocomplete="username" aria-required="true" />
+                <input asp-for="Username" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="username" aria-required="true" />
                 <label asp-for="Username" class="text-light"></label>
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="FirstName" class="form-control bg-dark text-bg-light" autocomplete="first-name" />
+                <input asp-for="FirstName" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="first-name" />
                 <label asp-for="FirstName" class="text-light"></label>
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="LastName" class="form-control bg-dark text-bg-light" autocomplete="last-name" />
-                <label asp-for="LastName" class="text-light"></label>
-                <span asp-validation-for="LastName" class="text-danger"></span>
+	            <input asp-for="LastName" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="last-name" />
+	            <label asp-for="LastName" class="text-light"></label>
+	            <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+            <a asp-controller="Account" asp-action="Login" style="display: inline-block;" class="text-warning mb-3">Already have an account? Login now!</a>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>

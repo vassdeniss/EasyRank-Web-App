@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Linq;
+
 using AutoMapper;
 
 using EasyRank.Infrastructure.Models;
@@ -39,7 +41,7 @@ namespace EasyRank.Services.Profiles
                 .ForMember(
                     d => d.CommentCount,
                     mo => mo.MapFrom(
-                        s => s.Comments.Count));
+                        s => s.Comments.Count(c => c.IsDeleted == false)));
 
             //this.CreateMap<RankPage, RankPageServiceModelExtended>();
 

@@ -14,15 +14,16 @@
                 <input type="hidden" asp-for="ReturnUrl" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-floating">
-                    <input asp-for="Email" class="form-control bg-dark text-bg-light" autocomplete="email" aria-required="true" />
+                    <input asp-for="Email" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="email" aria-required="true" />
                     <label asp-for="Email" class="text-light"></label>
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-floating">
-                    <input asp-for="Password" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
-                    <label asp-for="Password" class="text-light"></label>
-                    <span asp-validation-for="Password" class="text-danger"></span>
+	                <input asp-for="Password" placeholder="holder" class="form-control bg-dark text-bg-light" autocomplete="new-password" aria-required="true" />
+	                <label asp-for="Password" class="text-light"></label>
+	                <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
+                <a asp-controller="Account" asp-action="Register" style="display: inline-block;" class="text-warning mb-3">Don't have an account? Register now!</a>
                 <div>
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                 </div>

@@ -15,6 +15,7 @@ using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 using EasyRank.Web.Models.Rank;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyRank.Web.Controllers
@@ -43,7 +44,9 @@ namespace EasyRank.Web.Controllers
         /// Method 'All' for the controller. Visualizes a page with all rankings from the database.
         /// </summary>
         /// <returns>A view with a collection of all rank pages.</returns>
+        /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> All()
         {
             ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsAsync();
@@ -59,7 +62,9 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>A view with a specific rank page.</returns>
         /// <param name="rankId">The GUID of the requested page.</param>
+        /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ViewRanking(Guid rankId)
         {
             RankPageServiceModelExtended serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);

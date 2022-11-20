@@ -22,20 +22,17 @@
 						<li class="nav-item">
 							<a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						</li>
-						@if (this.User.Identity?.IsAuthenticated ?? false)
-						{
-							<li class="nav-item dropdown">
+						<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									Rankings
 								</a>
 								<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
 									<li>
-										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
+										<a class="dropdown-item" asp-controller="Rank" asp-action="All">All Rankings</a>
 									</li>
 								</ul>
 							</li>
-						}
-					</ul>
+						</ul>
 					<partial name="_LoginPartial" />
 				</div>
 			</div>
