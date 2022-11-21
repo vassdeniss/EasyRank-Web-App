@@ -41,7 +41,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'All' for the controller. Visualizes a page with all rankings from the database.
+        /// Method 'All' for the controller.
         /// </summary>
         /// <returns>A view with a collection of all rank pages.</returns>
         /// <remarks>Get method. Guest access allowed.</remarks>
@@ -58,7 +58,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'ViewRanking' for the controller. Visualizes a page with the contents of a ranking.
+        /// Method 'ViewRanking' for the controller.
         /// </summary>
         /// <returns>A view with a specific rank page.</returns>
         /// <param name="rankId">The GUID of the requested page.</param>

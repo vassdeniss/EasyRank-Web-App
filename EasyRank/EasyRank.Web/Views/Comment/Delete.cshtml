@@ -13,7 +13,6 @@
 <form asp-controller="Comment" asp-action="Delete">
 	<textarea asp-for="Content" class="form-control" rows="2" disabled style="cursor: not-allowed;">@this.Model.Content</textarea>
 	<input type="hidden" asp-for="Id" value="@this.Model.Id" />
-	<input type="hidden" asp-for="RankPageId" value="@this.Model.RankPageId" />
 	<input type="hidden" asp-for="Content" value="@this.Model.Content" />
 	<button type="submit" class="w-100 btn btn-lg btn-primary my-3">Delete</button>
 </form>

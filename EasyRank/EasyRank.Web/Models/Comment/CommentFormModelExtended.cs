@@ -18,10 +18,5 @@ namespace EasyRank.Web.Models.Comment
         /// Gets or sets the comment GUID.
         /// </summary>
         public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the rank page GUID.
-        /// </summary>
-        public Guid RankPageId { get; set; }
     }
 }

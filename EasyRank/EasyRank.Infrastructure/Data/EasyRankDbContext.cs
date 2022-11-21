@@ -165,7 +165,7 @@ namespace EasyRank.Infrastructure.Data
                         ImageAlt = "Yoda",
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUser.Id
+                        CreatedByUserId = this.GuestUser.Id,
                     },
                     new RankPage
                     {

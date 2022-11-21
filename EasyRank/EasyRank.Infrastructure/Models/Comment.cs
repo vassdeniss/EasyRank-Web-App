@@ -18,7 +18,7 @@ using static EasyRank.Infrastructure.Models.DataConstraints.Comment;
 namespace EasyRank.Infrastructure.Models
 {
     /// <summary>
-    /// The database model for user created comemnts.
+    /// The database model for user created comments.
     /// </summary>
     [Comment("The 'Comment' model for the database.")]
     public class Comment

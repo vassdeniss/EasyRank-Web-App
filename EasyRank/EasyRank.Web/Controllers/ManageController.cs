@@ -140,12 +140,6 @@ namespace EasyRank.Web.Controllers
                 user.LastName = model.LastName;
             }
 
-            //if (model.Username == null)
-            //{
-            //    this.StatusMessage = "Error: Username is empty!";
-            //    return this.RedirectToPage();
-            //}
-
             string username = user.UserName;
             if (model.Username != username)
             {
@@ -472,6 +466,11 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("ChangePassword");
         }
 
+        /// <summary>
+        /// The my ranks action for the controller.
+        /// </summary>
+        /// <returns>A views showing all the rankings you as a user has made.</returns>
+        /// <remarks>Get method.</remarks>
         [HttpGet]
         [Route("MyRanks")]
         public async Task<IActionResult> MyRanksAsync()

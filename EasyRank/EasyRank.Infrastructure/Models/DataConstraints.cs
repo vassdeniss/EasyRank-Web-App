@@ -17,7 +17,15 @@ namespace EasyRank.Infrastructure.Models
         /// </summary>
         public class EasyRankUserConstraints
         {
+            /// <summary>
+            /// The upper bound constant number for the length of the first name.
+            /// </summary>
+            public const int MaxFirstNameLength = 8;
 
+            /// <summary>
+            /// The upper bound constant number for the length of the last name.
+            /// </summary>
+            public const int MaxLastNameLength = 10;
         }
 
         /// <summary>

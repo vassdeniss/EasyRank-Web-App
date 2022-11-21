@@ -5,11 +5,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Diagnostics;
+using System.Net;
 
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.Exceptions;
 using EasyRank.Web.Models;
 
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +36,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'Index' for the controller. Visualizes the home page of the app.
+        /// Method 'Index' for the controller.
         /// </summary>
         /// <returns>The home page view.</returns>
         public IActionResult Index()
@@ -67,12 +71,37 @@ namespace EasyRank.Web.Controllers
             return this.View();
         }
 
+        /// <summary>
+        /// Method 'Error' for the controller.
+        /// </summary>
+        /// <returns>An error page depending on the error.</returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            IExceptionHandlerPathFeature? exceptionHandlerPathFeature = this.HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            int statusCode = 0;
+            string exceptionMessage = string.Empty;
+            if (exceptionHandlerPathFeature?.Error is NotFoundException)
+            {
+                statusCode = (int)HttpStatusCode.NotFound;
+                exceptionMessage = "The requested data was not found on the server!";
+            }
+            else if (exceptionHandlerPathFeature?.Error is UnauthorizedUserException)
+            {
+                statusCode = (int)HttpStatusCode.Unauthorized;
+                exceptionMessage = "You do not have permission to execute this action!";
+            }
+            else
+            {
+                statusCode = (int)HttpStatusCode.InternalServerError;
+                exceptionMessage = "An error occurred while processing your request.";
+            }
+
             return this.View(new ErrorViewModel
             {
-                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+                ExceptionMessage = exceptionMessage,
+                StatusCode = statusCode,
             });
         }
     }

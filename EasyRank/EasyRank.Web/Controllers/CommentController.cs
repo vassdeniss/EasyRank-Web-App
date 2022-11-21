@@ -45,8 +45,15 @@ namespace EasyRank.Web.Controllers
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// The create action for the controller.
+        /// </summary>
+        /// <returns>Back to the page the user was on, either with a new successfully posted comment or an error message.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="rankId">The GUID which will be used to go back to the same page the user was.</param>
+        /// <param name="model">The CommentFormModel for validation.</param>
         [HttpPost]
-        public async Task<IActionResult> Create(Guid rankId, CommentFormModel model)
+        public async Task<IActionResult> CreateAsync(Guid rankId, CommentFormModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -73,37 +80,43 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
         }
 
+        /// <summary>
+        /// The edit action for the controller.
+        /// </summary>
+        /// <returns>
+        /// A view for comment editing with a filled extended comment form model.
+        /// 404 if the comment doesn't exist, 401 if the user is not the comments owner. </returns>
+        /// <remarks>Get method.</remarks>
+        /// <param name="commentId">The GUID used for retrieving the needed comment.</param>
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid commentId, Guid rankId)
+        public async Task<IActionResult> EditAsync(Guid commentId)
         {
-            CommentServiceModel? serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
-            if (serviceModel == null)
-            {
-                // BadRequest?
-                return this.NotFound();
-            }
+            await this.commentService.IsCurrentUserCommentOwner(
+                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                commentId);
+
+            CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
 
             CommentViewModel viewModel = this.mapper.Map<CommentViewModel>(serviceModel);
-            if (viewModel.Username != this.User.FindFirstValue(ClaimTypes.Name))
-            {
-                return this.Unauthorized();
-            }
 
             CommentFormModelExtended model = new CommentFormModelExtended
             {
                 Id = viewModel.Id,
-                RankPageId = rankId,
                 Content = viewModel.Content,
             };
 
             return this.View(model);
         }
 
+        /// <summary>
+        /// The edit action for the controller.
+        /// </summary>
+        /// <returns>The same page if the model was invalid, or back to the page the user was on.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The CommentFormModelExtended for validation.</param>
         [HttpPost]
-        public async Task<IActionResult> Edit(CommentFormModelExtended model)
+        public async Task<IActionResult> EditAsync(CommentFormModelExtended model)
         {
-            // TODO: Verify
-
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
@@ -117,33 +130,38 @@ namespace EasyRank.Web.Controllers
             }
 
             await this.commentService.EditCommentAsync(model.Id, sanitizedContent);
-            return this.RedirectToAction("ViewRanking", "Rank", new { rankId = model.RankPageId });
+            return this.RedirectToAction("ViewRanking", "Rank", new
+            {
+                rankId = await this.commentService.GetCommentPageId(model.Id),
+            });
         }
 
+        /// <summary>
+        /// The delete action for the controller.
+        /// </summary>
+        /// <returns>
+        /// A view for comment deleting with a filled extended comment form model.
+        /// 404 if the comment doesn't exist, 401 if the user is not the comments owner. </returns>
+        /// <remarks>Get method.</remarks>
+        /// <param name="commentId">The GUID used for retrieving the needed comment.</param>
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid rankId, Guid commentId)
+        public async Task<IActionResult> Delete(Guid commentId)
         {
-            CommentServiceModel? serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
-            if (serviceModel == null)
-            {
-                // BadRequest?
-                return this.NotFound();
-            }
+            await this.commentService.IsCurrentUserCommentOwner(
+                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                commentId);
 
-            string currentUserName = this.User.FindFirstValue(ClaimTypes.Name);
-            Guid currentUserId = Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await this.commentService.IsCurrentUserPageOwner(
+                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                commentId);
+
+            CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
 
             CommentViewModel viewModel = this.mapper.Map<CommentViewModel>(serviceModel);
-            if (viewModel.Username != currentUserName
-                && !await this.commentService.IsCurrentUserNameOwner(rankId, currentUserId))
-            {
-                return this.Unauthorized();
-            }
 
             CommentFormModelExtended model = new CommentFormModelExtended
             {
                 Id = viewModel.Id,
-                RankPageId = rankId,
                 Content = viewModel.Content,
             };
 
@@ -153,10 +171,11 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(CommentFormModelExtended model)
         {
-            // TODO: Verify
-
             await this.commentService.DeleteCommentAsync(model.Id);
-            return this.RedirectToAction("ViewRanking", "Rank", new { rankId = model.RankPageId });
+            return this.RedirectToAction("ViewRanking", "Rank", new
+            {
+                rankId = await this.commentService.GetCommentPageId(model.Id),
+            });
         }
 
         private string SanitizeString(string content)

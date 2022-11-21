@@ -43,8 +43,6 @@ namespace EasyRank.Services.Profiles
                     mo => mo.MapFrom(
                         s => s.Comments.Count(c => c.IsDeleted == false)));
 
-            //this.CreateMap<RankPage, RankPageServiceModelExtended>();
-
             this.CreateMap<Comment, CommentServiceModel>()
                 .ForMember(
                     d => d.ProfilePicture,

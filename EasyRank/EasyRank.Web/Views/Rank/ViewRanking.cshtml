@@ -1,7 +1,7 @@
 ﻿@using System.Security.Claims
 @model RankPageViewModelExtended
 @{
-	ViewData["Title"] = this.Model.RankingTitle;
+	this.ViewData["Title"] = this.Model.RankingTitle;
 }
 
 <style>
@@ -112,12 +112,12 @@ else
 				<div class="actions-flex">
 					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name))
 					{
-						<a class="text-warning" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id" asp-route-rankId="@this.Model.Id">Edit</a>
+						<a class="text-warning" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id">Edit</a>
 						<span class="text-primary mx-3">|</span>
 					}
 					@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
 					{
-						<a class="text-warning" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id" asp-route-rankId="@this.Model.Id">Delete</a>
+						<a class="text-warning" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id">Delete</a>
 					}
 				</div>
 			</div>

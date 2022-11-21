@@ -13,6 +13,7 @@ using AutoMapper;
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Services.Contracts;
+using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -42,14 +43,7 @@ namespace EasyRank.Services
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// Implementation of the CreateCommentAsync interface method
-        /// used for retrieving the content the user inputted, creating a comment and saving it to the database.
-        /// </summary>
-        /// <returns>Task (void).</returns>
-        /// <param name="content">The content of the comment.</param>
-        /// <param name="createdByUserId">GUID used to identify the user which posted the comment.</param>
-        /// <param name="rankPageId">GUID used to identify the rank page where the comment was posted.</param>
+        /// <inheritdoc />
         public async Task CreateCommentAsync(
             string content,
             Guid createdByUserId,
@@ -67,39 +61,85 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
-        public async Task<CommentServiceModel?> GetCommentByIdAsync(Guid commentId)
+        /// <inheritdoc />
+        public async Task<CommentServiceModel> GetCommentByIdAsync(Guid commentId)
         {
-            return this.mapper.Map<CommentServiceModel>(
+            CommentServiceModel serviceModel = this.mapper.Map<CommentServiceModel>(
                 await this.repo.AllReadonly<Comment>(c => c.Id == commentId)
                     .Include(c => c.CreatedByUser)
                     .FirstOrDefaultAsync());
+
+            return serviceModel ?? throw new NotFoundException();
         }
 
+        /// <inheritdoc />
         public async Task EditCommentAsync(Guid commentId, string content)
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            if (comment == null)
+            {
+                throw new NotFoundException();
+            }
 
             comment.Content = content;
 
             await this.repo.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task DeleteCommentAsync(Guid commentId)
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            if (comment == null)
+            {
+                throw new NotFoundException();
+            }
 
             comment.IsDeleted = true;
 
             await this.repo.SaveChangesAsync();
         }
 
-        public async Task<bool> IsCurrentUserNameOwner(Guid rankId, Guid userId)
+        public async Task IsCurrentUserCommentOwner(
+            Guid userId, 
+            Guid commentId)
         {
-            RankPage page = (await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankId)
-                .Include(rp => rp.CreatedByUser)
-                .FirstOrDefaultAsync())!;
+            Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
 
-            return page.CreatedByUser.Id == userId;
+            if (comment == null)
+            {
+                throw new NotFoundException();
+            }
+
+            if (comment.CreatedByUserId != userId)
+            {
+                throw new UnauthorizedUserException();
+            }
+        }
+
+        public async Task IsCurrentUserPageOwner(
+            Guid userId,
+            Guid commentId)
+        {
+            Comment comment = await this.repo.All<Comment>(c => c.Id == commentId)
+                .Include(c => c.RankPage)
+                .ThenInclude(rp => rp.CreatedByUser)
+                .FirstOrDefaultAsync() 
+                              ?? throw new NotFoundException();
+
+            if (comment.RankPage.CreatedByUser.Id != userId)
+            {
+                throw new UnauthorizedUserException();
+            }
+        }
+
+        public async Task<Guid> GetCommentPageId(Guid commentId)
+        {
+            Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            return comment?.RankPageId ?? throw new NotFoundException();
         }
     }
 }

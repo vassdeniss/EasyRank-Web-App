@@ -7,10 +7,19 @@
 
 namespace EasyRank.Web.Models
 {
+    /// <summary>
+    /// The model for displaying error messages.
+    /// </summary>
     public class ErrorViewModel
     {
-        public string? RequestId { get; set; }
+        /// <summary>
+        /// Gets or sets the exception message of the error.
+        /// </summary>
+        public string ExceptionMessage { get; set; } = null!;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
+        /// <summary>
+        /// Gets or sets the HTTP status code of the error.
+        /// </summary>
+        public int StatusCode { get; set; }
     }
 }

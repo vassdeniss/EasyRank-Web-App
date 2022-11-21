@@ -13,6 +13,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using static EasyRank.Infrastructure.Models.DataConstraints.EasyRankUserConstraints;
+
 namespace EasyRank.Infrastructure.Models.Accounts
 {
     /// <summary>
@@ -35,14 +37,14 @@ namespace EasyRank.Infrastructure.Models.Accounts
         /// <summary>
         /// Gets or sets the first name for a user.
         /// </summary>
-        [MaxLength(8)]
+        [MaxLength(MaxFirstNameLength)]
         [Comment("Gets or sets the first name for a user.")]
         public string? FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets the last name for a user.
         /// </summary>
-        [MaxLength(10)]
+        [MaxLength(MaxLastNameLength)]
         [Comment("Gets or sets the last name for a user.")]
         public string? LastName { get; set; }
 
