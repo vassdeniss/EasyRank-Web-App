@@ -1,0 +1,79 @@
+﻿@model RankPageFormModel
+
+<style>
+	#remove-img:hover {
+		color: white !important;
+	}
+</style>
+
+<h3>@this.ViewData["Title"]</h3>
+<form id="profile-form" method="post" enctype="multipart/form-data">
+	<div class="row">
+		<div class="col-md-8 mb-3">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-floating mb-3" style="margin-left: 0">
+				<input asp-for="RankingTitle" placeholder="holder" class="form-control form-title" />
+				<label asp-for="RankingTitle"></label>
+				<span asp-validation-for="RankingTitle" class="text-danger"></span>
+			</div>
+			<div class="form-floating mb-3" style="margin-left: 0">
+				<input asp-for="ImageAlt" placeholder="holder" class="form-control form-alt" />
+				<label asp-for="ImageAlt"></label>
+				<span asp-validation-for="ImageAlt" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Image" style="width: 100%; margin-bottom: 10px;"></label>
+				<input type="file"
+				       accept=".png,.jpg,.jpeg,.gif,.tif"
+				       asp-for="Image"
+				       id="img-input"
+				       class="form-control"
+				       onchange="document.getElementById('card-img').src = window.URL.createObjectURL(this.files[0]);
+document.getElementById('remove-img').style.display = 'inline-block';" />
+				<span asp-validation-for="Image" class="text-danger"></span>
+				@if (this.TempData.ContainsKey("Error"))
+				{
+					<span class="text-danger mt-3">@this.TempData["Error"]</span>
+				}
+			</div>
+			<input type="hidden" asp-for="Id" value="@this.Model.Id" />
+			<button type="submit" class="btn btn-primary my-3 me-3">@this.ViewData["ButtonText"]</button>
+			@if (this.Model.Image != null)
+			{
+				<a onclick="document.getElementById('card-img').src = '';
+document.getElementById('remove-img').style.display = 'none';
+document.getElementById('img-input').value = '';" id="remove-img" class="btn btn-primary">Remove Image</a>
+			}
+			else
+			{
+				<a onclick="document.getElementById('card-img').src = '';
+	document.getElementById('remove-img').style.display = 'none';
+	document.getElementById('img-input').value = '';" id="remove-img" class="btn btn-primary" style="display: none;">Remove Image</a>
+			}
+		</div>
+		<div class="col-md-4">
+			<div class="card border-secondary m-2 p-0" style="width: 15rem;">
+				@if (this.Model.Image != null)
+				{
+					<img id="card-img" class="card-img-top" style="object-fit: fill;" src="data:image/*;base64,@(Convert.ToBase64String(this.Model.Image))" alt="@this.Model.ImageAlt">
+				}
+				else
+				{
+					<img id="card-img" class="card-img-top" style="object-fit: fill;" src="" alt="@this.Model.ImageAlt">
+				}
+				<div class="card-body text-center">
+					<h5 class="card-title mt-1">@this.Model.RankingTitle</h5>
+					<p class="mb-0">Created by: User</p>
+					<p class="mb-0">Likes: 20</p>
+					<p class="mb-0">Comments: 15</p>
+				</div>
+				<div class="card-body text-center">
+					<a class="card-link">View</a>
+				</div>
+				<div class="card-footer text-muted" style="font-size: 14px; text-align: center;">
+					Created On: 01/01/0001
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

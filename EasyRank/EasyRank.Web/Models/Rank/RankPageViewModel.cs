@@ -21,9 +21,9 @@ namespace EasyRank.Web.Models.Rank
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the image link for a rank page.
+        /// Gets or sets the image for a rank page.
         /// </summary>
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
 
         /// <summary>
         /// Gets or sets the alternative text if the image is broken.

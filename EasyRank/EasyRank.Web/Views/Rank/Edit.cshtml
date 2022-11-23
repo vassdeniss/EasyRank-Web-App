@@ -1,0 +1,30 @@
+﻿@model RankPageFormModel
+@{
+	this.ViewData["Title"] = "Edit Ranking";
+	this.ViewData["ButtonText"] = "Edit";
+}
+
+<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+	<h4 class="alert-heading">Warning!</h4>
+	<p>
+		<strong>Don't forget to upload your cover image again!</strong>
+	</p>
+</div>
+
+@await this.Html.PartialAsync("_RankPageFormPartial", this.Model)
+
+@section Scripts {
+	<script>
+		$('.form-title').on('input',
+			function() {
+				$('.card-title').text($('.form-title').val());
+			});
+
+		$('.form-alt').on('input',
+			function() {
+				$('.card-img-top').prop('alt', $('.form-alt').val());
+			});
+	</script>
+	
+	<partial name="_ValidationScriptsPartial" />
+}

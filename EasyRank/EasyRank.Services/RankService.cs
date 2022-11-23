@@ -16,6 +16,7 @@ using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
+using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -61,12 +62,13 @@ namespace EasyRank.Services
         }
 
         /// <summary>
-        /// Implementation of the GetRankPageByGuidAsync interface method
+        /// Implementation of the GetExtendedRankPageByGuidAsync interface method
         /// used for retrieving a rank page from the database by its GUID.
         /// </summary>
-        /// <returns>An extended rank page service model.</returns>
+        /// <returns>A rank page service model.</returns>
+        /// <exception cref="NotFoundException">Throws the 'NotFoundException' if the rank page was not found.</exception>
         /// <param name="rankGuid">GUID used to search for the rank page.</param>
-        public async Task<RankPageServiceModelExtended> GetRankPageByGuidAsync(Guid rankGuid)
+        public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
                 .Include(rp => rp.Comments)
@@ -74,6 +76,47 @@ namespace EasyRank.Services
                 .Include(rp => rp.Entries)
                 .Include(rp => rp.CreatedByUser)
                 .FirstAsync();
+
+            if (rankPage == null)
+            {
+                throw new NotFoundException();
+            }
+
+            RankPageServiceModel rankPageServiceModel = new RankPageServiceModel
+            {
+                Id = rankGuid,
+                RankingTitle = rankPage.RankingTitle,
+                Image = rankPage.Image,
+                ImageAlt = rankPage.ImageAlt,
+                CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
+                LikeCount = rankPage.LikedBy.Count,
+                CreatedByUserName = rankPage.CreatedByUser.UserName,
+                CommentCount = rankPage.Comments.Count,
+            };
+
+            return rankPageServiceModel;
+        }
+
+        /// <summary>
+        /// Implementation of the GetExtendedRankPageByGuidAsync interface method
+        /// used for retrieving a (extended) rank page from the database by its GUID.
+        /// </summary>
+        /// <returns>An extended rank page service model.</returns>
+        /// <exception cref="NotFoundException">Throws the 'NotFoundException' if the rank page was not found.</exception>
+        /// <param name="rankGuid">GUID used to search for the rank page.</param>
+        public async Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid)
+        {
+            RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+                .Include(rp => rp.Comments)
+                .ThenInclude(c => c.CreatedByUser)
+                .Include(rp => rp.Entries)
+                .Include(rp => rp.CreatedByUser)
+                .FirstAsync();
+
+            if (rankPage == null)
+            {
+                throw new NotFoundException();
+            }
 
             RankPageServiceModelExtended rankPageServiceModelExtended = new RankPageServiceModelExtended
             {
@@ -117,7 +160,55 @@ namespace EasyRank.Services
                 await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
                     .Include(rp => rp.Comments)
                     .OrderByDescending(rp => rp.CreatedOn)
-                    .ToListAsync()); ;
+                    .ToListAsync());
+        }
+
+        public async Task CreateRankAsync(
+            byte[]? image,
+            string imageAlt,
+            string rankingTitle,
+            Guid userId)
+        {
+            RankPage page = new RankPage
+            {
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                CreatedByUserId = userId,
+            };
+
+            await this.repo.AddAsync<RankPage>(page);
+            await this.repo.SaveChangesAsync();
+        }
+
+        public async Task IsCurrentUserPageOwner(Guid userId, Guid pageId)
+        {
+            RankPage page = await this.repo.All<RankPage>(c => c.Id == pageId)
+                  .Include(rp => rp.CreatedByUser)
+                  .FirstOrDefaultAsync()
+                                ?? throw new NotFoundException();
+
+            if (page.CreatedByUser.Id != userId)
+            {
+                throw new UnauthorizedUserException();
+            }
+        }
+
+        public async Task EditRankAsync(Guid pageId, string rankingTitle, string imageAlt, byte[]? image)
+        {
+            RankPage page = await this.repo.GetByIdAsync<RankPage>(pageId);
+
+            if (page == null)
+            {
+                throw new NotFoundException();
+            }
+
+            page.RankingTitle = rankingTitle;
+            page.ImageAlt = imageAlt;
+            page.Image = image;
+
+            await this.repo.SaveChangesAsync();
         }
     }
 }

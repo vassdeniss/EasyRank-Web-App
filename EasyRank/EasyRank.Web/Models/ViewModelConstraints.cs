@@ -77,6 +77,42 @@ namespace EasyRank.Web.Models
         }
 
         /// <summary>
+        /// Class for holding the 'RankPage' constraints.
+        /// </summary>
+        public class RankPageConstraints
+        {
+            /// <summary>
+            /// The upper bound constant number for the rank title.
+            /// </summary>
+            public const int MaxRankTitleLength = 50;
+
+            /// <summary>
+            /// The upper bound constant number for the rank title.
+            /// </summary>
+            public const int MinRankTitleLength = 10;
+
+            /// <summary>
+            /// The error message when the rank title length does not satisfy the given length.
+            /// </summary>
+            public const string RankTitleErrorMessage = "The {0} must be at least {2} characters long.";
+
+            /// <summary>
+            /// The upper bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MaxImageAltLength = 50;
+
+            /// <summary>
+            /// The lower bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MinImageAltLength = 10;
+
+            /// <summary>
+            /// The error message when the image alt length does not satisfy the given length.
+            /// </summary>
+            public const string ImageAltErrorMessage = "The {0} must be at least {2} characters long.";
+        }
+
+        /// <summary>
         /// Class for holding common view model constraints.
         /// </summary>
         public class CommonConstraints

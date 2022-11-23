@@ -1,5 +1,4 @@
 ﻿@model ICollection<RankPageViewModel>
-
 @{
 	Layout = null;
 }
@@ -42,6 +41,7 @@
 									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
 										<li>
 											<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
+											<a class="dropdown-item" asp-controller="Rank" asp-action="Create">Create Rank</a>
 										</li>
 									</ul>
 								</li>
@@ -59,10 +59,18 @@
 			        @foreach (RankPageViewModel rank in this.Model)
 			        {
 				        <div class="card border-secondary m-2 p-0" style="width: 15rem;">
-					        <img class="card-img-top" style="object-fit: fill;" src="@rank.Image" alt="@rank.ImageAlt">
+							@if (rank.Image != null)
+							{
+								<img class="card-img-top" style="object-fit: fill;" src="data:image/*;base64,@(Convert.ToBase64String(rank.Image))" alt="@rank.ImageAlt">
+							}
+							else
+							{
+								<img class="card-img-top" style="object-fit: fill;" src="" alt="@rank.ImageAlt">
+
+							}
 					        <div class="card-body">
 						        <h5 class="card-title mt-1">@rank.RankingTitle</h5>
-						        <h6 class="mb-0">Created by: @rank.CreatedByUserName</h6>
+						        <p class="mb-0">Created by: @rank.CreatedByUserName</p>
 						        <p class="mb-0">Likes: @rank.LikeCount</p>
 						        <p class="mb-0">Comments: @rank.CommentCount</p>
 					        </div>
@@ -77,7 +85,7 @@
 						        }
 					        </div>
 					        <div class="card-footer text-muted" style="font-size: 14px; text-align: center;">
-								Created On: @rank.CreatedOn
+						        Created On: @rank.CreatedOn
 					        </div>
 				        </div>
 			        }

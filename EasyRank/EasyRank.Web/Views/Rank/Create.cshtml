@@ -1,0 +1,23 @@
+﻿@model RankPageFormModel
+@{
+	this.ViewData["Title"] = "Create Ranking";
+	this.ViewData["ButtonText"] = "Create";
+}
+
+@await this.Html.PartialAsync("_RankPageFormPartial", this.Model)
+
+@section Scripts {
+	<script>
+		$('.form-title').on('input',
+			function() {
+				$('.card-title').text($('.form-title').val());
+			});
+
+		$('.form-alt').on('input',
+			function() {
+				$('.card-img-top').prop('alt', $('.form-alt').val());
+			});
+	</script>
+
+	<partial name="_ValidationScriptsPartial" />
+}

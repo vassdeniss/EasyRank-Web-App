@@ -108,7 +108,7 @@ namespace EasyRank.Infrastructure.Data
             this.RankPage = new RankPage
             {
                 Id = Guid.NewGuid(),
-                Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                Image = null,
                 ImageAlt = "Yoda",
                 RankingTitle = "Top 10 Best Movies of 2022",
                 CreatedOn = DateTime.Today,
@@ -143,7 +143,7 @@ namespace EasyRank.Infrastructure.Data
                     new RankPage
                     {
                         Id = Guid.NewGuid(),
-                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        Image = null,
                         ImageAlt = "Yoda",
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
@@ -152,7 +152,7 @@ namespace EasyRank.Infrastructure.Data
                     new RankPage
                     {
                         Id = Guid.NewGuid(),
-                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        Image = null,
                         ImageAlt = "Yoda",
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
@@ -161,7 +161,7 @@ namespace EasyRank.Infrastructure.Data
                     new RankPage
                     {
                         Id = Guid.NewGuid(),
-                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        Image = null,
                         ImageAlt = "Yoda",
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
@@ -170,7 +170,7 @@ namespace EasyRank.Infrastructure.Data
                     new RankPage
                     {
                         Id = Guid.NewGuid(),
-                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        Image = null,
                         ImageAlt = "Yoda",
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,

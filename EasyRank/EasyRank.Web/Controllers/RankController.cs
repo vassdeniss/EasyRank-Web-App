@@ -7,15 +7,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
+using EasyRank.Web.Models.Comment;
 using EasyRank.Web.Models.Rank;
 
+using Ganss.Xss;
+
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyRank.Web.Controllers
@@ -47,7 +54,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> AllAsync()
         {
             ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsAsync();
 
@@ -58,20 +65,138 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'ViewRanking' for the controller.
+        /// Method 'ViewRankingAsync' for the controller.
         /// </summary>
         /// <returns>A view with a specific rank page.</returns>
         /// <param name="rankId">The GUID of the requested page.</param>
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ViewRanking(Guid rankId)
+        public async Task<IActionResult> ViewRankingAsync(Guid rankId)
         {
-            RankPageServiceModelExtended serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
+            RankPageServiceModelExtended serviceModel = await this.rankService.GetExtendedRankPageByGuidAsync(rankId);
 
             RankPageViewModelExtended model = this.mapper.Map<RankPageViewModelExtended>(serviceModel);
 
             return this.View(model);
+        }
+
+        [HttpGet]
+        public IActionResult CreateAsync()
+        {
+            RankPageFormModel model = new RankPageFormModel();
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(RankPageFormModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            string sanitizedTitle = this.SanitizeString(model.RankingTitle);
+            string sanitizedAltText = this.SanitizeString(model.ImageAlt);
+            if (string.IsNullOrEmpty(sanitizedTitle) || string.IsNullOrEmpty(sanitizedAltText))
+            {
+                this.TempData["Error"] = "Please don't try to XSS :)";
+                return this.View(model);
+            }
+
+            Guid userId = Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            byte[]? image = null;
+            if (this.Request.Form.Files.Count > 0)
+            {
+                IFormFile file = this.Request.Form.Files.First();
+
+                string[] acceptedExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".tif" };
+
+                if (!acceptedExtensions.Contains(Path.GetExtension(file.FileName)))
+                {
+                    this.TempData["Error"] = "Error: Unsupported file!";
+                    return this.View(model);
+                }
+
+                using MemoryStream memoryStream = new MemoryStream();
+
+                await file.CopyToAsync(memoryStream);
+                image = memoryStream.ToArray();
+            }
+
+            await this.rankService.CreateRankAsync(image, sanitizedAltText, sanitizedTitle, userId);
+
+            return this.RedirectToAction("All");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditAsync(Guid pageId)
+        {
+            await this.rankService.IsCurrentUserPageOwner(
+                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                pageId);
+
+            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(pageId);
+
+            RankPageViewModel viewModel = this.mapper.Map<RankPageViewModel>(serviceModel);
+
+            RankPageFormModel model = new RankPageFormModel
+            {
+                Id = pageId,
+                Image = viewModel.Image,
+                ImageAlt = viewModel.ImageAlt,
+                RankingTitle = viewModel.RankingTitle,
+            };
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(RankPageFormModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            string sanitizedTitle = this.SanitizeString(model.RankingTitle);
+            string sanitizedAltText = this.SanitizeString(model.ImageAlt);
+            if (string.IsNullOrEmpty(sanitizedTitle) || string.IsNullOrEmpty(sanitizedAltText))
+            {
+                this.TempData["Error"] = "Please don't try to XSS :)";
+                return this.View(model);
+            }
+
+            byte[]? image = null;
+            if (this.Request.Form.Files.Count > 0)
+            {
+                IFormFile file = this.Request.Form.Files.First();
+
+                string[] acceptedExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".tif" };
+
+                if (!acceptedExtensions.Contains(Path.GetExtension(file.FileName)))
+                {
+                    this.TempData["Error"] = "Error: Unsupported file!";
+                    return this.View(model);
+                }
+
+                using MemoryStream memoryStream = new MemoryStream();
+
+                await file.CopyToAsync(memoryStream);
+                image = memoryStream.ToArray();
+            }
+
+            await this.rankService.EditRankAsync(model.Id, sanitizedTitle, sanitizedAltText, image);
+            return this.RedirectToAction("MyRanks", "Manage");
+        }
+
+        private string SanitizeString(string content)
+        {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
+
+            return sanitizer.Sanitize(content);
         }
     }
 }

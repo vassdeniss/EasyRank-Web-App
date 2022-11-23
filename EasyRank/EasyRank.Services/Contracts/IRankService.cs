@@ -29,7 +29,14 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>Service model.</returns>
         /// <param name="rankGuid">The GUID to be used with the method.</param>
-        Task<RankPageServiceModelExtended> GetRankPageByGuidAsync(Guid rankGuid);
+        Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid);
+
+        /// <summary>
+        /// Interface declaration for method.
+        /// </summary>
+        /// <returns>Service model.</returns>
+        /// <param name="rankGuid">The GUID to be used with the method.</param>
+        Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid);
 
         /// <summary>
         /// Interface declaration for method.
@@ -37,5 +44,21 @@ namespace EasyRank.Services.Contracts
         /// <returns>Collection of service model.</returns>
         /// <param name="userId">The GUID to be used with the method.</param>
         Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId);
+
+        Task CreateRankAsync(
+            byte[]? image,
+            string imageAlt,
+            string rankingTitle,
+            Guid userId);
+
+        Task IsCurrentUserPageOwner(
+            Guid userId,
+            Guid pageId);
+
+        Task EditRankAsync(
+            Guid pageId,
+            string rankingTitle,
+            string imageAlt,
+            byte[]? image);
     }
 }
