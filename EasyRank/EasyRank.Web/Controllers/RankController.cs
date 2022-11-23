@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 using EasyRank.Web.Claims;
@@ -106,8 +107,7 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            Guid userId = Guid.Parse(this.User.
-                );
+            Guid userId = this.User.Id();
 
             byte[]? image = null;
             if (this.Request.Form.Files.Count > 0)
@@ -192,6 +192,23 @@ namespace EasyRank.Web.Controllers
 
             await this.rankService.EditRankAsync(model.Id, sanitizedTitle, sanitizedAltText, image);
             return this.RedirectToAction("MyRanks", "Manage");
+        }
+
+        /// <summary>
+        /// The 'EditMenu' action for the controller.
+        /// </summary>
+        /// <returns>A views showing all the rankings you as a user has made (for editing).</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public async Task<IActionResult> EditMenu()
+        {
+            ICollection<RankPageServiceModel> serviceModel =
+                await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
+
+            ICollection<RankPageViewModel> model =
+                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+
+            return this.View(model);
         }
 
         private string SanitizeString(string content)

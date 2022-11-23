@@ -467,7 +467,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The my ranks action for the controller.
+        /// The 'MyRanks' action for the controller.
         /// </summary>
         /// <returns>A views showing all the rankings you as a user has made.</returns>
         /// <remarks>Get method.</remarks>
