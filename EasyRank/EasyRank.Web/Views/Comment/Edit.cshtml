@@ -1,19 +1,7 @@
 ﻿@model CommentFormModelExtended
 @{
 	this.ViewData["Title"] = "Edit Comment";
+	this.ViewData["ButtonType"] = "Edit";
 }
 
-<form asp-controller="Comment" asp-action="Edit">
-	<textarea asp-for="Content" class="form-control" rows="2" placeholder="Enter edited comment here..."></textarea>
-	<span asp-validation-for="Content" class="text-danger"></span>
-	@if (this.TempData.ContainsKey("Error"))
-	{
-		<span class="text-danger">@this.TempData["Error"]</span>
-	}
-	<input type="hidden" asp-for="Id" value="@this.Model.Id" />
-	<button type="submit" class="w-100 btn btn-lg btn-primary my-3">Edit</button>
-</form>
-
-@section Scripts {
-	<partial name="_ValidationScriptsPartial" />
-}
+@await this.Html.PartialAsync("_CommentFormModel", this.Model)

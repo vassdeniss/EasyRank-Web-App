@@ -1,0 +1,35 @@
+﻿@model CommentFormModelExtended
+
+@if ((string)this.ViewData["ButtonType"]! == "Delete")
+{
+	<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+		<h4 class="alert-heading">Warning!</h4>
+		<p>
+			<strong>This will permanently delete your comment, and this cannot be recovered.</strong>
+		</p>
+	</div>
+}
+
+<h2 class="text-center">@this.ViewData["Title"]</h2>
+<form asp-controller="Comment" asp-action="Edit">
+	@if ((string)this.ViewData["ButtonType"]! == "Edit")
+	{
+		<textarea asp-for="Content" class="form-control" rows="2" placeholder="Enter edited comment here..."></textarea>
+		<span asp-validation-for="Content" class="text-danger"></span>
+		@if (this.TempData.ContainsKey("Error"))
+		{
+			<span class="text-danger">@this.TempData["Error"]</span>
+		}
+	}
+	else
+	{
+		<textarea asp-for="Content" class="form-control" rows="2" disabled style="cursor: not-allowed;">@this.Model.Content</textarea>
+		<input type="hidden" asp-for="Content" value="@this.Model.Content" />
+	}
+	<input type="hidden" asp-for="Id" value="@this.Model.Id" />
+	<button type="submit" class="w-100 btn btn-lg btn-primary my-3">@this.ViewData["ButtonType"]</button>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
