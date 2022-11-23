@@ -18,6 +18,7 @@ using AutoMapper;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
+using EasyRank.Web.Claims;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
 
@@ -64,7 +65,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The index action for the controller.
+        /// The 'Index' action for the controller.
         /// </summary>
         /// <returns>A view for changing basic user account settings.</returns>
         /// <remarks>Get method.</remarks>
@@ -73,14 +74,9 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             string userName = await this.userManager.GetUserNameAsync(user);
             //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
-
             string firstName = user.FirstName!;
             string lastName = user.LastName!;
             byte[] profilePicture = user.ProfilePicture!;
@@ -97,20 +93,16 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The index action for the controller.
+        /// The 'Index' action for the controller.
         /// </summary>
         /// <returns>Redirects to the same page with either a success / failure message.</returns>
-        /// <param name="model">The manage view model for the view.</param>
+        /// <param name="model">The 'Manage' view model for the view.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> IndexAsync(ManageViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             if (!this.ModelState.IsValid)
             {
@@ -180,7 +172,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The delete profile picture action for the controller.
+        /// The 'DeleteProfilePicture' action for the controller.
         /// </summary>
         /// <returns>Redirects to the same page with the profile picture deleted.</returns>
         /// <remarks>Post method.</remarks>
@@ -189,10 +181,6 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> DeleteProfilePictureAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             user.ProfilePicture = null;
 
@@ -205,28 +193,25 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The delete account action for the controller.
+        /// The 'DeleteAccount' action for the controller.
         /// </summary>
         /// <returns>A view for deleting the users account.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
         [Route("DeleteAccount")]
-        public async Task<IActionResult> DeleteAccountAsync()
+        public IActionResult DeleteAccountAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
-
+            DeleteAccountViewModel model = new DeleteAccountViewModel();
+            
             //RequirePassword = await this.userManager.HasPasswordAsync(user);
-            return this.View();
+
+            return this.View(model);
         }
 
         /// <summary>
-        /// The delete account action for the controller.
+        /// The 'DeleteAccount' action for the controller.
         /// </summary>
-        /// <returns>The home view after the user has been deleted.</returns>
+        /// <returns>The 'Home' view after the user has been deleted.</returns>
         /// <param name="model">The delete account view model for the view.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
@@ -234,10 +219,6 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             //RequirePassword = await this.userManager.HasPasswordAsync(user);
             //if (RequirePassword)
@@ -396,19 +377,15 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The change password action for the controller.
+        /// The 'ChangePassword' action for the controller.
         /// </summary>
-        /// <returns>A change password view for changing the users password.</returns>
+        /// <returns>A 'ChangePassword' view for changing the users password.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
         [Route("ChangePassword")]
-        public async Task<IActionResult> ChangePasswordAsync()
+        public IActionResult ChangePasswordAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
+            ChangePasswordViewModel model = new ChangePasswordViewModel();
 
             //bool hasPassword = await this.userManager.HasPasswordAsync(user);
             //if (!hasPassword)
@@ -416,14 +393,14 @@ namespace EasyRank.Web.Controllers
             //    return this.RedirectToPage("./SetPassword");
             //}
 
-            return this.View();
+            return this.View(model);
         }
 
         /// <summary>
-        /// The change password action for the controller.
+        /// The 'ChangePassword' action for the controller.
         /// </summary>
         /// <returns>A redirect back to the change password page with either a success or error message.</returns>
-        /// <param name="model">The change password view model for the view.</param>
+        /// <param name="model">The 'ChangePassword' view model for the view.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
         [Route("ChangePassword")]
@@ -431,6 +408,12 @@ namespace EasyRank.Web.Controllers
         {
             if (!this.ModelState.IsValid)
             {
+                return this.View(model);
+            }
+
+            if (model.OldPassword == model.NewPassword)
+            {
+                this.TempData["StatusMessage"] = "Error: Password is the same!";
                 return this.View();
             }
 
@@ -438,12 +421,6 @@ namespace EasyRank.Web.Controllers
             if (user == null)
             {
                 return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
-
-            if (model.OldPassword == model.NewPassword)
-            {
-                this.TempData["StatusMessage"] = "Error: Password is the same!";
-                return this.View();
             }
 
             IdentityResult changePasswordResult = await this.userManager.ChangePasswordAsync(user,
@@ -456,7 +433,7 @@ namespace EasyRank.Web.Controllers
                     this.ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                return this.View();
+                return this.View(model);
             }
 
             await this.signInManager.RefreshSignInAsync(user);
@@ -475,13 +452,8 @@ namespace EasyRank.Web.Controllers
         [Route("MyRanks")]
         public async Task<IActionResult> MyRanksAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
-
-            ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsByUserAsync(user.Id);
+            ICollection<RankPageServiceModel> serviceModel =
+                await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
 
             ICollection<RankPageViewModel> model =
                 this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);

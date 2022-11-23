@@ -51,6 +51,7 @@ namespace EasyRank.Services
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>()
+                    .Where(rp => rp.IsDeleted == false)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
                     .OrderByDescending(rp => rp.CreatedOn)
@@ -61,6 +62,7 @@ namespace EasyRank.Services
         public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+                .Where(rp => rp.IsDeleted == false)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
@@ -79,6 +81,7 @@ namespace EasyRank.Services
         public async Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+                .Where(rp => rp.IsDeleted == false)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
@@ -125,6 +128,7 @@ namespace EasyRank.Services
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
+                    .Where(rp => rp.IsDeleted == false)
                     .Include(rp => rp.Comments)
                     .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync());
@@ -151,12 +155,13 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserPageOwner(Guid userId, Guid pageId)
+        public async Task IsCurrentUserPageOwner(Guid userId, Guid rankId)
         {
-            RankPage page = await this.repo.All<RankPage>(c => c.Id == pageId)
-                  .Include(rp => rp.CreatedByUser)
-                  .FirstOrDefaultAsync()
-                                ?? throw new NotFoundException();
+            RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
+                        .Where(rp => rp.IsDeleted == false)
+                        .Include(rp => rp.CreatedByUser)
+                        .FirstOrDefaultAsync()
+                                    ?? throw new NotFoundException();
 
             if (page.CreatedByUser.Id != userId)
             {
@@ -165,11 +170,11 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task EditRankAsync(Guid pageId, string rankingTitle, string imageAlt, byte[]? image)
+        public async Task EditRankAsync(Guid rankId, string rankingTitle, string imageAlt, byte[]? image)
         {
-            RankPage page = await this.repo.GetByIdAsync<RankPage>(pageId);
+            RankPage page = await this.repo.GetByIdAsync<RankPage>(rankId);
 
-            if (page == null)
+            if (page == null || page.IsDeleted)
             {
                 throw new NotFoundException();
             }
@@ -177,6 +182,21 @@ namespace EasyRank.Services
             page.RankingTitle = rankingTitle;
             page.ImageAlt = imageAlt;
             page.Image = image;
+
+            await this.repo.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteRankAsync(Guid rankId)
+        {
+            RankPage page = await this.repo.GetByIdAsync<RankPage>(rankId);
+
+            if (page == null || page.IsDeleted)
+            {
+                throw new NotFoundException();
+            }
+
+            page.IsDeleted = true;
 
             await this.repo.SaveChangesAsync();
         }

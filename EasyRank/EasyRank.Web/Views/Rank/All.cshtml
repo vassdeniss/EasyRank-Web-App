@@ -43,6 +43,7 @@
 											<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
 											<a class="dropdown-item" asp-controller="Rank" asp-action="Create">Create Rank</a>
 											<a class="dropdown-item" asp-controller="Rank" asp-action="EditMenu">Edit Rank</a>
+											<a class="dropdown-item" asp-controller="Rank" asp-action="DeleteMenu">Delete Rank</a>
 										</li>
 									</ul>
 								</li>
@@ -80,9 +81,9 @@
 						        @if (this.User.Identity?.Name == rank.CreatedByUserName)
 						        {
 							        <span class="text-primary mx-3">|</span>
-							        <a asp-controller="Rank" asp-action="Edit" asp-route-pageId="@rank.Id" class="card-link">Edit</a>
+							        <a asp-controller="Rank" asp-action="Edit" asp-route-rankId="@rank.Id" class="card-link">Edit</a>
 							        <span class="text-primary mx-3">|</span>
-							        <a asp-controller="Rank" asp-action="DeleteRanking" asp-route-rankRankPageId="@rank.Id" class="card-link">Delete</a>
+									<a asp-controller="Rank" asp-action="Delete" asp-route-rankId="@rank.Id" class="card-link">Delete</a>
 						        }
 					        </div>
 					        <div class="card-footer text-muted" style="font-size: 14px; text-align: center;">

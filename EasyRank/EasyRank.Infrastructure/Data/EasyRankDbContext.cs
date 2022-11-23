@@ -113,6 +113,7 @@ namespace EasyRank.Infrastructure.Data
                 RankingTitle = "Top 10 Best Movies of 2022",
                 CreatedOn = DateTime.Today,
                 CreatedByUserId = this.GuestUser.Id,
+                IsDeleted = false,
             };
 
             builder.Entity<RankEntry>()
@@ -148,6 +149,7 @@ namespace EasyRank.Infrastructure.Data
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
                         CreatedByUserId = this.GuestUser.Id,
+                        IsDeleted = false,
                     },
                     new RankPage
                     {
@@ -157,6 +159,7 @@ namespace EasyRank.Infrastructure.Data
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
                         CreatedByUserId = this.GuestUser.Id,
+                        IsDeleted = false,
                     },
                     new RankPage
                     {
@@ -166,6 +169,7 @@ namespace EasyRank.Infrastructure.Data
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
                         CreatedByUserId = this.GuestUser.Id,
+                        IsDeleted = false,
                     },
                     new RankPage
                     {
@@ -175,6 +179,7 @@ namespace EasyRank.Infrastructure.Data
                         RankingTitle = "Top 5 Favorite Characters",
                         CreatedOn = DateTime.Today,
                         CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
                     });
 
             builder.Entity<Comment>()

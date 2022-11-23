@@ -72,6 +72,13 @@ namespace EasyRank.Infrastructure.Models
         public DateTime CreatedOn { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a rank page has been deleted.
+        /// </summary>
+        [Required]
+        [Comment("Gets or sets a value indicating whether a rank page has been deleted.")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the collection of users who liked this ranking page.
         /// </summary>
         /// <remarks>Navigational property.</remarks>

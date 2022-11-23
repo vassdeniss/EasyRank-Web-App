@@ -134,19 +134,19 @@ namespace EasyRank.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditAsync(Guid pageId)
+        public async Task<IActionResult> EditAsync(Guid rankId)
         {
             await this.rankService.IsCurrentUserPageOwner(
                 this.User.Id(),
-                pageId);
+                rankId);
 
-            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(pageId);
+            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
 
             RankPageViewModel viewModel = this.mapper.Map<RankPageViewModel>(serviceModel);
 
             RankPageFormModel model = new RankPageFormModel
             {
-                Id = pageId,
+                Id = rankId,
                 Image = viewModel.Image,
                 ImageAlt = viewModel.ImageAlt,
                 RankingTitle = viewModel.RankingTitle,
@@ -197,10 +197,71 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'EditMenu' action for the controller.
         /// </summary>
-        /// <returns>A views showing all the rankings you as a user has made (for editing).</returns>
+        /// <returns>A view showing all the rankings you as a user has made (for editing).</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
         public async Task<IActionResult> EditMenu()
+        {
+            ICollection<RankPageServiceModel> serviceModel =
+                await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
+
+            ICollection<RankPageViewModel> model =
+                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'Delete' action for the controller.
+        /// </summary>
+        /// <returns>
+        /// A view for deleting a page with a filled 'RankPage' form model.
+        /// 404 if the page doesn't exist, 401 if the user is not the page owner.</returns>
+        /// <remarks>Get method.</remarks>
+        /// <param name="rankId">The GUID used for retrieving the needed page.</param>
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(Guid rankId)
+        {
+            await this.rankService.IsCurrentUserPageOwner(
+                this.User.Id(),
+                rankId);
+
+            RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
+
+            RankPageViewModel viewModel = this.mapper.Map<RankPageViewModel>(serviceModel);
+
+            RankPageFormModel model = new RankPageFormModel
+            {
+                Id = rankId,
+                Image = viewModel.Image,
+                ImageAlt = viewModel.ImageAlt,
+                RankingTitle = viewModel.RankingTitle,
+            };
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'Delete' action for the controller.
+        /// </summary>
+        /// <returns>Redirects to the users ranks view.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The 'RankPageFormModel' model from the form.</param>
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(RankPageFormModel model)
+        {
+            await this.rankService.DeleteRankAsync(model.Id);
+
+            return this.RedirectToAction("MyRanks", "Manage");
+        }
+
+        /// <summary>
+        /// The 'DeleteMenu' action for the controller.
+        /// </summary>
+        /// <returns>A view showing all the rankings you as a user has made (for deleting).</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public async Task<IActionResult> DeleteMenu()
         {
             ICollection<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());

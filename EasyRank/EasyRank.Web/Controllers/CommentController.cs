@@ -173,6 +173,7 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> Delete(CommentFormModelExtended model)
         {
             await this.commentService.DeleteCommentAsync(model.Id);
+
             return this.RedirectToAction("ViewRanking", "Rank", new
             {
                 rankId = await this.commentService.GetCommentPageId(model.Id),

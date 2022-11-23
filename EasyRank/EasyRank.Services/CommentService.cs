@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -66,6 +67,7 @@ namespace EasyRank.Services
         {
             CommentServiceModel serviceModel = this.mapper.Map<CommentServiceModel>(
                 await this.repo.AllReadonly<Comment>(c => c.Id == commentId)
+                    .Where(c => c.IsDeleted == false)
                     .Include(c => c.CreatedByUser)
                     .FirstOrDefaultAsync());
 
@@ -77,7 +79,7 @@ namespace EasyRank.Services
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
 
-            if (comment == null)
+            if (comment == null || comment.IsDeleted)
             {
                 throw new NotFoundException();
             }
@@ -92,7 +94,7 @@ namespace EasyRank.Services
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
 
-            if (comment == null)
+            if (comment == null || comment.IsDeleted)
             {
                 throw new NotFoundException();
             }
@@ -109,7 +111,7 @@ namespace EasyRank.Services
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
 
-            if (comment == null)
+            if (comment == null || comment.IsDeleted )
             {
                 throw new NotFoundException();
             }
@@ -126,9 +128,10 @@ namespace EasyRank.Services
             Guid commentId)
         {
             Comment comment = await this.repo.All<Comment>(c => c.Id == commentId)
-                .Include(c => c.RankPage)
-                .ThenInclude(rp => rp.CreatedByUser)
-                .FirstOrDefaultAsync() 
+                 .Where(c => c.IsDeleted == false)
+                 .Include(c => c.RankPage)
+                 .ThenInclude(rp => rp.CreatedByUser)
+                 .FirstOrDefaultAsync() 
                               ?? throw new NotFoundException();
 
             if (comment.RankPage.CreatedByUser.Id != userId)
@@ -142,7 +145,12 @@ namespace EasyRank.Services
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
 
-            return comment?.RankPageId ?? throw new NotFoundException();
+            if (comment == null || comment.IsDeleted)
+            {
+                throw new NotFoundException();
+            }
+
+            return comment.RankPageId;
         }
     }
 }

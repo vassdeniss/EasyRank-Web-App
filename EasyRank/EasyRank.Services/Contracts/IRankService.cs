@@ -54,7 +54,7 @@ namespace EasyRank.Services.Contracts
         /// <returns>Task (void).</returns>
         /// <param name="image">The byte array containing the cover image.</param>
         /// <param name="imageAlt">The text to display when the image doesn't exist / load.</param>
-        /// <param name="rankingTitle">The page title.</param>
+        /// <param name="rankingTitle">The rank page title.</param>
         /// <param name="userId">GUID used to search for the needed user.</param>
         Task CreateRankAsync(
             byte[]? image,
@@ -67,27 +67,36 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>Task(void).</returns>
         /// <param name="userId">GUID used for retrieving the needed user.</param>
-        /// <param name="pageId">GUID used for retrieving the needed page.</param>
+        /// <param name="rankId">GUID used for retrieving the needed page.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the page.</exception>
         Task IsCurrentUserPageOwner(
             Guid userId,
-            Guid pageId);
+            Guid rankId);
 
         /// <summary>
         /// Edits the page and saves it back to the database.
         /// </summary>
         /// <returns>Task (void).</returns>
-        /// <param name="pageId">GUID used for retrieving the needed page.</param>
+        /// <param name="rankId">GUID used for retrieving the needed page.</param>
         /// <param name="rankingTitle">The page title.</param>
         /// <param name="imageAlt">The text to display when the image doesn't exist / load.</param>
         /// <param name="image">The byte array containing the cover image.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
         Task EditRankAsync(
-            Guid pageId,
+            Guid rankId,
             string rankingTitle,
             string imageAlt,
             byte[]? image);
+
+        /// <summary>
+        /// Deletes a rank from the database.
+        /// </summary>
+        /// <returns>Task (void).</returns>
+        /// <param name="rankId">GUID used for retrieving the needed rank page.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank was not found.</exception>
+        /// <remarks>Sets a 'IsDeleted' flag. Doesn't actually delete.</remarks>
+        Task DeleteRankAsync(Guid rankId);
     }
 }
