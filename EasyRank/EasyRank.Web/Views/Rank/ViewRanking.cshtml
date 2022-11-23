@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using EasyRank.Web.Claims
 @model RankPageViewModelExtended
 @{
 	this.ViewData["Title"] = this.Model.RankingTitle;
@@ -51,6 +52,13 @@
 	.action-button:hover {
 		color: white !important;
 	}
+
+	.like-button {
+		position: fixed;
+		bottom: 20px;
+		right: 20px;
+
+	}
 </style>
 
 @foreach (RankEntryViewModel entry in this.Model.Entries)
@@ -66,7 +74,7 @@
 
 @if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
 {
-	<div class="d-flex justify-content-center">
+	<div class="d-flex justify-content-center mb-3">
 		<button class="btn btn-secondary mx-2">Create New Entry</button>
 		<a asp-action="Edit" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Edit Page</a>
 		<a asp-action="Delete" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Delete Page</a>
@@ -136,4 +144,17 @@ else
 			</div>
 		</div>
 	}
+}
+
+@if (this.Model.LikedBy.Any(u => u.Id == this.User.Id()))
+{
+	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
+		<button type="submit" asp-action="LikeRank" asp-route-rankId="@this.Model.Id" class="like-button btn btn-primary p-2">❤️ I Like!</button>
+	</form>
+}
+else
+{
+	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
+		<button type="submit" asp-action="LikeRank" asp-route-rankId="@this.Model.Id" class="like-button btn btn-warning p-2">❤️ I Like!</button>
+	</form>
 }

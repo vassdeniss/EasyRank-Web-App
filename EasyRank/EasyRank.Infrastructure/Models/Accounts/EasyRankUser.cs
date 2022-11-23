@@ -31,7 +31,7 @@ namespace EasyRank.Infrastructure.Models.Accounts
         {
             this.UserComments = new HashSet<Comment>();
             this.UserRankings = new HashSet<RankPage>();
-            this.LikedRankings = new HashSet<RankPage>();
+            this.LikedRankings = new HashSet<EasyRankUserRankPage>();
         }
 
         /// <summary>
@@ -71,6 +71,6 @@ namespace EasyRank.Infrastructure.Models.Accounts
         /// Gets or sets every rank page which the user has liked.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
-        public virtual ICollection<RankPage> LikedRankings { get; set; }
+        public virtual ICollection<EasyRankUserRankPage> LikedRankings { get; set; }
     }
 }

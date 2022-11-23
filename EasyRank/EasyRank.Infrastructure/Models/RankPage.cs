@@ -30,7 +30,7 @@ namespace EasyRank.Infrastructure.Models
         /// </summary>
         public RankPage()
         {
-            this.LikedBy = new HashSet<EasyRankUser>();
+            this.LikedBy = new HashSet<EasyRankUserRankPage>();
             this.Comments = new HashSet<Comment>();
             this.Entries = new HashSet<RankEntry>();
         }
@@ -82,7 +82,7 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the collection of users who liked this ranking page.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
-        public virtual ICollection<EasyRankUser> LikedBy { get; set; }
+        public virtual ICollection<EasyRankUserRankPage> LikedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the guid of the user who created the ranking page.

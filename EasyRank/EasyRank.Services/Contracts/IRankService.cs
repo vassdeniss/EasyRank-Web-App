@@ -98,5 +98,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank was not found.</exception>
         /// <remarks>Sets a 'IsDeleted' flag. Doesn't actually delete.</remarks>
         Task DeleteRankAsync(Guid rankId);
+
+        Task Test(Guid userId, Guid rankId);
     }
 }

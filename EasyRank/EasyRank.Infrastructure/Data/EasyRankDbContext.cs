@@ -49,6 +49,11 @@ namespace EasyRank.Infrastructure.Data
         /// </summary>
         public DbSet<RankEntry> RankEntries { get; set; }
 
+        /// <summary>
+        /// Gets or sets the 'EasyRankUserRankPage' table from the database.
+        /// </summary>
+        public DbSet<EasyRankUserRankPage> EasyRankUsersRankPages { get; set; }
+
         private EasyRankUser GuestUser { get; set; }
 
         private EasyRankUser GuestUserTwo { get; set; }
@@ -68,6 +73,9 @@ namespace EasyRank.Infrastructure.Data
 
             // Apply the 'RankPage' entity model configuration.
             builder.ApplyConfigurationsFromAssembly(typeof(RankPageEntityTypeConfiguration).Assembly);
+
+            // Apply the 'EasyRankUserRankPage' entity model configuration.
+            builder.ApplyConfigurationsFromAssembly(typeof(EasyRankUserRankPageEntityTypeConfiguration).Assembly);
 
             // Database seed
             PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();

@@ -26,6 +26,7 @@ using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EasyRank.Web.Controllers
 {
@@ -270,6 +271,36 @@ namespace EasyRank.Web.Controllers
                 this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LikeRankAsync(Guid rankId)
+        {
+            await this.rankService.Test(this.User.Id(), rankId); 
+
+            //if (!this.ModelState.IsValid)
+            //{
+            //    foreach (ModelError error in this.ModelState.Values.SelectMany(entry => entry.Errors))
+            //    {
+            //        this.TempData["Error"] = error.ErrorMessage;
+            //    }
+
+            //    return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
+            //}
+
+            //string sanitizedContent = this.SanitizeString(model.Content);
+            //if (string.IsNullOrEmpty(sanitizedContent))
+            //{
+            //    this.TempData["Error"] = "Please don't try to XSS :)";
+            //    return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
+            //}
+
+            //await this.commentService.CreateCommentAsync(
+            //    sanitizedContent,
+            //    this.User.Id(),
+            //    rankId);
+
+            return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
         }
 
         private string SanitizeString(string content)

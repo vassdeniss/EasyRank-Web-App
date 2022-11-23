@@ -86,6 +86,8 @@ namespace EasyRank.Services
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
                 .Include(rp => rp.CreatedByUser)
+                .Include(rp => rp.LikedBy)
+                .ThenInclude(erurp => erurp.EasyRankUser)
                 .FirstAsync();
 
             if (rankPage == null)
@@ -117,7 +119,10 @@ namespace EasyRank.Services
                         .Where(c => c.IsDeleted == false)
                         .OrderByDescending(c => c.CreatedOn))
                     .ToList(),
-                LikedBy = new List<EasyRankUser>(), // TODO: Fix
+                LikedBy = rankPage.LikedBy
+                    .Where(erurp => erurp.IsLiked)
+                    .Select(erurp => erurp.EasyRankUser)
+                    .ToList(), // TODO: Fix
             };
 
             return rankPageServiceModelExtended;
@@ -197,6 +202,34 @@ namespace EasyRank.Services
             }
 
             page.IsDeleted = true;
+
+            await this.repo.SaveChangesAsync();
+        }
+
+        public async Task Test(Guid userId, Guid rankId)
+        {
+            RankPage page = await this.repo.All<RankPage>(
+                                    rp => rp.Id == rankId && !rp.IsDeleted)
+                .Include(rp => rp.LikedBy)
+                .FirstOrDefaultAsync() 
+                            ?? throw new NotFoundException();
+
+            EasyRankUserRankPage? mappedModel = page.LikedBy
+                .FirstOrDefault(erurp => erurp.EasyRankUserId == userId);
+
+            if (mappedModel == null)
+            {
+                await this.repo.AddAsync<EasyRankUserRankPage>(new EasyRankUserRankPage
+                {
+                    EasyRankUserId = userId,
+                    RankPageId = rankId,
+                    IsLiked = true,
+                });
+            }
+            else
+            {
+                mappedModel.IsLiked = !mappedModel.IsLiked;
+            }
 
             await this.repo.SaveChangesAsync();
         }
