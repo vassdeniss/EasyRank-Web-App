@@ -19,7 +19,7 @@ namespace EasyRank.Services.Contracts
     public interface ICommentService
     {
         /// <summary>
-        /// Retrieves the content the user inputted, creating a comment and saving it to the database.
+        /// Retrieves the content the user inputted, creates a comment, and saves it to the database.
         /// </summary>
         /// <returns>Task (void).</returns>
         /// <param name="content">The content of the comment.</param>
@@ -39,7 +39,7 @@ namespace EasyRank.Services.Contracts
         Task<CommentServiceModel> GetCommentByIdAsync(Guid commentId);
 
         /// <summary>
-        /// Edits the content of a comment and saving it back to the database.
+        /// Edits the content of a comment and saves it back to the database.
         /// </summary>
         /// <returns>Task (void).</returns>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>

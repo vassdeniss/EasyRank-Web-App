@@ -46,11 +46,7 @@ namespace EasyRank.Services
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// Implementation of the GetAllRankingsAsync interface method
-        /// used for retrieving all rankings from the database.
-        /// </summary>
-        /// <returns>A collection of rank page service models.</returns>
+        /// <inheritdoc />
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
@@ -61,13 +57,7 @@ namespace EasyRank.Services
                     .ToListAsync());
         }
 
-        /// <summary>
-        /// Implementation of the GetExtendedRankPageByGuidAsync interface method
-        /// used for retrieving a rank page from the database by its GUID.
-        /// </summary>
-        /// <returns>A rank page service model.</returns>
-        /// <exception cref="NotFoundException">Throws the 'NotFoundException' if the rank page was not found.</exception>
-        /// <param name="rankGuid">GUID used to search for the rank page.</param>
+        /// <inheritdoc />
         public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
@@ -82,28 +72,10 @@ namespace EasyRank.Services
                 throw new NotFoundException();
             }
 
-            RankPageServiceModel rankPageServiceModel = new RankPageServiceModel
-            {
-                Id = rankGuid,
-                RankingTitle = rankPage.RankingTitle,
-                Image = rankPage.Image,
-                ImageAlt = rankPage.ImageAlt,
-                CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
-                LikeCount = rankPage.LikedBy.Count,
-                CreatedByUserName = rankPage.CreatedByUser.UserName,
-                CommentCount = rankPage.Comments.Count,
-            };
-
-            return rankPageServiceModel;
+            return this.mapper.Map<RankPageServiceModel>(rankPage);
         }
 
-        /// <summary>
-        /// Implementation of the GetExtendedRankPageByGuidAsync interface method
-        /// used for retrieving a (extended) rank page from the database by its GUID.
-        /// </summary>
-        /// <returns>An extended rank page service model.</returns>
-        /// <exception cref="NotFoundException">Throws the 'NotFoundException' if the rank page was not found.</exception>
-        /// <param name="rankGuid">GUID used to search for the rank page.</param>
+        /// <inheritdoc />
         public async Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid)
         {
             RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
@@ -148,12 +120,7 @@ namespace EasyRank.Services
             return rankPageServiceModelExtended;
         }
 
-        /// <summary>
-        /// Implementation of the GetAllRankingsByUserAsync interface method
-        /// used for retrieving a collection of rank pages for a specified user from the database.
-        /// </summary>
-        /// <returns>A collection of rank page service models.</returns>
-        /// <param name="userId">GUID used to search for the users rankings.</param>
+        /// <inheritdoc />
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
@@ -163,6 +130,7 @@ namespace EasyRank.Services
                     .ToListAsync());
         }
 
+        /// <inheritdoc />
         public async Task CreateRankAsync(
             byte[]? image,
             string imageAlt,
@@ -182,6 +150,7 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task IsCurrentUserPageOwner(Guid userId, Guid pageId)
         {
             RankPage page = await this.repo.All<RankPage>(c => c.Id == pageId)
@@ -195,6 +164,7 @@ namespace EasyRank.Services
             }
         }
 
+        /// <inheritdoc />
         public async Task EditRankAsync(Guid pageId, string rankingTitle, string imageAlt, byte[]? image)
         {
             RankPage page = await this.repo.GetByIdAsync<RankPage>(pageId);
