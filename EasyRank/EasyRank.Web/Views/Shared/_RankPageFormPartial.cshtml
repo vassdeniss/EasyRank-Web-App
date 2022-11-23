@@ -37,7 +37,7 @@ document.getElementById('remove-img').style.display = 'inline-block';" />
 				}
 			</div>
 			<input type="hidden" asp-for="Id" value="@this.Model.Id" />
-			<button type="submit" class="btn btn-primary my-3 me-3">@this.ViewData["ButtonText"]</button>
+			<button type="submit" class="btn btn-primary my-3 me-3">@this.ViewData["ButtonType"]</button>
 			@if (this.Model.Image != null)
 			{
 				<a onclick="document.getElementById('card-img').src = '';

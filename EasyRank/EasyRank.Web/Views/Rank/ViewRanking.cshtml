@@ -47,6 +47,10 @@
 		flex-direction: row;
 		margin-bottom: 8px;
 	}
+
+	.action-button:hover {
+		color: white !important;
+	}
 </style>
 
 @foreach (RankEntryViewModel entry in this.Model.Entries)
@@ -62,7 +66,7 @@
 
 <div class="d-flex justify-content-center">
 	<button class="btn btn-secondary mx-2">Create New Entry</button>
-	<button class="btn btn-secondary mx-2">Edit Page</button>
+	<a asp-action="Edit" asp-route-pageId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Edit Page</a>
 	<button class="btn btn-secondary mx-2">Delete Page</button>
 </div>
 

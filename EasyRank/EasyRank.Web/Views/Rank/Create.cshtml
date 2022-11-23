@@ -1,7 +1,7 @@
 ﻿@model RankPageFormModel
 @{
 	this.ViewData["Title"] = "Create Ranking";
-	this.ViewData["ButtonText"] = "Create";
+	this.ViewData["ButtonType"] = "Create";
 }
 
 @await this.Html.PartialAsync("_RankPageFormPartial", this.Model)
