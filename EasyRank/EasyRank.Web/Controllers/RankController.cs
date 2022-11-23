@@ -16,6 +16,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
+using EasyRank.Web.Claims;
 using EasyRank.Web.Models.Comment;
 using EasyRank.Web.Models.Rank;
 
@@ -105,7 +106,8 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            Guid userId = Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Guid userId = Guid.Parse(this.User.
+                );
 
             byte[]? image = null;
             if (this.Request.Form.Files.Count > 0)
@@ -135,7 +137,7 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> EditAsync(Guid pageId)
         {
             await this.rankService.IsCurrentUserPageOwner(
-                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                this.User.Id(),
                 pageId);
 
             RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(pageId);

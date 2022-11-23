@@ -14,6 +14,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
+using EasyRank.Web.Claims;
 using EasyRank.Web.Models.Comment;
 using EasyRank.Web.Models.Rank;
 
@@ -74,7 +75,7 @@ namespace EasyRank.Web.Controllers
 
             await this.commentService.CreateCommentAsync(
                 sanitizedContent,
-                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Guid.Parse(this.User.Id()),
                 rankId);
 
             return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
@@ -92,7 +93,7 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> EditAsync(Guid commentId)
         {
             await this.commentService.IsCurrentUserCommentOwner(
-                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Guid.Parse(this.User.Id()),
                 commentId);
 
             CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
@@ -148,11 +149,11 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> Delete(Guid commentId)
         {
             await this.commentService.IsCurrentUserCommentOwner(
-                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Guid.Parse(this.User.Id()),
                 commentId);
 
             await this.commentService.IsCurrentUserPageOwner(
-                Guid.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Guid.Parse(this.User.Id()),
                 commentId);
 
             CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
