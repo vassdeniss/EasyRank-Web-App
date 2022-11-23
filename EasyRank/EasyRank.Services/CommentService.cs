@@ -102,8 +102,9 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task IsCurrentUserCommentOwner(
-            Guid userId, 
+            Guid userId,
             Guid commentId)
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
@@ -119,6 +120,7 @@ namespace EasyRank.Services
             }
         }
 
+        /// <inheritdoc />
         public async Task IsCurrentUserPageOwner(
             Guid userId,
             Guid commentId)
@@ -135,6 +137,7 @@ namespace EasyRank.Services
             }
         }
 
+        /// <inheritdoc />
         public async Task<Guid> GetCommentPageId(Guid commentId)
         {
             Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);

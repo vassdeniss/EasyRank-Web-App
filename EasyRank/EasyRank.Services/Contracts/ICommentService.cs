@@ -34,8 +34,8 @@ namespace EasyRank.Services.Contracts
         /// Retrieves a specific comment by its id from the database.
         /// </summary>
         /// <returns>A comment service model.</returns>
-        /// <exception cref="NotFoundException">Throws the 'NotFoundException' if the comment was not found.</exception>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         Task<CommentServiceModel> GetCommentByIdAsync(Guid commentId);
 
         /// <summary>
@@ -44,6 +44,7 @@ namespace EasyRank.Services.Contracts
         /// <returns>Task (void).</returns>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
         /// <param name="content">The (sanitized) content of the comment to be replaced.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         Task EditCommentAsync(
             Guid commentId,
             string content);
@@ -53,17 +54,42 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>Task (void).</returns>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         /// <remarks>Sets a 'IsDeleted' flag. Doesn't actually delete.</remarks>
         Task DeleteCommentAsync(Guid commentId);
 
+        /// <summary>
+        /// Checks if the current user owns the comment.
+        /// </summary>
+        /// <returns>Task(void).</returns>
+        /// <param name="userId">GUID used for retrieving the needed user.</param>
+        /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
+        /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
+        /// is not the owner of the comment.</exception>
         Task IsCurrentUserCommentOwner(
             Guid userId,
             Guid commentId);
 
+        /// <summary>
+        /// Checks if the current user owns the page.
+        /// </summary>
+        /// <returns>Task(void).</returns>
+        /// <param name="userId">GUID used for retrieving the needed user.</param>
+        /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
+        /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
+        /// is not the owner of the page.</exception>
         Task IsCurrentUserPageOwner(
             Guid userId,
             Guid commentId);
 
+        /// <summary>
+        /// Gets the page id through the comment.
+        /// </summary>
+        /// <returns>The GUID of the page.</returns>
+        /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         Task<Guid> GetCommentPageId(Guid commentId);
     }
 }
