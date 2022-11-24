@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Services.UnitTests", "EasyRank.Services.UnitTests\EasyRank.Services.UnitTests.csproj", "{7CF880E4-F223-4154-ADA2-1EC04218749A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{B58D68C4-59E1-4393-B0A0-72E02C944135}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B58D68C4-59E1-4393-B0A0-72E02C944135}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B58D68C4-59E1-4393-B0A0-72E02C944135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF880E4-F223-4154-ADA2-1EC04218749A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CF880E4-F223-4154-ADA2-1EC04218749A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CF880E4-F223-4154-ADA2-1EC04218749A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CF880E4-F223-4154-ADA2-1EC04218749A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,14 +24,18 @@ namespace EasyRank.Infrastructure.Data
     /// </summary>
     public class EasyRankDbContext : IdentityDbContext<EasyRankUser, IdentityRole<Guid>, Guid>
     {
+        private readonly bool isSeed;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EasyRankDbContext"/> class.
         /// Constructor for the EasyRank database context.
         /// </summary>
         /// <param name="options">Options for the database.</param>
-        public EasyRankDbContext(DbContextOptions<EasyRankDbContext> options)
+        /// <param name="isSeed">Should the database be seeded.</param>
+        public EasyRankDbContext(DbContextOptions<EasyRankDbContext> options, bool isSeed = true)
             : base(options)
         {
+            this.isSeed = isSeed;
         }
 
         /// <summary>
@@ -78,6 +82,11 @@ namespace EasyRank.Infrastructure.Data
             builder.ApplyConfigurationsFromAssembly(typeof(EasyRankUserRankPageEntityTypeConfiguration).Assembly);
 
             // Database seed
+            if (!this.isSeed)
+            {
+                return;
+            }
+
             PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
 
             this.GuestUser = new EasyRankUser
@@ -140,9 +149,11 @@ namespace EasyRank.Infrastructure.Data
                         Id = Guid.NewGuid(),
                         Placement = 9,
                         Title = "Star Wars2",
-                        Image = "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
+                        Image =
+                            "https://images.immediate.co.uk/production/volatile/sites/3/2017/12/yoda-the-empire-strikes-back-28a7558.jpg?quality=90&webp=true&resize=800,534",
                         ImageAlt = "Picture of star wars2",
-                        Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
+                        Description =
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
                         RankPageId = this.RankPage.Id,
                     });
 
