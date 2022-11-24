@@ -25,6 +25,8 @@ namespace EasyRank.Web.Views.Manage
 
         public static string MyRanks => "MyRanks";
 
+        public static string MyLikes => "MyLikes";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
@@ -32,6 +34,8 @@ namespace EasyRank.Web.Views.Manage
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 
         public static string MyRanksNavClass(ViewContext viewContext) => PageNavClass(viewContext, MyRanks);
+
+        public static string MyLikesNavClass(ViewContext viewContext) => PageNavClass(viewContext, MyLikes);
 
         //public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
 

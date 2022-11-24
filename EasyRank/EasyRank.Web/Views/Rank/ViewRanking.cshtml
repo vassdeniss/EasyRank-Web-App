@@ -148,13 +148,13 @@ else
 
 @if (this.Model.LikedBy.Any(u => u.Id == this.User.Id()))
 {
-	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
-		<button type="submit" asp-action="LikeRank" asp-route-rankId="@this.Model.Id" class="like-button btn btn-primary p-2">❤️ I Like!</button>
+	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id" asp-route-rankId="@this.Model.Id">
+		<button type="submit" class="like-button btn btn-primary p-2">❤️ I Like!</button>
 	</form>
 }
 else
 {
-	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
-		<button type="submit" asp-action="LikeRank" asp-route-rankId="@this.Model.Id" class="like-button btn btn-warning p-2">❤️ I Like!</button>
+	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id" asp-route-rankId="@this.Model.Id">
+		<button type="submit" class="like-button btn btn-warning p-2">❤️ I Like!</button>
 	</form>
 }

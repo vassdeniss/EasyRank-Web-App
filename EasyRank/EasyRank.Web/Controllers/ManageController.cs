@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -202,7 +203,7 @@ namespace EasyRank.Web.Controllers
         public IActionResult DeleteAccountAsync()
         {
             DeleteAccountViewModel model = new DeleteAccountViewModel();
-            
+
             //RequirePassword = await this.userManager.HasPasswordAsync(user);
 
             return this.View(model);
@@ -454,6 +455,24 @@ namespace EasyRank.Web.Controllers
         {
             ICollection<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
+
+            ICollection<RankPageViewModel> model =
+                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'MyLikes' action for the controller.
+        /// </summary>
+        /// <returns>A views showing all the rankings you as a user has liked.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        [Route("MyLikes")]
+        public async Task<IActionResult> MyLikesAsync()
+        {
+            ICollection<RankPageServiceModel> serviceModel =
+                await this.rankService.GetAllLikesByUserAsync(this.User.Id());
 
             ICollection<RankPageViewModel> model =
                 this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);

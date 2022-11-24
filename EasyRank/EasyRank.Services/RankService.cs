@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -19,6 +20,7 @@ using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -31,6 +33,7 @@ namespace EasyRank.Services
     {
         private readonly IRepository repo;
         private readonly IMapper mapper;
+        private readonly UserManager<EasyRankUser> userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RankService"/> class.
@@ -38,12 +41,15 @@ namespace EasyRank.Services
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
+        /// <param name="userManager">Instance of a user manager.</param>
         public RankService(
             IRepository repo,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<EasyRankUser> userManager)
         {
             this.repo = repo;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         /// <inheritdoc />
@@ -235,6 +241,22 @@ namespace EasyRank.Services
             }
 
             await this.repo.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId)
+        {
+            List<Guid> likedPageIds = await this.repo.AllReadonly<EasyRankUserRankPage>()
+                .Where(erurp => erurp.EasyRankUserId == userId)
+                .Where(erurp => erurp.IsLiked)
+                .Select(erurp => erurp.RankPageId)
+                .ToListAsync();
+
+            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+                await this.repo.AllReadonly<RankPage>(x => likedPageIds.Contains(x.Id))
+                    .Include(rp => rp.Comments)
+                    .Include(rp => rp.LikedBy)
+                    .OrderByDescending(rp => rp.CreatedOn)
+                    .ToListAsync());
         }
     }
 }

@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Exceptions;
@@ -108,5 +109,12 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank was not found.</exception>
         /// <returns>Task (void).</returns>
         Task LikeComment(Guid userId, Guid rankId);
+
+        /// <summary>
+        /// Used for retrieving a collection of liked rank pages for a specific user from the database.
+        /// </summary>
+        /// <returns>A collection of rank page service models.</returns>
+        /// <param name="userId">GUID used to search for the users rankings.</param>
+        Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId);
     }
 }
