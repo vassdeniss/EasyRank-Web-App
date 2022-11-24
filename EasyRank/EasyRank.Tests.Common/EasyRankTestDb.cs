@@ -16,9 +16,15 @@ namespace EasyRank.Tests.Common
 
         public EasyRankUser GuestUser { get; set; }
 
+        public EasyRankUser DenisUser { get; set; }
+
         public RankPage GuestPage { get; set; }
 
+        public RankPage DeletedPage { get; set; }
+
         public Comment GuestComment { get; set; }
+
+        public Comment DeletedComment { get; set; }
 
         private void SeedDatabase(EasyRankDbContext dbContext)
         {
@@ -52,6 +58,21 @@ namespace EasyRank.Tests.Common
             userManager.CreateAsync(this.GuestUser, "guestPass")
                 .Wait();
 
+            this.DenisUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = $"vass{DateTime.Now.Ticks.ToString().Substring(10)}",
+                NormalizedUserName = $"VASS{DateTime.Now.Ticks.ToString().Substring(10)}",
+                Email = "vassdeniss@mail.com",
+                NormalizedEmail = "VASSDENISS@MAIL.COM",
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                EmailConfirmed = true,
+            };
+
+            userManager.CreateAsync(this.DenisUser, "myVeryCoolPassword")
+                .Wait();
+
             this.GuestPage = new RankPage
             {
                 Id = Guid.NewGuid(),
@@ -65,6 +86,19 @@ namespace EasyRank.Tests.Common
 
             dbContext.Add<RankPage>(this.GuestPage);
 
+            this.DeletedPage = new RankPage
+            {
+                Id = Guid.NewGuid(),
+                Image = null,
+                ImageAlt = "DeletedImg",
+                RankingTitle = "DeletedPage",
+                CreatedOn = DateTime.Today,
+                CreatedByUserId = this.GuestUser.Id,
+                IsDeleted = true,
+            };
+
+            dbContext.Add<RankPage>(this.DeletedPage);
+
             this.GuestComment = new Comment
             {
                 Id = Guid.NewGuid(),
@@ -76,6 +110,16 @@ namespace EasyRank.Tests.Common
             };
 
             dbContext.Add<Comment>(this.GuestComment);
+
+            this.DeletedComment = new Comment
+            {
+                Id = Guid.NewGuid(),
+                Content = "Deleted comment made by the GuestUser for testing purposes",
+                CreatedOn = DateTime.Now.AddDays(2),
+                CreatedByUserId = this.GuestUser.Id,
+                RankPageId = this.DeletedPage.Id,
+                IsDeleted = true,
+            };
 
             dbContext.SaveChanges();
         }
