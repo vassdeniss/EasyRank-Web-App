@@ -33,7 +33,7 @@ namespace EasyRank.Services.Profiles
                 .ForMember(
                     d => d.LikeCount,
                     mo => mo.MapFrom(
-                        s => s.LikedBy.Count))
+                        s => s.LikedBy.Count(erurp => erurp.IsLiked)))
                 .ForMember(
                     d => d.CreatedByUserName,
                     mo => mo.MapFrom(

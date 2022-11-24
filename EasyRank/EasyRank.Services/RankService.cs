@@ -54,6 +54,7 @@ namespace EasyRank.Services
                     .Where(rp => rp.IsDeleted == false)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
+                    .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync());
         }
@@ -122,7 +123,7 @@ namespace EasyRank.Services
                 LikedBy = rankPage.LikedBy
                     .Where(erurp => erurp.IsLiked)
                     .Select(erurp => erurp.EasyRankUser)
-                    .ToList(), // TODO: Fix
+                    .ToList(),
             };
 
             return rankPageServiceModelExtended;
@@ -135,6 +136,7 @@ namespace EasyRank.Services
                 await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
                     .Where(rp => rp.IsDeleted == false)
                     .Include(rp => rp.Comments)
+                    .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
                     .ToListAsync());
         }
@@ -206,7 +208,8 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
-        public async Task Test(Guid userId, Guid rankId)
+        /// <inheritdoc />
+        public async Task LikeComment(Guid userId, Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(
                                     rp => rp.Id == rankId && !rp.IsDeleted)

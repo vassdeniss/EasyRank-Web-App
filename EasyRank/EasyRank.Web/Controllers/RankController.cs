@@ -9,16 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 using EasyRank.Web.Claims;
-using EasyRank.Web.Models.Comment;
 using EasyRank.Web.Models.Rank;
 
 using Ganss.Xss;
@@ -26,7 +23,6 @@ using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EasyRank.Web.Controllers
 {
@@ -273,32 +269,17 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        /// <summary>
+        /// The 'LikeRankAsync' action for the controller.
+        /// </summary>
+        /// <returns>Redirects back to the same page and sets the liked flag for
+        /// the page and user to the opposite of how it was.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="rankId">The GUID used for retrieving the needed page.</param>
         [HttpPost]
         public async Task<IActionResult> LikeRankAsync(Guid rankId)
         {
-            await this.rankService.Test(this.User.Id(), rankId); 
-
-            //if (!this.ModelState.IsValid)
-            //{
-            //    foreach (ModelError error in this.ModelState.Values.SelectMany(entry => entry.Errors))
-            //    {
-            //        this.TempData["Error"] = error.ErrorMessage;
-            //    }
-
-            //    return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
-            //}
-
-            //string sanitizedContent = this.SanitizeString(model.Content);
-            //if (string.IsNullOrEmpty(sanitizedContent))
-            //{
-            //    this.TempData["Error"] = "Please don't try to XSS :)";
-            //    return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
-            //}
-
-            //await this.commentService.CreateCommentAsync(
-            //    sanitizedContent,
-            //    this.User.Id(),
-            //    rankId);
+            await this.rankService.LikeComment(this.User.Id(), rankId);
 
             return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
         }

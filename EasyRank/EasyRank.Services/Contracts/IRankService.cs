@@ -99,6 +99,14 @@ namespace EasyRank.Services.Contracts
         /// <remarks>Sets a 'IsDeleted' flag. Doesn't actually delete.</remarks>
         Task DeleteRankAsync(Guid rankId);
 
-        Task Test(Guid userId, Guid rankId);
+        /// <summary>
+        /// Like or unlike the page for the current user.
+        /// Adds a record to the mapping table if the user has never liked the page before
+        /// </summary>
+        /// <param name="userId">GUID used for retrieving the needed user.</param>
+        /// <param name="rankId">GUID used for retrieving the needed page.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank was not found.</exception>
+        /// <returns>Task (void).</returns>
+        Task LikeComment(Guid userId, Guid rankId);
     }
 }
