@@ -40,9 +40,12 @@ document.getElementById('remove-img').style.display = 'inline-block';" />
 			<button type="submit" class="btn btn-primary my-3 me-3">@this.ViewData["ButtonType"]</button>
 			@if (this.Model.Image != null)
 			{
-				<a onclick="document.getElementById('card-img').src = '';
+				@if (this.Model.Image.Any())
+				{
+					<a onclick="document.getElementById('card-img').src = '';
 document.getElementById('remove-img').style.display = 'none';
 document.getElementById('img-input').value = '';" id="remove-img" class="btn btn-primary">Remove Image</a>
+				}
 			}
 			else
 			{

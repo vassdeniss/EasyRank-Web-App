@@ -26,6 +26,8 @@ namespace EasyRank.Tests.Common
 
         public Comment DeletedComment { get; set; }
 
+        public Comment CommentWithDeletedPage { get; set; }
+
         private void SeedDatabase(EasyRankDbContext dbContext)
         {
             UserOnlyStore<EasyRankUser, EasyRankDbContext, Guid> userStore = 
@@ -36,12 +38,9 @@ namespace EasyRank.Tests.Common
                 userStore, 
                 null, 
                 hasher, 
-                null, 
-                null, 
+                null, null, 
                 normalizer, 
-                null, 
-                null, 
-                null);
+                null, null, null);
 
             this.GuestUser = new EasyRankUser
             {
@@ -120,6 +119,20 @@ namespace EasyRank.Tests.Common
                 RankPageId = this.DeletedPage.Id,
                 IsDeleted = true,
             };
+
+            dbContext.Add<Comment>(this.DeletedComment);
+
+            this.CommentWithDeletedPage = new Comment
+            {
+                Id = Guid.NewGuid(),
+                Content = "Existing comment with deleted page made by the GuestUser for testing purposes",
+                CreatedOn = DateTime.Now.AddDays(2),
+                CreatedByUserId = this.GuestUser.Id,
+                RankPageId = this.DeletedPage.Id,
+                IsDeleted = false,
+            };
+
+            dbContext.Add<Comment>(this.CommentWithDeletedPage);
 
             dbContext.SaveChanges();
         }
