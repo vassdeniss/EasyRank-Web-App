@@ -48,7 +48,9 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'Create' action for the controller.
         /// </summary>
-        /// <returns>Back to the page the user was on, either with a new successfully posted comment or an error message.</returns>
+        /// <returns>
+        /// Back to the page the user was on, either with a new successfully posted comment or an error message.
+        /// </returns>
         /// <remarks>Post method.</remarks>
         /// <param name="rankId">The GUID which will be used to go back to the same page the user was.</param>
         /// <param name="model">The CommentFormModel for validation.</param>
@@ -85,7 +87,7 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>
         /// A view for comment editing with a filled extended comment form model.
-        /// 404 if the comment doesn't exist, 401 if the user is not the comments owner. </returns>
+        /// 404 if the comment doesn't exist, 401 if the user is not the comment owner.</returns>
         /// <remarks>Get method.</remarks>
         /// <param name="commentId">The GUID used for retrieving the needed comment.</param>
         [HttpGet]
@@ -145,7 +147,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method.</remarks>
         /// <param name="commentId">The GUID used for retrieving the needed comment.</param>
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid commentId)
+        public async Task<IActionResult> DeleteAsync(Guid commentId)
         {
             await this.commentService.IsCurrentUserCommentOwner(
                 this.User.Id(),
@@ -175,7 +177,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Post method.</remarks>
         /// <param name="model">The model used for deleting the comment from the database.</param>
         [HttpPost]
-        public async Task<IActionResult> Delete(CommentFormModelExtended model)
+        public async Task<IActionResult> DeleteAsync(CommentFormModelExtended model)
         {
             await this.commentService.DeleteCommentAsync(model.Id);
 

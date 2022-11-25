@@ -128,7 +128,7 @@ namespace EasyRank.Services
                     .ToList(),
                 LikedBy = rankPage.LikedBy
                     .Where(erurp => erurp.IsLiked)
-                    .Select(erurp => erurp.EasyRankUser)
+                    .Select(erurp => erurp.EasyRankUser.Id)
                     .ToList(),
             };
 

@@ -47,7 +47,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'All' for the controller.
+        /// The 'All' action for the controller.
         /// </summary>
         /// <returns>A view with a collection of all rank pages.</returns>
         /// <remarks>Get method. Guest access allowed.</remarks>
@@ -64,7 +64,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'ViewRankingAsync' for the controller.
+        /// The 'ViewRanking' action for the controller.
         /// </summary>
         /// <returns>A view with a specific rank page.</returns>
         /// <param name="rankId">The GUID of the requested page.</param>
@@ -80,6 +80,11 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        /// <summary>
+        /// The 'Create' action for the controller.
+        /// </summary>
+        /// <returns>A view for creating a new rank page.</returns>
+        /// <remarks>Get method.</remarks>
         [HttpGet]
         public IActionResult CreateAsync()
         {
@@ -88,6 +93,15 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        /// <summary>
+        /// The 'Create' action for the controller.
+        /// </summary>
+        /// <returns>
+        /// Redirect to 'All' pages view with the users new page if successful,
+        /// or back to the same view with an error message.
+        /// </returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The RankPageFormModel for validation.</param>
         [HttpPost]
         public async Task<IActionResult> CreateAsync(RankPageFormModel model)
         {
@@ -130,6 +144,14 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("All");
         }
 
+        /// <summary>
+        /// The 'Edit' action for the controller.
+        /// </summary>
+        /// <returns>
+        /// A view for rank page editing with a filled rank page form model.
+        /// 404 if the comment doesn't exist, 401 if the user is not the page owner.</returns>
+        /// <remarks>Get method.</remarks>
+        /// <param name="rankId">The GUID used for retrieving the needed page.</param>
         [HttpGet]
         public async Task<IActionResult> EditAsync(Guid rankId)
         {
@@ -152,6 +174,12 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        /// <summary>
+        /// The 'Edit' action for the controller.
+        /// </summary>
+        /// <returns>The same page if the model was invalid, or back to the page the user was on.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The RankPageFormModel for validation.</param>
         [HttpPost]
         public async Task<IActionResult> EditAsync(RankPageFormModel model)
         {
