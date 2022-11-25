@@ -1,4 +1,11 @@
-﻿using EasyRank.Infrastructure.Models;
+﻿// -----------------------------------------------------------------------
+// <copyright file="CommentServiceTests.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using EasyRank.Infrastructure.Models;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;

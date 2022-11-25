@@ -1,4 +1,11 @@
-﻿using EasyRank.Infrastructure.Data;
+﻿// -----------------------------------------------------------------------
+// <copyright file="EasyRankTestDb.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 

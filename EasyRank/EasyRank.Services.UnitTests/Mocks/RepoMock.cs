@@ -1,4 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿// -----------------------------------------------------------------------
+// <copyright file="RepoMock.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System.Linq.Expressions;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;

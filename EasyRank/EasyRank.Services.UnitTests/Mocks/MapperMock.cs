@@ -1,4 +1,11 @@
-﻿using AutoMapper;
+﻿// -----------------------------------------------------------------------
+// <copyright file="MapperMock.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using AutoMapper;
 
 using EasyRank.Services.Profiles;
 

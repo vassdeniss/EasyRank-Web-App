@@ -7,7 +7,6 @@
     
 using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -47,7 +46,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The create action for the controller.
+        /// The 'Create' action for the controller.
         /// </summary>
         /// <returns>Back to the page the user was on, either with a new successfully posted comment or an error message.</returns>
         /// <remarks>Post method.</remarks>
@@ -82,7 +81,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The edit action for the controller.
+        /// The 'Edit' action for the controller.
         /// </summary>
         /// <returns>
         /// A view for comment editing with a filled extended comment form model.
@@ -110,7 +109,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The edit action for the controller.
+        /// The 'Edit' action for the controller.
         /// </summary>
         /// <returns>The same page if the model was invalid, or back to the page the user was on.</returns>
         /// <remarks>Post method.</remarks>
@@ -138,7 +137,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The delete action for the controller.
+        /// The 'Delete' action for the controller.
         /// </summary>
         /// <returns>
         /// A view for comment deleting with a filled extended comment form model.
@@ -169,6 +168,12 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        /// <summary>
+        /// The 'Delete' action for the controller.
+        /// </summary>
+        /// <returns>Redirects back to the rank page the user was on.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The model used for deleting the comment from the database.</param>
         [HttpPost]
         public async Task<IActionResult> Delete(CommentFormModelExtended model)
         {
