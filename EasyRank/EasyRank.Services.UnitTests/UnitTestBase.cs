@@ -19,7 +19,7 @@ namespace EasyRank.Services.UnitTests
     public class UnitTestBase
     {
         protected EasyRankTestDb testDb;
-        protected EasyRankDbContext dbContext;
+        private EasyRankDbContext dbContext;
         protected IMapper mapper;
         protected IRepository repo;
 

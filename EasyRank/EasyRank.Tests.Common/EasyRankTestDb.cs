@@ -25,15 +25,27 @@ namespace EasyRank.Tests.Common
 
         public EasyRankUser DenisUser { get; set; }
 
+        public EasyRankUser LikedUser { get; set; }
+
+        public EasyRankUser DislikedUser { get; set; }
+
         public RankPage GuestPage { get; set; }
 
         public RankPage DeletedPage { get; set; }
+
+        public RankPage LikedPage { get; set; }
+
+        public RankPage DislikedPage { get; set; }
 
         public Comment GuestComment { get; set; }
 
         public Comment DeletedComment { get; set; }
 
         public Comment CommentWithDeletedPage { get; set; }
+
+        public EasyRankUserRankPage LikedMap { get; set; }
+
+        public EasyRankUserRankPage DislikedMap { get; set; }
 
         private void SeedDatabase(EasyRankDbContext dbContext)
         {
@@ -79,6 +91,36 @@ namespace EasyRank.Tests.Common
             userManager.CreateAsync(this.DenisUser, "myVeryCoolPassword")
                 .Wait();
 
+            this.LikedUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = $"Liked{DateTime.Now.Ticks.ToString().Substring(10)}",
+                NormalizedUserName = $"LIKED{DateTime.Now.Ticks.ToString().Substring(10)}",
+                Email = "liked@mail.com",
+                NormalizedEmail = "LIKED@MAIL.COM",
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                EmailConfirmed = true,
+            };
+
+            userManager.CreateAsync(this.LikedUser, "iLikePagesYay")
+                .Wait();
+
+            this.DislikedUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = $"Disliked{DateTime.Now.Ticks.ToString().Substring(10)}",
+                NormalizedUserName = $"DISLIKED{DateTime.Now.Ticks.ToString().Substring(10)}",
+                Email = "disliked@mail.com",
+                NormalizedEmail = "DISLIKED@MAIL.COM",
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                EmailConfirmed = true,
+            };
+
+            userManager.CreateAsync(this.DislikedUser, "iDislikePagesYay")
+                .Wait();
+
             this.GuestPage = new RankPage
             {
                 Id = Guid.NewGuid(),
@@ -91,6 +133,32 @@ namespace EasyRank.Tests.Common
             };
 
             dbContext.Add<RankPage>(this.GuestPage);
+
+            this.LikedPage = new RankPage
+            {
+                Id = Guid.NewGuid(),
+                Image = null,
+                ImageAlt = "Just image",
+                RankingTitle = "Top 5 Liked Posts",
+                CreatedOn = DateTime.Today,
+                CreatedByUserId = this.LikedUser.Id,
+                IsDeleted = false,
+            };
+
+            dbContext.Add<RankPage>(this.LikedPage);
+
+            this.DislikedPage = new RankPage
+            {
+                Id = Guid.NewGuid(),
+                Image = null,
+                ImageAlt = "Just stupid image",
+                RankingTitle = "Top 5 Disliked Posts",
+                CreatedOn = DateTime.Today,
+                CreatedByUserId = this.DislikedUser.Id,
+                IsDeleted = false,
+            };
+
+            dbContext.Add<RankPage>(this.DislikedPage);
 
             this.DeletedPage = new RankPage
             {
@@ -109,7 +177,7 @@ namespace EasyRank.Tests.Common
             {
                 Id = Guid.NewGuid(),
                 Content = "Comment made by the GuestUser for testing purposes",
-                CreatedOn = DateTime.Now.AddDays(2),
+                CreatedOn = DateTime.Now.AddDays(-10),
                 CreatedByUserId = this.GuestUser.Id,
                 RankPageId = this.GuestPage.Id,
                 IsDeleted = false,
@@ -121,7 +189,7 @@ namespace EasyRank.Tests.Common
             {
                 Id = Guid.NewGuid(),
                 Content = "Deleted comment made by the GuestUser for testing purposes",
-                CreatedOn = DateTime.Now.AddDays(2),
+                CreatedOn = DateTime.Now.AddDays(-2),
                 CreatedByUserId = this.GuestUser.Id,
                 RankPageId = this.DeletedPage.Id,
                 IsDeleted = true,
@@ -133,13 +201,31 @@ namespace EasyRank.Tests.Common
             {
                 Id = Guid.NewGuid(),
                 Content = "Existing comment with deleted page made by the GuestUser for testing purposes",
-                CreatedOn = DateTime.Now.AddDays(2),
+                CreatedOn = DateTime.Now.AddDays(-5),
                 CreatedByUserId = this.GuestUser.Id,
                 RankPageId = this.DeletedPage.Id,
                 IsDeleted = false,
             };
 
             dbContext.Add<Comment>(this.CommentWithDeletedPage);
+
+            this.LikedMap = new EasyRankUserRankPage
+            {
+                EasyRankUserId = this.LikedUser.Id,
+                RankPageId = this.LikedPage.Id,
+                IsLiked = true,
+            };
+
+            dbContext.Add<EasyRankUserRankPage>(this.LikedMap);
+
+            this.DislikedMap = new EasyRankUserRankPage
+            {
+                EasyRankUserId = this.DislikedUser.Id,
+                RankPageId = this.DislikedPage.Id,
+                IsLiked = false,
+            };
+
+            dbContext.Add<EasyRankUserRankPage>(this.DislikedMap);
 
             dbContext.SaveChanges();
         }

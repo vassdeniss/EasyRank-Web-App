@@ -108,7 +108,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="rankId">GUID used for retrieving the needed page.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank was not found.</exception>
         /// <returns>Task (void).</returns>
-        Task LikeComment(Guid userId, Guid rankId);
+        Task LikeCommentAsync(Guid userId, Guid rankId);
 
         /// <summary>
         /// Used for retrieving a collection of liked rank pages for a specific user from the database.

@@ -274,14 +274,14 @@ namespace EasyRank.Services.UnitTests
             // Act: call the service method and pass the necessary data
             await this.commentService.CreateCommentAsync(content, createdByUserId, rankPageId);
 
-            // Assert: the count of comments in teh database has increased by one
+            // Assert: the count of comments in the database has increased by one
             int commentCountAfter = await this.repo.AllReadonly<Comment>()
                 .CountAsync();
             Assert.That(commentCountAfter, Is.EqualTo(commentCountBefore + 1));
 
             // Assert: the new comment has been added
-            Comment? newCommentInDb = await this.repo.AllReadonly<Comment>(
-                    c => c.Content == content)
+            Comment? newCommentInDb = await this.repo.AllReadonly<Comment>()
+                .OrderByDescending(c => c.CreatedOn)
                 .FirstOrDefaultAsync();
             Assert.That(newCommentInDb, Is.Not.Null);
             Assert.That(newCommentInDb!.Content, Is.EqualTo(content));
@@ -330,8 +330,8 @@ namespace EasyRank.Services.UnitTests
             // Arrange: call the add service method and pass the necessary data
             await this.commentService.CreateCommentAsync(content, createdByUserId, rankPageId);
 
-            Comment commentInDb = (await this.repo.AllReadonly<Comment>(
-                    c => c.Content == content)
+            Comment commentInDb = (await this.repo.AllReadonly<Comment>()
+                .OrderByDescending(c => c.CreatedOn)
                 .FirstOrDefaultAsync())!;
 
             // Arrange: create new content to be changed
@@ -341,8 +341,8 @@ namespace EasyRank.Services.UnitTests
             await this.commentService.EditCommentAsync(commentInDb.Id, changedContent);
 
             // Assert: the comment has been edited
-            Comment? newCommentInDb = await this.repo.AllReadonly<Comment>(
-                    c => c.Content == changedContent)
+            Comment? newCommentInDb = await this.repo.AllReadonly<Comment>()
+                .OrderByDescending(c => c.CreatedOn)
                 .FirstOrDefaultAsync();
             Assert.That(newCommentInDb, Is.Not.Null);
             Assert.That(newCommentInDb!.Content, Is.EqualTo(changedContent));
@@ -389,15 +389,15 @@ namespace EasyRank.Services.UnitTests
             // Arrange: call the add service method and pass the necessary data
             await this.commentService.CreateCommentAsync(content, createdByUserId, rankPageId);
 
-            Comment commentInDb = (await this.repo.AllReadonly<Comment>(
-                    c => c.Content == content)
+            Comment commentInDb = (await this.repo.AllReadonly<Comment>()
+                .OrderByDescending(c => c.CreatedOn)
                 .FirstOrDefaultAsync())!;
 
             // Act: call the delete service method and pass the necessary data
             await this.commentService.DeleteCommentAsync(commentInDb.Id);
 
-            commentInDb = (await this.repo.AllReadonly<Comment>(
-                    c => c.Content == content)
+            commentInDb = (await this.repo.AllReadonly<Comment>()
+                .OrderByDescending(c => c.CreatedOn)
                 .FirstOrDefaultAsync())!;
 
             // Assert: the comment has been deleted;

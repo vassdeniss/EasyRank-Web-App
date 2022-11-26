@@ -307,7 +307,7 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LikeRankAsync(Guid rankId)
         {
-            await this.rankService.LikeComment(this.User.Id(), rankId);
+            await this.rankService.LikeCommentAsync(this.User.Id(), rankId);
 
             return this.RedirectToAction("ViewRanking", "Rank", new { rankId });
         }

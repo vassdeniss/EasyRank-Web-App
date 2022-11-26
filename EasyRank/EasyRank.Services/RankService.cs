@@ -8,19 +8,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -33,7 +30,6 @@ namespace EasyRank.Services
     {
         private readonly IRepository repo;
         private readonly IMapper mapper;
-        private readonly UserManager<EasyRankUser> userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RankService"/> class.
@@ -41,15 +37,12 @@ namespace EasyRank.Services
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
-        /// <param name="userManager">Instance of a user manager.</param>
         public RankService(
             IRepository repo,
-            IMapper mapper,
-            UserManager<EasyRankUser> userManager)
+            IMapper mapper)
         {
             this.repo = repo;
             this.mapper = mapper;
-            this.userManager = userManager;
         }
 
         /// <inheritdoc />
@@ -68,13 +61,13 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
-            RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
                 .Where(rp => rp.IsDeleted == false)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
                 .Include(rp => rp.CreatedByUser)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if (rankPage == null)
             {
@@ -87,7 +80,7 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid)
         {
-            RankPage rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
+            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
                 .Where(rp => rp.IsDeleted == false)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
@@ -95,7 +88,7 @@ namespace EasyRank.Services
                 .Include(rp => rp.CreatedByUser)
                 .Include(rp => rp.LikedBy)
                 .ThenInclude(erurp => erurp.EasyRankUser)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             if (rankPage == null)
             {
@@ -215,12 +208,12 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task LikeComment(Guid userId, Guid rankId)
+        public async Task LikeCommentAsync(Guid userId, Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(
                                     rp => rp.Id == rankId && !rp.IsDeleted)
-                .Include(rp => rp.LikedBy)
-                .FirstOrDefaultAsync() 
+                                .Include(rp => rp.LikedBy)
+                                .FirstOrDefaultAsync() 
                             ?? throw new NotFoundException();
 
             EasyRankUserRankPage? mappedModel = page.LikedBy
@@ -243,6 +236,7 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId)
         {
             List<Guid> likedPageIds = await this.repo.AllReadonly<EasyRankUserRankPage>()
@@ -252,7 +246,8 @@ namespace EasyRank.Services
                 .ToListAsync();
 
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
-                await this.repo.AllReadonly<RankPage>(x => likedPageIds.Contains(x.Id))
+                await this.repo.AllReadonly<RankPage>(rp => likedPageIds.Contains(rp.Id))
+                    .Where(rp => !rp.IsDeleted)
                     .Include(rp => rp.Comments)
                     .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
