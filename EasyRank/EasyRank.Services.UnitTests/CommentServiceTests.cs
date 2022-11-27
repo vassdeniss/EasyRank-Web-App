@@ -154,7 +154,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async () => await this.commentService.IsCurrentUserPageOwner(guestUserId, deletedCommentId),
+                async() => await this.commentService.IsCurrentUserPageOwner(guestUserId, deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -323,29 +323,34 @@ namespace EasyRank.Services.UnitTests
         public async Task Test_EditComment_ChangesSuccessfully()
         {
             // Arrange: create data for a new comment to be added
+            Guid commentId = Guid.NewGuid();
             string content = "I think I really enjoyed your ranking and I would like to see more.";
             Guid createdByUserId = this.testDb.GuestUser.Id;
             Guid rankPageId = this.testDb.GuestPage.Id;
 
-            // Arrange: call the add service method and pass the necessary data
-            await this.commentService.CreateCommentAsync(content, createdByUserId, rankPageId);
+            Comment newComment = new Comment
+            {
+                Id = commentId,
+                Content = content,
+                CreatedByUserId = createdByUserId,
+                RankPageId = rankPageId,
+            };
 
-            Comment commentInDb = (await this.repo.AllReadonly<Comment>()
-                .OrderByDescending(c => c.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            // Arrange: add the comment to the db
+            await this.repo.AddAsync<Comment>(newComment);
+            await this.repo.SaveChangesAsync();
 
             // Arrange: create new content to be changed
             string changedContent = "I think I didn't enjoy your ranking and I don't want to see more. (Edit)";
 
             // Act: call the edit service method and pass the necessary data
-            await this.commentService.EditCommentAsync(commentInDb.Id, changedContent);
+            await this.commentService.EditCommentAsync(newComment.Id, changedContent);
+
+            Comment newCommentInDb = await this.repo.GetByIdAsync<Comment>(newComment.Id);
 
             // Assert: the comment has been edited
-            Comment? newCommentInDb = await this.repo.AllReadonly<Comment>()
-                .OrderByDescending(c => c.CreatedOn)
-                .FirstOrDefaultAsync();
             Assert.That(newCommentInDb, Is.Not.Null);
-            Assert.That(newCommentInDb!.Content, Is.EqualTo(changedContent));
+            Assert.That(newCommentInDb.Content, Is.EqualTo(changedContent));
             Assert.That(newCommentInDb.CreatedByUserId, Is.EqualTo(createdByUserId));
             Assert.That(newCommentInDb.RankPageId, Is.EqualTo(rankPageId));
         }
@@ -382,26 +387,30 @@ namespace EasyRank.Services.UnitTests
         public async Task Test_DeleteComment_RemovesSuccessfully()
         {
             // Arrange: create data for a new comment to be added
+            Guid commentId = Guid.NewGuid();
             string content = "I think I wanna delete this page cause I am an admin lol";
             Guid createdByUserId = this.testDb.GuestUser.Id;
             Guid rankPageId = this.testDb.GuestPage.Id;
 
-            // Arrange: call the add service method and pass the necessary data
-            await this.commentService.CreateCommentAsync(content, createdByUserId, rankPageId);
+            Comment newComment = new Comment
+            {
+                Id = commentId,
+                Content = content,
+                CreatedByUserId = createdByUserId,
+                RankPageId = rankPageId,
+            };
 
-            Comment commentInDb = (await this.repo.AllReadonly<Comment>()
-                .OrderByDescending(c => c.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            // Arrange: add the comment to the db
+            await this.repo.AddAsync<Comment>(newComment);
+            await this.repo.SaveChangesAsync();
 
             // Act: call the delete service method and pass the necessary data
-            await this.commentService.DeleteCommentAsync(commentInDb.Id);
+            await this.commentService.DeleteCommentAsync(newComment.Id);
 
-            commentInDb = (await this.repo.AllReadonly<Comment>()
-                .OrderByDescending(c => c.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            Comment newCommentInDb = await this.repo.GetByIdAsync<Comment>(newComment.Id);
 
             // Assert: the comment has been deleted;
-            Assert.That(commentInDb.IsDeleted, Is.True);
+            Assert.That(newCommentInDb.IsDeleted, Is.True);
         }
     }
 }
