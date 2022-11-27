@@ -95,21 +95,52 @@ namespace EasyRank.Web.Models
             /// The error message when the rank title length does not satisfy the given length.
             /// </summary>
             public const string RankTitleErrorMessage = "The {0} must be at least {2} characters long.";
+        }
+
+        /// <summary>
+        /// Class for holding the 'RankEntry' constraints.
+        /// </summary>
+        public class RankEntryConstraints
+        {
+            /// <summary>
+            /// The upper bound constant number for the entry title.
+            /// </summary>
+            public const int MaxEntryTitleLength = 30;
 
             /// <summary>
-            /// The upper bound constant number for the entry's image alt text.
+            /// The lower bound constant number for the entry title.
             /// </summary>
-            public const int MaxImageAltLength = 50;
+            public const int MinEntryTitleLength = 10;
 
             /// <summary>
-            /// The lower bound constant number for the entry's image alt text.
+            /// The error message when the entry title length does not satisfy the given length.
             /// </summary>
-            public const int MinImageAltLength = 10;
+            public const string EntryTitleErrorMessage = "The {0} must be at least {2} characters long.";
 
             /// <summary>
-            /// The error message when the image alt length does not satisfy the given length.
+            /// The upper bound constant number for the entry description.
             /// </summary>
-            public const string ImageAltErrorMessage = "The {0} must be at least {2} characters long.";
+            public const int MaxEntryDescriptionLength = 1000;
+
+            /// <summary>
+            /// The lower bound constant number for the entry description.
+            /// </summary>
+            public const int MinEntryDescriptionLength = 200;
+
+            /// <summary>
+            /// The error message when the entry title length does not satisfy the given length.
+            /// </summary>
+            public const string EntryDescriptionErrorMessage = "The {0} must be at least {2} characters long.";
+
+            /// <summary>
+            /// The upper bound constant number for the entry position.
+            /// </summary>
+            public const int MaxPlacement = 10;
+
+            /// <summary>
+            /// The lower bound constant number for the entry position.
+            /// </summary>
+            public const int MinPlacement = 1;
         }
 
         /// <summary>
@@ -132,6 +163,21 @@ namespace EasyRank.Web.Models
             /// </summary>
             public const string ConfirmPasswordErrorMessage =
                 "The new password and confirmation password do not match.";
+
+            /// <summary>
+            /// The upper bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MaxImageAltLength = 50;
+
+            /// <summary>
+            /// The lower bound constant number for the entry's image alt text.
+            /// </summary>
+            public const int MinImageAltLength = 10;
+
+            /// <summary>
+            /// The error message when the image alt length does not satisfy the given length.
+            /// </summary>
+            public const string ImageAltErrorMessage = "The {0} must be at least {2} characters long.";
         }
     }
 }

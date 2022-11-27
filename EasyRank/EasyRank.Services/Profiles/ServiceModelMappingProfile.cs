@@ -43,6 +43,38 @@ namespace EasyRank.Services.Profiles
                     mo => mo.MapFrom(
                         s => s.Comments.Count(c => c.IsDeleted == false)));
 
+            this.CreateMap<RankEntry, RankEntryServiceModel>();
+
+            this.CreateMap<RankPage, RankPageServiceModelExtended>()
+                .ForMember(
+                    d => d.CreatedOn,
+                    mo => mo.MapFrom(
+                        s => s.CreatedOn.ToString("dd MMMM yyyy")))
+                .ForMember(
+                    d => d.LikeCount,
+                    mo => mo.MapFrom(
+                        s => s.LikedBy.Count))
+                .ForMember(
+                    d => d.CreatedByUserName,
+                    mo => mo.MapFrom(
+                        s => s.CreatedByUser.UserName))
+                .ForMember(
+                    d => d.CommentCount,
+                    mo => mo.MapFrom(
+                        s => s.Comments.Count))
+                .ForMember(
+                    d => d.Entries,
+                    mo => mo.MapFrom(
+                        s => s.Entries.OrderByDescending(e => e.Placement)))
+                .ForMember(
+                    d => d.Comments,
+                    mo => mo.MapFrom(
+                        s => s.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedOn)))
+                .ForMember(
+                    d => d.LikedBy,
+                    mo => mo.MapFrom(
+                        s => s.LikedBy.Where(erurp => erurp.IsLiked).Select(erurp => erurp.EasyRankUserId)));
+
             this.CreateMap<Comment, CommentServiceModel>()
                 .ForMember(
                     d => d.ProfilePicture,

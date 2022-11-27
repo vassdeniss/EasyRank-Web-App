@@ -55,6 +55,7 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.AddScoped<IRepository, EasyRankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IEntryService, EntryService>();
 
 WebApplication app = builder.Build();
 

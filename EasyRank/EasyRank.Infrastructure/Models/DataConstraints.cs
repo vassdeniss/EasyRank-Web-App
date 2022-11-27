@@ -31,7 +31,7 @@ namespace EasyRank.Infrastructure.Models
         /// <summary>
         /// Class for holding the 'Comment' constraints.
         /// </summary>
-        public class Comment
+        public class CommentConstraints
         {
             /// <summary>
             /// The upper bound constant number for the length of the comment.
@@ -42,7 +42,7 @@ namespace EasyRank.Infrastructure.Models
         /// <summary>
         /// Class for holding the 'RankPage' constraints.
         /// </summary>
-        public class RankPage
+        public class RankPageConstraints
         {
             /// <summary>
             /// The upper bound constant number for the rank title.
@@ -74,11 +74,6 @@ namespace EasyRank.Infrastructure.Models
             /// The upper bound constant number for the entry's image alt text.
             /// </summary>
             public const int MaxImageAltLength = 50;
-
-            /// <summary>
-            /// The upper bound constant number for the entry image length.
-            /// </summary>
-            public const int MaxImageLinkLength = 2048;
         }
     }
 }

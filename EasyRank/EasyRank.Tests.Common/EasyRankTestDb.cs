@@ -127,7 +127,7 @@ namespace EasyRank.Tests.Common
                 Image = null,
                 ImageAlt = "Yoda",
                 RankingTitle = "Top 5 Favorite Characters",
-                CreatedOn = DateTime.Today,
+                CreatedOn = DateTime.Now.AddHours(-2),
                 CreatedByUserId = this.GuestUser.Id,
                 IsDeleted = false,
             };
@@ -140,7 +140,7 @@ namespace EasyRank.Tests.Common
                 Image = null,
                 ImageAlt = "Just image",
                 RankingTitle = "Top 5 Liked Posts",
-                CreatedOn = DateTime.Today,
+                CreatedOn = DateTime.Now.AddHours(-3),
                 CreatedByUserId = this.LikedUser.Id,
                 IsDeleted = false,
             };
@@ -153,7 +153,7 @@ namespace EasyRank.Tests.Common
                 Image = null,
                 ImageAlt = "Just stupid image",
                 RankingTitle = "Top 5 Disliked Posts",
-                CreatedOn = DateTime.Today,
+                CreatedOn = DateTime.Now.AddHours(-4),
                 CreatedByUserId = this.DislikedUser.Id,
                 IsDeleted = false,
             };
@@ -166,7 +166,7 @@ namespace EasyRank.Tests.Common
                 Image = null,
                 ImageAlt = "DeletedImg",
                 RankingTitle = "DeletedPage",
-                CreatedOn = DateTime.Today,
+                CreatedOn = DateTime.Now.AddHours(-5),
                 CreatedByUserId = this.GuestUser.Id,
                 IsDeleted = true,
             };

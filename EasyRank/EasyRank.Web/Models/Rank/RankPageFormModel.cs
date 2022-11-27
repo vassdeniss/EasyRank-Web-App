@@ -8,6 +8,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using static EasyRank.Web.Models.ViewModelConstraints.CommonConstraints;
 using static EasyRank.Web.Models.ViewModelConstraints.RankPageConstraints;
 
 namespace EasyRank.Web.Models.Rank
@@ -17,6 +18,9 @@ namespace EasyRank.Web.Models.Rank
     /// </summary>
     public class RankPageFormModel
     {
+        /// <summary>
+        /// Gets or sets the id of the rank page.
+        /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>

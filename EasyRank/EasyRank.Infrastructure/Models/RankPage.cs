@@ -14,7 +14,7 @@ using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.EntityFrameworkCore;
 
-using static EasyRank.Infrastructure.Models.DataConstraints.RankPage;
+using static EasyRank.Infrastructure.Models.DataConstraints.RankPageConstraints;
 
 namespace EasyRank.Infrastructure.Models
 {

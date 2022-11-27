@@ -95,37 +95,7 @@ namespace EasyRank.Services
                 throw new NotFoundException();
             }
 
-            RankPageServiceModelExtended rankPageServiceModelExtended = new RankPageServiceModelExtended
-            {
-                Id = rankGuid,
-                RankingTitle = rankPage.RankingTitle,
-                Image = rankPage.Image,
-                ImageAlt = rankPage.ImageAlt,
-                CreatedOn = rankPage.CreatedOn.ToString("dd MMMM yyyy"),
-                LikeCount = rankPage.LikedBy.Count,
-                CreatedByUserName = rankPage.CreatedByUser.UserName,
-                CommentCount = rankPage.Comments.Count,
-                Entries = rankPage.Entries.Select(re => new RankEntryServiceModel
-                {
-                    Placement = re.Placement,
-                    Title = re.Title,
-                    Image = re.Image,
-                    ImageAlt = re.ImageAlt,
-                    Description = re.Description,
-                })
-                .OrderByDescending(e => e.Placement)
-                .ToList(),
-                Comments = this.mapper.Map<ICollection<CommentServiceModel>>(rankPage.Comments
-                        .Where(c => c.IsDeleted == false)
-                        .OrderByDescending(c => c.CreatedOn))
-                    .ToList(),
-                LikedBy = rankPage.LikedBy
-                    .Where(erurp => erurp.IsLiked)
-                    .Select(erurp => erurp.EasyRankUser.Id)
-                    .ToList(),
-            };
-
-            return rankPageServiceModelExtended;
+            return this.mapper.Map<RankPageServiceModelExtended>(rankPage);
         }
 
         /// <inheritdoc />
@@ -164,10 +134,10 @@ namespace EasyRank.Services
         public async Task IsCurrentUserPageOwner(Guid userId, Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
-                        .Where(rp => rp.IsDeleted == false)
-                        .Include(rp => rp.CreatedByUser)
-                        .FirstOrDefaultAsync()
-                                    ?? throw new NotFoundException();
+                    .Where(rp => rp.IsDeleted == false)
+                    .Include(rp => rp.CreatedByUser)
+                    .FirstOrDefaultAsync()
+                        ?? throw new NotFoundException();
 
             if (page.CreatedByUser.Id != userId)
             {
@@ -211,10 +181,10 @@ namespace EasyRank.Services
         public async Task LikeCommentAsync(Guid userId, Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(
-                                    rp => rp.Id == rankId && !rp.IsDeleted)
-                                .Include(rp => rp.LikedBy)
-                                .FirstOrDefaultAsync() 
-                            ?? throw new NotFoundException();
+                    rp => rp.Id == rankId && !rp.IsDeleted)
+                .Include(rp => rp.LikedBy)
+                .FirstOrDefaultAsync() 
+                    ?? throw new NotFoundException();
 
             EasyRankUserRankPage? mappedModel = page.LikedBy
                 .FirstOrDefault(erurp => erurp.EasyRankUserId == userId);

@@ -4,6 +4,7 @@ using EasyRank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyRank.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EasyRankDbContext))]
-    partial class EasyRankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221127115939_RemovedStringImageRankEntry")]
+    partial class RemovedStringImageRankEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,9 +108,9 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
+                            Id = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ab4e61e6-f534-491d-9eab-23377c5849ff",
+                            ConcurrencyStamp = "6f340bd6-9288-4af6-976d-a3a1edc656ad",
                             Email = "guest@mail.com",
                             EmailConfirmed = true,
                             FirstName = "Guest",
@@ -116,17 +118,17 @@ namespace EasyRank.Infrastructure.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@MAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAEAACcQAAAAEI7J9trAwicuMJNuZJhUc99CCfH8zay77h+FnUvD64I9ptZ3Jb73fqUMe4bkKh2NaA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPLe5q+BYi+0mD3/EZ/ztAzFrlnxgDCDeYezSliAI0XIYFBjiETlYfxDdSMwnw7rmQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2337d7b8-cc6b-4add-844c-4ffeac03ec8f",
+                            SecurityStamp = "4e0ca773-058b-4940-9714-2c9ccd91b1a1",
                             TwoFactorEnabled = false,
                             UserName = "guest"
                         },
                         new
                         {
-                            Id = new Guid("6a1d3521-d20e-47da-8fcc-67af012547e6"),
+                            Id = new Guid("ee6cf398-e3ac-4a96-8b22-e3a2a2a4c1c8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "922ed46a-0987-4f99-ae36-1e79612462db",
+                            ConcurrencyStamp = "42b676b7-c3bb-42d8-a1df-2d73fe7c9521",
                             Email = "guestTwo@mail.com",
                             EmailConfirmed = true,
                             FirstName = "GuestTwo",
@@ -134,9 +136,9 @@ namespace EasyRank.Infrastructure.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "GUESTTWO@MAIL.COM",
                             NormalizedUserName = "GUESTTWO",
-                            PasswordHash = "AQAAAAEAACcQAAAAECE9P/LSuCtHau+YR0Z6oViqmqAl9ld81hRRosZunvGsByVCMToEgrsjOCImI3Tk1A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMFG0mAuTkKAR1MMcQ9YcCbv4IhWVwKLkQetHabDUiCcBYSi7RP8YZgr7uVqjp0KBA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c1e3d194-d476-4745-adad-ba7902b2e7e5",
+                            SecurityStamp = "2f538a41-ec29-4ca0-bf0f-4b656274ca5b",
                             TwoFactorEnabled = false,
                             UserName = "guestTwo"
                         });
@@ -184,30 +186,30 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9b40091d-b32d-4c41-8c34-bf0eb16027cb"),
+                            Id = new Guid("8c45056d-d437-4f1f-952f-827ab6dbdf14"),
                             Content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
-                            CreatedOn = new DateTime(2022, 11, 24, 16, 12, 21, 445, DateTimeKind.Local).AddTicks(6397),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
+                            CreatedOn = new DateTime(2022, 11, 24, 13, 59, 39, 334, DateTimeKind.Local).AddTicks(3298),
                             IsDeleted = false,
-                            RankPageId = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca")
+                            RankPageId = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6")
                         },
                         new
                         {
-                            Id = new Guid("4b40f1e6-b198-49d5-9709-6576f29f8624"),
+                            Id = new Guid("33d9b8ec-39b4-4393-8889-18ee8e95fa58"),
                             Content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
-                            CreatedOn = new DateTime(2022, 11, 29, 16, 12, 21, 445, DateTimeKind.Local).AddTicks(6407),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
+                            CreatedOn = new DateTime(2022, 11, 29, 13, 59, 39, 334, DateTimeKind.Local).AddTicks(3306),
                             IsDeleted = false,
-                            RankPageId = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca")
+                            RankPageId = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6")
                         },
                         new
                         {
-                            Id = new Guid("cc757eff-5b6e-43cd-9667-201ecca28439"),
+                            Id = new Guid("5404577f-382a-4d6d-9cb1-75feeed31cb0"),
                             Content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                            CreatedByUserId = new Guid("6a1d3521-d20e-47da-8fcc-67af012547e6"),
-                            CreatedOn = new DateTime(2022, 11, 17, 16, 12, 21, 445, DateTimeKind.Local).AddTicks(6413),
+                            CreatedByUserId = new Guid("ee6cf398-e3ac-4a96-8b22-e3a2a2a4c1c8"),
+                            CreatedOn = new DateTime(2022, 11, 17, 13, 59, 39, 334, DateTimeKind.Local).AddTicks(3310),
                             IsDeleted = false,
-                            RankPageId = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca")
+                            RankPageId = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6")
                         });
                 });
 
@@ -242,10 +244,6 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasComment("Gets or sets the description for a rank entry.");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)")
-                        .HasComment("Gets or sets the image for a rank entry.");
-
                     b.Property<string>("ImageAlt")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -277,20 +275,20 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("107386a6-d295-4146-b3f7-678b2bf47b67"),
+                            Id = new Guid("a339bec8-bf77-4ed9-a069-87da8ecf9fdd"),
                             Description = "Good stuff",
                             ImageAlt = "Picture of star wars",
                             Placement = 10,
-                            RankPageId = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca"),
+                            RankPageId = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6"),
                             Title = "Star Wars"
                         },
                         new
                         {
-                            Id = new Guid("6970c349-567f-4668-80f4-4e98302b1699"),
+                            Id = new Guid("ad81b331-8472-471e-838e-cc80f9da032c"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
                             ImageAlt = "Picture of star wars2",
                             Placement = 9,
-                            RankPageId = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca"),
+                            RankPageId = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6"),
                             Title = "Star Wars2"
                         });
                 });
@@ -341,8 +339,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("03567aa0-0979-4b6f-a255-a5431b2006ca"),
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
+                            Id = new Guid("7cd8e81c-d20e-4104-9aaa-1fa42d07aae6"),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
                             CreatedOn = new DateTime(2022, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             ImageAlt = "Yoda",
                             IsDeleted = false,
@@ -350,8 +348,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d4a9b7bd-3b04-4dff-8d7f-9960564fac80"),
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
+                            Id = new Guid("a6fc078c-a915-4c8b-9828-4dffb0c3a538"),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
                             CreatedOn = new DateTime(2022, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             ImageAlt = "Yoda",
                             IsDeleted = false,
@@ -359,8 +357,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8e149084-2727-4fbc-b068-7bd6b545e865"),
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
+                            Id = new Guid("8da8f07e-df21-4aba-ae5e-7cc1bf91db6e"),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
                             CreatedOn = new DateTime(2022, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             ImageAlt = "Yoda",
                             IsDeleted = false,
@@ -368,8 +366,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0f6bf11b-24c9-413c-a3f5-a27445e61c27"),
-                            CreatedByUserId = new Guid("07a60ca2-9115-4017-ad7f-d9889778ca06"),
+                            Id = new Guid("bcf477cc-6183-41cb-ae19-f564946a3fdc"),
+                            CreatedByUserId = new Guid("a424eb83-e98d-4567-adf4-343410276bd1"),
                             CreatedOn = new DateTime(2022, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             ImageAlt = "Yoda",
                             IsDeleted = false,
@@ -377,8 +375,8 @@ namespace EasyRank.Infrastructure.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("042eb1ca-4915-41bf-9feb-77e33ce4ddf3"),
-                            CreatedByUserId = new Guid("6a1d3521-d20e-47da-8fcc-67af012547e6"),
+                            Id = new Guid("f40c9b3f-1948-4a4a-9f10-e4aad7c677f4"),
+                            CreatedByUserId = new Guid("ee6cf398-e3ac-4a96-8b22-e3a2a2a4c1c8"),
                             CreatedOn = new DateTime(2022, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             ImageAlt = "Yoda",
                             IsDeleted = false,

@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Services.UnitTests", "EasyRank.Services.UnitTests\EasyRank.Services.UnitTests.csproj", "{7CF880E4-F223-4154-ADA2-1EC04218749A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Services.UnitTests", "EasyRank.Services.UnitTests\EasyRank.Services.UnitTests.csproj", "{7CF880E4-F223-4154-ADA2-1EC04218749A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

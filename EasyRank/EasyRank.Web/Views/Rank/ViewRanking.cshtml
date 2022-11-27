@@ -61,13 +61,29 @@
 	}
 </style>
 
+<h1 class="text-center mb-1">@this.Model.RankingTitle</h1>
+<h2 class="text-center mb-3">By @this.Model.CreatedByUserName</h2>
+
 @foreach (RankEntryViewModel entry in this.Model.Entries)
 {
 	<div class="card border-secondary">
-		<img src="@entry.Image" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
+		@if (entry.Image!.Any())
+		{
+			<img src="data:image/*; base64, @Convert.ToBase64String(entry.Image!)" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
+		}
+		else
+		{
+			<img src="" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
+		}
 		<div class="card-body">
 			<h3 class="card-title">#@entry.Placement<br/>@entry.Title</h3>
 			<p class="card-text">@entry.Description</p>
+			@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+			{
+				<a asp-controller="Entry" asp-action="Edit" asp-route-rankId="@this.Model.Id" class="card-link">Edit Entry</a>
+				<span class="text-primary mx-3">|</span>
+				<a asp-controller="Entry" asp-action="Delete" asp-route-rankId="@this.Model.Id" class="card-link">Delete Entry</a>
+			}
 		</div>
 	</div>
 }
@@ -75,13 +91,13 @@
 @if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
 {
 	<div class="d-flex justify-content-center mb-3">
-		<button class="btn btn-secondary mx-2">Create New Entry</button>
+		<a asp-controller="Entry" asp-action="Create" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Create New Entry</a>
 		<a asp-action="Edit" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Edit Page</a>
 		<a asp-action="Delete" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Delete Page</a>
 	</div>
 }
 
-<h3 class="mb-3">Comments:</h3>
+<h3 class="mb-3">Comments</h3>
 
 @if (this.User.Identity!.IsAuthenticated)
 {

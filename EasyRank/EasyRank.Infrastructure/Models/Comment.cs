@@ -13,7 +13,7 @@ using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.EntityFrameworkCore;
 
-using static EasyRank.Infrastructure.Models.DataConstraints.Comment;
+using static EasyRank.Infrastructure.Models.DataConstraints.CommentConstraints;
 
 namespace EasyRank.Infrastructure.Models
 {

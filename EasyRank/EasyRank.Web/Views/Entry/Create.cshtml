@@ -1,0 +1,33 @@
+﻿@model RankEntryFormModel
+@{
+	this.ViewData["Title"] = "Create Entry";
+	this.ViewData["ButtonType"] = "Create";
+}
+
+@await this.Html.PartialAsync("_RankEntryFormPartial", this.Model)
+
+@section Scripts {
+	<script>
+		$('.form-select').on('change',
+			function() {
+				$('.title-select').text(`#${$('.form-select option:selected').text()}`);
+			});
+
+		$('.form-title').on('input',
+			function() {
+				$('.title').text($('.form-title').val());
+			});
+
+		$('.form-alt').on('input',
+			function() {
+				$('.card-img-top').prop('alt', $('.form-alt').val());
+			});
+
+		$('.form-text').on('input',
+			function() {
+				$('.card-text').text($('.form-text').val());
+			});
+	</script>
+
+	<partial name="_ValidationScriptsPartial"/>
+}

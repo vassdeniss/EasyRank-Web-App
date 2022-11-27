@@ -23,9 +23,9 @@ namespace EasyRank.Services.Models
         public string Title { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets the image link for a rank entry.
+        /// Gets or sets the image for a rank entry.
         /// </summary>
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
 
         /// <summary>
         /// Gets or sets the alternative text if the image is broken.
