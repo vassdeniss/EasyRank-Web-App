@@ -65,6 +65,13 @@ namespace EasyRank.Infrastructure.Models
         public string Description { get; set; } = null!;
 
         /// <summary>
+        /// Gets or sets a value indicating whether a rank entry has been deleted.
+        /// </summary>
+        [Required]
+        [Comment("Gets or sets a value indicating whether a rank entry has been deleted.")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the guid of the rank page which the entry belongs to.
         /// </summary>
         /// <remarks>Foreign key to the 'RankPage' table.</remarks>

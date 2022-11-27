@@ -23,7 +23,7 @@ namespace EasyRank.Infrastructure.Data.Configurations
             builder.HasOne(e => e.RankPage)
                 .WithMany(p => p.Entries)
                 .HasForeignKey(c => c.RankPageId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -80,8 +80,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<RankPageServiceModelExtended> GetExtendedRankPageByGuidAsync(Guid rankGuid)
         {
-            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
-                .Where(rp => rp.IsDeleted == false)
+            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(
+                    rp => rp.Id == rankGuid && !rp.IsDeleted)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)
@@ -102,8 +102,8 @@ namespace EasyRank.Services
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
-                await this.repo.AllReadonly<RankPage>(rp => rp.CreatedByUserId == userId)
-                    .Where(rp => rp.IsDeleted == false)
+                await this.repo.AllReadonly<RankPage>(
+                        rp => rp.CreatedByUserId == userId && !rp.IsDeleted)
                     .Include(rp => rp.Comments)
                     .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
@@ -133,8 +133,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserPageOwner(Guid userId, Guid rankId)
         {
-            RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
-                    .Where(rp => rp.IsDeleted == false)
+            RankPage page = await this.repo.All<RankPage>(
+                    rp => rp.Id == rankId && !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
                     .FirstOrDefaultAsync()
                         ?? throw new NotFoundException();
@@ -165,14 +165,24 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task DeleteRankAsync(Guid rankId)
         {
-            RankPage page = await this.repo.GetByIdAsync<RankPage>(rankId);
-
-            if (page == null || page.IsDeleted)
-            {
-                throw new NotFoundException();
-            }
+            RankPage page = await this.repo.All<RankPage>(
+                rp => rp.Id == rankId && !rp.IsDeleted)
+                .Include(rp => rp.Entries)
+                .Include(rp => rp.Comments)
+                .FirstOrDefaultAsync() 
+                        ?? throw new NotFoundException();
 
             page.IsDeleted = true;
+
+            foreach (Comment comment in page.Comments)
+            {
+                comment.IsDeleted = true;
+            }
+
+            foreach (RankEntry entry in page.Entries)
+            {
+                entry.IsDeleted = true;
+            }
 
             await this.repo.SaveChangesAsync();
         }

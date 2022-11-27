@@ -131,8 +131,8 @@ namespace EasyRank.Services.UnitTests
             // Arrange: get 'RankPage' count (where pages are not deleted and filtered by user),
             // get 'GuestUser' id from database
             Guid guestUserId = this.testDb.GuestUser.Id;
-            int databaseCount = await this.repo.AllReadonly<RankPage>()
-                .Where(rp => !rp.IsDeleted && rp.CreatedByUserId == guestUserId)
+            int databaseCount = await this.repo.AllReadonly<RankPage>(
+                    rp => !rp.IsDeleted && rp.CreatedByUserId == guestUserId)
                 .CountAsync();
 
             // Act: call service method and get ranks count
@@ -273,32 +273,39 @@ namespace EasyRank.Services.UnitTests
         public async Task Test_EditRank_ChangesSuccessfully()
         {
             // Arrange: create data for a new rank page to be added
+            Guid rankPageId = Guid.NewGuid();
             byte[] image = Array.Empty<byte>();
             string imageAlt = "Alternative text for image for testing edit page";
-            string rankingTitle = "Top 10 Rank Page I Want to Edit in the Future"; 
+            string rankingTitle = "Top 10 Rank Page I Want to Edit in the Future";
             Guid createdByUserId = this.testDb.GuestUser.Id;
 
-            // Arrange: call the add service method and pass the necessary data
-            await this.rankService.CreateRankAsync(image, imageAlt, rankingTitle, createdByUserId);
+            RankPage newPage = new RankPage
+            {
+                Id = rankPageId,
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+            };
 
-            RankPage pageInDb = (await this.repo.AllReadonly<RankPage>()
-                .OrderByDescending(rp => rp.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            // Arrange: add the page to the db
+            await this.repo.AddAsync<RankPage>(newPage);
+            await this.repo.SaveChangesAsync();
 
             // Arrange: create new data to be changed
             string changedTitle = "Top (10) 5 Rank Page I Want to Edit in the Future";
 
             // Act: call the edit service method and pass the necessary data
-            await this.rankService.EditRankAsync(pageInDb.Id, changedTitle, imageAlt, image);
+            await this.rankService.EditRankAsync(rankPageId, changedTitle, imageAlt, image);
 
             // Assert: the comment has been edited
-            RankPage? newRankPageInDb = await this.repo.AllReadonly<RankPage>()
-                .OrderByDescending(rp => rp.CreatedOn)
-                .FirstOrDefaultAsync();
-            Assert.That(newRankPageInDb, Is.Not.Null);
-            Assert.That(newRankPageInDb!.RankingTitle, Is.EqualTo(changedTitle));
-            Assert.That(newRankPageInDb.ImageAlt, Is.EqualTo(imageAlt));
-            Assert.That(newRankPageInDb.CreatedByUserId, Is.EqualTo(createdByUserId));
+            RankPage pageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
+
+            Assert.That(pageInDb.RankingTitle, Is.EqualTo(changedTitle));
+            Assert.That(pageInDb.ImageAlt, Is.EqualTo(imageAlt));
+            Assert.That(pageInDb.CreatedByUserId, Is.EqualTo(createdByUserId));
         }
 
         [Test]
@@ -330,29 +337,234 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
-        public async Task Test_DeleteRank_RemovesSuccessfully()
+        public async Task Test_DeleteRank_WithEntry_RemovesSuccessfully()
         {
             // Arrange: create data for a new rank page to be added
+            Guid rankPageId = Guid.NewGuid();
             byte[] image = Array.Empty<byte>();
             string imageAlt = "Alternative text for image for testing delete page";
             string rankingTitle = "Top 10 Rank Page I Want to Delete in the Future";
             Guid createdByUserId = this.testDb.GuestUser.Id;
 
-            // Arrange: call the add service method and pass the necessary data
-            await this.rankService.CreateRankAsync(image, imageAlt, rankingTitle, createdByUserId);
+            RankPage newPage = new RankPage
+            {
+                Id = rankPageId,
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+            };
 
-            RankPage rankPageInDb = (await this.repo.AllReadonly<RankPage>()
-                .OrderByDescending(rp => rp.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            // Arrange: add the page to the db
+            await this.repo.AddAsync<RankPage>(newPage);
+            await this.repo.SaveChangesAsync();
+
+            // Arrange: create data for a new rank entry to be added
+            Guid rankEntryId = Guid.NewGuid();
+            int placement = 10;
+            string entryTitle = "This is the page I want to delete least";
+            byte[] entryImage = Array.Empty<byte>();
+            string entryImageAlt = "Alternative text for image for testing delete page with entry";
+            string description =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et ligula ornare, lacinia lacus non, pulvinar massa. Vivamus rutrum, nisi.";
+
+            RankEntry entry = new RankEntry
+            {
+                Id = rankEntryId,
+                Placement = placement,
+                Title = entryTitle,
+                Image = entryImage,
+                ImageAlt = entryImageAlt,
+                Description = description,
+                IsDeleted = false,
+                RankPageId = rankPageId,
+            };
+
+            // Arrange: add the entry to the db
+            await this.repo.AddAsync<RankEntry>(entry);
+            await this.repo.SaveChangesAsync();
 
             // Act: call the delete service method and pass the necessary data
-            await this.rankService.DeleteRankAsync(rankPageInDb.Id);
+            await this.rankService.DeleteRankAsync(rankPageId);
 
-            rankPageInDb = (await this.repo.AllReadonly<RankPage>()
-                .OrderByDescending(rp => rp.CreatedOn)
-                .FirstOrDefaultAsync())!;
+            RankPage rankPageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
+            RankEntry rankEntryInDb = await this.repo.GetByIdAsync<RankEntry>(rankEntryId);
 
-            // Assert: the comment has been deleted;
+            // Assert: the rank page and entry have been deleted;
+            Assert.That(rankPageInDb.IsDeleted, Is.True);
+            Assert.That(rankEntryInDb.IsDeleted, Is.True);
+        }
+
+        [Test]
+        public async Task Test_DeleteRank_WithComment_RemovesSuccessfully()
+        {
+            // Arrange: create data for a new rank page to be added
+            Guid rankPageId = Guid.NewGuid();
+            byte[] image = Array.Empty<byte>();
+            string imageAlt = "Alternative text for image for testing delete page";
+            string rankingTitle = "Top 10 Rank Page I Want to Delete in the Future";
+            Guid createdByUserId = this.testDb.GuestUser.Id;
+
+            RankPage newPage = new RankPage
+            {
+                Id = rankPageId,
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+            };
+
+            // Arrange: add the page to the db
+            await this.repo.AddAsync<RankPage>(newPage);
+            await this.repo.SaveChangesAsync();
+
+            // Arrange: create data for a new comment to be added
+            Guid commentId = Guid.NewGuid();
+            string content =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et ligula ornare, lacinia lacus non, pulvinar massa. Vivamus rutrum, nisi.";
+
+            Comment comment = new Comment
+            {
+                Id = commentId,
+                Content = content,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+                RankPageId = rankPageId,
+            };
+
+            // Arrange: add the comment to the db
+            await this.repo.AddAsync<Comment>(comment);
+            await this.repo.SaveChangesAsync();
+
+            // Act: call the delete service method and pass the necessary data
+            await this.rankService.DeleteRankAsync(rankPageId);
+
+            RankPage rankPageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
+            Comment commentInDb = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            // Assert: the rank page and comment have been deleted;
+            Assert.That(rankPageInDb.IsDeleted, Is.True);
+            Assert.That(commentInDb.IsDeleted, Is.True);
+        }
+
+        [Test]
+        public async Task Test_DeleteRank_WithEntryAndComment_RemovesSuccessfully()
+        {
+            // Arrange: create data for a new rank page to be added
+            Guid rankPageId = Guid.NewGuid();
+            byte[] image = Array.Empty<byte>();
+            string imageAlt = "Alternative text for image for testing delete page";
+            string rankingTitle = "Top 10 Rank Page I Want to Delete in the Future";
+            Guid createdByUserId = this.testDb.GuestUser.Id;
+
+            RankPage newPage = new RankPage
+            {
+                Id = rankPageId,
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+            };
+
+            // Arrange: add the page to the db
+            await this.repo.AddAsync<RankPage>(newPage);
+            await this.repo.SaveChangesAsync();
+
+            // Arrange: create data for a new rank entry to be added
+            Guid rankEntryId = Guid.NewGuid();
+            int placement = 10;
+            string entryTitle = "This is the page I want to delete least";
+            byte[] entryImage = Array.Empty<byte>();
+            string entryImageAlt = "Alternative text for image for testing delete page with entry";
+            string description =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et ligula ornare, lacinia lacus non, pulvinar massa. Vivamus rutrum, nisi.";
+
+            RankEntry entry = new RankEntry
+            {
+                Id = rankEntryId,
+                Placement = placement,
+                Title = entryTitle,
+                Image = entryImage,
+                ImageAlt = entryImageAlt,
+                Description = description,
+                IsDeleted = false,
+                RankPageId = rankPageId,
+            };
+
+            // Arrange: add the entry to the db
+            await this.repo.AddAsync<RankEntry>(entry);
+            await this.repo.SaveChangesAsync();
+
+            // Arrange: create data for a new comment to be added
+            Guid commentId = Guid.NewGuid();
+            string content =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et ligula ornare, lacinia lacus non, pulvinar massa. Vivamus rutrum, nisi.";
+
+            Comment comment = new Comment
+            {
+                Id = commentId,
+                Content = content,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+                RankPageId = rankPageId,
+            };
+
+            // Arrange: add the comment to the db
+            await this.repo.AddAsync<Comment>(comment);
+            await this.repo.SaveChangesAsync();
+
+            // Act: call the delete service method and pass the necessary data
+            await this.rankService.DeleteRankAsync(rankPageId);
+
+            RankPage rankPageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
+            RankEntry rankEntryInDb = await this.repo.GetByIdAsync<RankEntry>(rankEntryId);
+            Comment commentInDb = await this.repo.GetByIdAsync<Comment>(commentId);
+
+            // Assert: the rank page, entry, and comment have been deleted;
+            Assert.That(rankPageInDb.IsDeleted, Is.True);
+            Assert.That(rankEntryInDb.IsDeleted, Is.True);
+            Assert.That(commentInDb.IsDeleted, Is.True);
+        }
+
+        [Test]
+        public async Task Test_DeleteRank_RemovesSuccessfully()
+        {
+            // Arrange: create data for a new rank page to be added
+            Guid rankPageId = Guid.NewGuid();
+            byte[] image = Array.Empty<byte>();
+            string imageAlt = "Alternative text for image for testing delete page";
+            string rankingTitle = "Top 10 Rank Page I Want to Delete in the Future";
+            Guid createdByUserId = this.testDb.GuestUser.Id;
+
+            RankPage newPage = new RankPage
+            {
+                Id = rankPageId,
+                Image = image,
+                ImageAlt = imageAlt,
+                RankingTitle = rankingTitle,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false,
+                CreatedByUserId = createdByUserId,
+            };
+
+            // Arrange: add the page to the db
+            await this.repo.AddAsync<RankPage>(newPage);
+            await this.repo.SaveChangesAsync();
+
+            // Act: call the delete service method and pass the necessary data
+            await this.rankService.DeleteRankAsync(rankPageId);
+
+            RankPage rankPageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
+
+            // Assert: the rank page has been deleted;
             Assert.That(rankPageInDb.IsDeleted, Is.True);
         }
 
@@ -382,7 +594,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async () => await this.rankService.LikeCommentAsync(guestUserId, deletedRankPageId),
+                async() => await this.rankService.LikeCommentAsync(guestUserId, deletedRankPageId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -454,8 +666,8 @@ namespace EasyRank.Services.UnitTests
                 .Select(erurp => erurp.RankPageId)
                 .ToListAsync();
 
-            int databaseCount = await this.repo.AllReadonly<RankPage>(rp => likedPageIds.Contains(rp.Id))
-                .Where(rp => !rp.IsDeleted)
+            int databaseCount = await this.repo.AllReadonly<RankPage>(
+                    rp => likedPageIds.Contains(rp.Id) && !rp.IsDeleted)
                 .CountAsync();
 
             // Act: call service method and get liked ranks count
