@@ -49,6 +49,11 @@ namespace EasyRank.Services.Contracts
             string description,
             Guid rankId);
 
+        /// <summary>
+        /// Retrieves the numbers (1-10) that can be used for a new entry placement on the current rank page.
+        /// </summary>
+        /// <param name="rankId">GUID used to search for the needed page.</param>
+        /// <returns>Collection of numbers representing available space.</returns>
         Task<ICollection<int>> GetAvailablePlacements(Guid rankId);
     }
 }

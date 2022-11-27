@@ -75,6 +75,7 @@ namespace EasyRank.Services
             await this.repo.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task<ICollection<int>> GetAvailablePlacements(Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
