@@ -131,7 +131,7 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserPageOwner(Guid userId, Guid rankId)
+        public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId)
         {
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)

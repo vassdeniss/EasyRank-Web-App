@@ -38,13 +38,13 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserPageOwner(Guid userId, Guid rankId)
+        public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId)
         {
-            RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
-                    .Where(rp => rp.IsDeleted == false)
+            RankPage page = await this.repo.All<RankPage>(
+                    rp => rp.Id == rankId && !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
                     .FirstOrDefaultAsync()
-                            ?? throw new NotFoundException();
+                        ?? throw new NotFoundException();
 
             if (page.CreatedByUser.Id != userId)
             {
@@ -76,13 +76,13 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<int>> GetAvailablePlacements(Guid rankId)
+        public async Task<ICollection<int>> GetAvailablePlacementsAsync(Guid rankId)
         {
-            RankPage page = await this.repo.All<RankPage>(c => c.Id == rankId)
-                .Where(rp => rp.IsDeleted == false)
+            RankPage page = await this.repo.All<RankPage>(
+                    rp => rp.Id == rankId && !rp.IsDeleted)
                 .Include(rp => rp.Entries)
                 .FirstOrDefaultAsync()
-                        ?? throw new NotFoundException();
+                    ?? throw new NotFoundException();
 
             List<int> takenPlacements = page.Entries.Select(e => e.Placement)
                 .ToList();

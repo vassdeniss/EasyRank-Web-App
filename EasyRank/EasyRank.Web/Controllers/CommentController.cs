@@ -93,7 +93,7 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAsync(Guid commentId)
         {
-            await this.commentService.IsCurrentUserCommentOwner(
+            await this.commentService.IsCurrentUserCommentOwnerAsync(
                 this.User.Id(),
                 commentId);
 
@@ -134,7 +134,7 @@ namespace EasyRank.Web.Controllers
             await this.commentService.EditCommentAsync(model.Id, sanitizedContent);
             return this.RedirectToAction("ViewRanking", "Rank", new
             {
-                rankId = await this.commentService.GetCommentPageId(model.Id),
+                rankId = await this.commentService.GetCommentPageIdAsync(model.Id),
             });
         }
 
@@ -149,11 +149,11 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteAsync(Guid commentId)
         {
-            await this.commentService.IsCurrentUserCommentOwner(
+            await this.commentService.IsCurrentUserCommentOwnerAsync(
                 this.User.Id(),
                 commentId);
 
-            await this.commentService.IsCurrentUserPageOwner(
+            await this.commentService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
                 commentId);
 
@@ -183,7 +183,7 @@ namespace EasyRank.Web.Controllers
 
             return this.RedirectToAction("ViewRanking", "Rank", new
             {
-                rankId = await this.commentService.GetCommentPageId(model.Id),
+                rankId = await this.commentService.GetCommentPageIdAsync(model.Id),
             });
         }
 

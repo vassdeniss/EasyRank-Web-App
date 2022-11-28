@@ -67,7 +67,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the comment.</exception>
-        Task IsCurrentUserCommentOwner(
+        Task IsCurrentUserCommentOwnerAsync(
             Guid userId,
             Guid commentId);
 
@@ -80,7 +80,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the page.</exception>
-        Task IsCurrentUserPageOwner(
+        Task IsCurrentUserPageOwnerAsync(
             Guid userId,
             Guid commentId);
 
@@ -90,6 +90,6 @@ namespace EasyRank.Services.Contracts
         /// <returns>The GUID of the page.</returns>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
-        Task<Guid> GetCommentPageId(Guid commentId);
+        Task<Guid> GetCommentPageIdAsync(Guid commentId);
     }
 }

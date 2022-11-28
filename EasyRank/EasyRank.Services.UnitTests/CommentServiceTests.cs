@@ -79,7 +79,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwner(guestUserId, invalidPageId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, invalidPageId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -94,7 +94,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwner(guestUserId, deletedCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -109,7 +109,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: UnauthorizedUserException is thrown with denis user id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwner(denisUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(denisUserId, guestCommentId),
                 Throws.Exception.TypeOf<UnauthorizedUserException>());
         }
 
@@ -124,7 +124,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: no exceptions are thrown
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwner(guestUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, guestCommentId),
                  Throws.Nothing);
         }
 
@@ -139,7 +139,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwner(guestUserId, invalidCommentId),
+                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, invalidCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -154,7 +154,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwner(guestUserId, deletedCommentId),
+                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -169,7 +169,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwner(guestUserId, deletedPageId),
+                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, deletedPageId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -184,7 +184,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: UnauthorizedUserException is thrown with denis user id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwner(denisUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserPageOwnerAsync(denisUserId, guestCommentId),
                 Throws.Exception.TypeOf<UnauthorizedUserException>());
         }
 
@@ -199,7 +199,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: no exceptions are thrown
             Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwner(guestUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, guestCommentId),
                  Throws.Nothing);
         }
 
@@ -213,7 +213,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async() => await this.commentService.GetCommentPageId(invalidCommentId),
+                async() => await this.commentService.GetCommentPageIdAsync(invalidCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -227,7 +227,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.GetCommentPageId(deletedCommentId),
+                async() => await this.commentService.GetCommentPageIdAsync(deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -241,7 +241,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.GetCommentPageId(deletedCommentId),
+                async() => await this.commentService.GetCommentPageIdAsync(deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -253,7 +253,7 @@ namespace EasyRank.Services.UnitTests
             Guid guestRankPageId = this.testDb.GuestPage.Id;
 
             // Act: call service method to get rank page id from comment id
-            Guid rankPageId = await this.commentService.GetCommentPageId(guestCommentId);
+            Guid rankPageId = await this.commentService.GetCommentPageIdAsync(guestCommentId);
 
             // Assert: correct page id is returned
             Assert.That(rankPageId, Is.EqualTo(guestRankPageId));

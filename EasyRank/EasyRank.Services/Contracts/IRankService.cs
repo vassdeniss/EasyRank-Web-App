@@ -71,7 +71,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the page.</exception>
-        Task IsCurrentUserPageOwner(
+        Task IsCurrentUserPageOwnerAsync(
             Guid userId,
             Guid rankId);
 

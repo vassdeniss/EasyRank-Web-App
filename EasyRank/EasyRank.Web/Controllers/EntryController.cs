@@ -46,13 +46,13 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateAsync(Guid rankId)
         {
-            await this.entryService.IsCurrentUserPageOwner(
+            await this.entryService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
                 rankId);
 
             RankEntryFormModel model = new RankEntryFormModel
             {
-                AvailablePlacements = await this.entryService.GetAvailablePlacements(rankId),
+                AvailablePlacements = await this.entryService.GetAvailablePlacementsAsync(rankId),
             };
 
             this.TempData["EntryCreateReturnId"] = rankId;

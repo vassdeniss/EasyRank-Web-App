@@ -27,7 +27,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the page.</exception>
-        Task IsCurrentUserPageOwner(
+        Task IsCurrentUserPageOwnerAsync(
             Guid userId,
             Guid rankId);
 
@@ -54,6 +54,6 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <param name="rankId">GUID used to search for the needed page.</param>
         /// <returns>Collection of numbers representing available space.</returns>
-        Task<ICollection<int>> GetAvailablePlacements(Guid rankId);
+        Task<ICollection<int>> GetAvailablePlacementsAsync(Guid rankId);
     }
 }

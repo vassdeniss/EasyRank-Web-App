@@ -164,16 +164,14 @@ else
 
 @if (this.User.Identity.IsAuthenticated)
 {
-	@if (this.Model.LikedBy.Contains(this.User.Id()))
-	{
-		<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
+	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
+		@if (this.Model.LikedBy.Contains(this.User.Id()))
+		{
 			<button type="submit" class="like-button btn btn-primary p-2">❤️ I Like!</button>
-		</form>
-	}
-	else
-	{
-		<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
+		}
+		else
+		{
 			<button type="submit" class="like-button btn btn-warning p-2">❤️ I Like!</button>
-		</form>
-	}
+		}
+	</form>
 }

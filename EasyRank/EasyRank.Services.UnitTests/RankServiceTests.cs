@@ -155,7 +155,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async() => await this.rankService.IsCurrentUserPageOwner(guestUserId, invalidRankPageId),
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(guestUserId, invalidRankPageId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -170,7 +170,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.rankService.IsCurrentUserPageOwner(guestUserId, deletedRankPageId),
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(guestUserId, deletedRankPageId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -185,7 +185,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: UnauthorizedUserException is thrown with denis user id
             Assert.That(
-                async() => await this.rankService.IsCurrentUserPageOwner(denisUserId, guestRankPageId),
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(denisUserId, guestRankPageId),
                 Throws.Exception.TypeOf<UnauthorizedUserException>());
         }
 
@@ -200,7 +200,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: no exceptions are thrown
             Assert.That(
-                async() => await this.rankService.IsCurrentUserPageOwner(guestUserId, guestRankPageId),
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(guestUserId, guestRankPageId),
                  Throws.Nothing);
         }
 
@@ -220,12 +220,12 @@ namespace EasyRank.Services.UnitTests
             // Act: call the service method and pass the necessary data
             await this.rankService.CreateRankAsync(image, imageAlt, rankingTitle, createdByUserId);
 
-            // Assert: the count of rank pages in teh database has increased by one
+            // Assert: the count of rank pages in the database has increased by one
             int rankPagesCountAfter = await this.repo.AllReadonly<RankPage>()
                 .CountAsync();
             Assert.That(rankPagesCountAfter, Is.EqualTo(rankPageCountBefore + 1));
 
-            // Assert: the new comment has been added
+            // Assert: the new rank page has been added
             RankPage? newRankPageInDb = await this.repo.AllReadonly<RankPage>()
                 .OrderByDescending(rp => rp.CreatedOn)
                 .FirstOrDefaultAsync();

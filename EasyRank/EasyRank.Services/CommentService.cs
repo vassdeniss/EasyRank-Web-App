@@ -105,7 +105,7 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserCommentOwner(
+        public async Task IsCurrentUserCommentOwnerAsync(
             Guid userId,
             Guid commentId)
         {
@@ -123,7 +123,7 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserPageOwner(
+        public async Task IsCurrentUserPageOwnerAsync(
             Guid userId,
             Guid commentId)
         {
@@ -146,7 +146,7 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<Guid> GetCommentPageId(Guid commentId)
+        public async Task<Guid> GetCommentPageIdAsync(Guid commentId)
         {
             Comment? comment =
                 await this.repo.AllReadonly<Comment>(c => c.Id == commentId)

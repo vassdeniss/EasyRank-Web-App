@@ -155,7 +155,7 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAsync(Guid rankId)
         {
-            await this.rankService.IsCurrentUserPageOwner(
+            await this.rankService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
                 rankId);
 
@@ -247,7 +247,7 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteAsync(Guid rankId)
         {
-            await this.rankService.IsCurrentUserPageOwner(
+            await this.rankService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
                 rankId);
 
