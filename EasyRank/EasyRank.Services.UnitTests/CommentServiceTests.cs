@@ -350,6 +350,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: the comment has been edited
             Assert.That(newCommentInDb, Is.Not.Null);
+            Assert.That(newCommentInDb.IsEdited, Is.True);
             Assert.That(newCommentInDb.Content, Is.EqualTo(changedContent));
             Assert.That(newCommentInDb.CreatedByUserId, Is.EqualTo(createdByUserId));
             Assert.That(newCommentInDb.RankPageId, Is.EqualTo(rankPageId));

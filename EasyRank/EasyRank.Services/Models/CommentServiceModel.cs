@@ -38,5 +38,10 @@ namespace EasyRank.Services.Models
         /// Gets or sets the comment content.
         /// </summary>
         public string Content { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a comment has been edited.
+        /// </summary>
+        public bool IsEdited { get; set; }
     }
 }

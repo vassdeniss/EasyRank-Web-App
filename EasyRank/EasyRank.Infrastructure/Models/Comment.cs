@@ -53,6 +53,13 @@ namespace EasyRank.Infrastructure.Models
         public bool IsDeleted { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets a value indicating whether a comment has been edited.
+        /// </summary>
+        [Required]
+        [Comment("Gets or sets a value indicating whether a comment has been edited.")]
+        public bool IsEdited { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the guid of the user who created the comment.
         /// </summary>
         /// <remarks>Foreign key to the 'EasyRankUser' table.</remarks>

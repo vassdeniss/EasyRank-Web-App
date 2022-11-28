@@ -85,6 +85,7 @@ namespace EasyRank.Services
             }
 
             comment.Content = content;
+            comment.IsEdited = true;
 
             await this.repo.SaveChangesAsync();
         }

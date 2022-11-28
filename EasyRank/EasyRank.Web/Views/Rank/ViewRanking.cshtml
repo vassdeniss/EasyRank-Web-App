@@ -145,7 +145,14 @@ else
 				{
 					<h6 class="text-success">@comment.Username &#x2022; @comment.PostedOn</h6>
 				}
-				<p>@comment.Content</p>
+				@if (comment.IsEdited)
+				{
+					<p>@comment.Content <span class="text-muted">(Edited)</span></p>
+				}
+				else
+				{
+					<p>@comment.Content</p>
+				}
 				<div class="actions-flex">
 					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name))
 					{
