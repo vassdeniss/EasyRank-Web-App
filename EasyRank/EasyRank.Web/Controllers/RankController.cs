@@ -149,7 +149,7 @@ namespace EasyRank.Web.Controllers
         /// </summary>
         /// <returns>
         /// A view for rank page editing with a filled rank page form model.
-        /// 404 if the comment doesn't exist, 401 if the user is not the page owner.</returns>
+        /// 404 if the entry doesn't exist, 401 if the user is not the page owner.</returns>
         /// <remarks>Get method.</remarks>
         /// <param name="rankId">The GUID used for retrieving the needed page.</param>
         [HttpGet]

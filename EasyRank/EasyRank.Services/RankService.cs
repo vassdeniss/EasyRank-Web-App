@@ -61,8 +61,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<RankPageServiceModel> GetRankPageByGuidAsync(Guid rankGuid)
         {
-            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(rp => rp.Id == rankGuid)
-                .Where(rp => rp.IsDeleted == false)
+            RankPage? rankPage = await this.repo.AllReadonly<RankPage>(
+                    rp => rp.Id == rankGuid && !rp.IsDeleted)
                 .Include(rp => rp.Comments)
                 .ThenInclude(c => c.CreatedByUser)
                 .Include(rp => rp.Entries)

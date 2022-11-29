@@ -216,7 +216,7 @@ namespace EasyRank.Services.UnitTests
             string imageAlt = "Alternative text for image for testing creating page";
             string rankingTitle = "Top 10 Rank Page I Want to Create in the Future";
             Guid createdByUserId = this.testDb.GuestUser.Id;
-
+            
             // Act: call the service method and pass the necessary data
             await this.rankService.CreateRankAsync(image, imageAlt, rankingTitle, createdByUserId);
 
@@ -255,7 +255,7 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public void Test_EditRank_DeletedRankPage_ThrowsNotFoundException()
         {
-            // Arrange: initialise valid new content, get deleted rank page id from test db
+            // Arrange: initialise valid new data, get deleted rank page id from test db
             byte[] image = Array.Empty<byte>();
             string imageAlt = "Alternative text for image for testing edit page";
             string rankingTitle = "Top 10 Rank Page I Want to Edit in the Future";
@@ -300,7 +300,7 @@ namespace EasyRank.Services.UnitTests
             // Act: call the edit service method and pass the necessary data
             await this.rankService.EditRankAsync(rankPageId, changedTitle, imageAlt, image);
 
-            // Assert: the comment has been edited
+            // Assert: the page has been edited
             RankPage pageInDb = await this.repo.GetByIdAsync<RankPage>(rankPageId);
 
             Assert.That(pageInDb.RankingTitle, Is.EqualTo(changedTitle));

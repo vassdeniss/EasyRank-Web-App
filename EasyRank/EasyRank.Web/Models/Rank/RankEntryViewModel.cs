@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+
 namespace EasyRank.Web.Models.Rank
 {
     /// <summary>
@@ -13,7 +15,12 @@ namespace EasyRank.Web.Models.Rank
     public class RankEntryViewModel
     {
         /// <summary>
-        /// Gets or sets the placement in the ranking of the ranking entry.
+        /// Gets or sets the ID of the rank entry.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the placement in the ranking of the rank entry.
         /// </summary>
         public int Placement { get; set; }
 

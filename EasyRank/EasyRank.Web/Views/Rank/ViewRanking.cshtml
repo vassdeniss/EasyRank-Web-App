@@ -80,7 +80,7 @@
 			<p class="card-text">@entry.Description</p>
 			@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
 			{
-				<a asp-controller="Entry" asp-action="Edit" asp-route-rankId="@this.Model.Id" class="card-link">Edit Entry</a>
+				<a asp-controller="Entry" asp-action="Edit" asp-route-rankId="@this.Model.Id" asp-route-entryId="@entry.Id" class="card-link">Edit Entry</a>
 				<span class="text-primary mx-3">|</span>
 				<a asp-controller="Entry" asp-action="Delete" asp-route-rankId="@this.Model.Id" class="card-link">Delete Entry</a>
 			}

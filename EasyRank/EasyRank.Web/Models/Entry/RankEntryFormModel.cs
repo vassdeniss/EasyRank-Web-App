@@ -47,7 +47,7 @@ namespace EasyRank.Web.Models.Entry
         public int Placement { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the ranking entry.
+        /// Gets or sets the name of the rank entry.
         /// </summary>
         [Required]
         [Display(Name = "Entry Title")]
@@ -55,7 +55,7 @@ namespace EasyRank.Web.Models.Entry
         public string EntryTitle { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets the description of the ranking entry.
+        /// Gets or sets the description of the rank entry.
         /// </summary>
         [Required]
         [Display(Name = "Entry Description")]
@@ -65,6 +65,9 @@ namespace EasyRank.Web.Models.Entry
             ErrorMessage = EntryDescriptionErrorMessage)]
         public string EntryDescription { get; set; } = null!;
 
-        public ICollection<int> AvailablePlacements { get; set; }
+        /// <summary>
+        /// Gets or sets the free slots for a new rank entry.
+        /// </summary>
+        public ICollection<int> AvailablePlacements { get; set; } = null!;
     }
 }

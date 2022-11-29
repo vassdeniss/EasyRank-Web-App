@@ -37,6 +37,10 @@ namespace EasyRank.Tests.Common
 
         public RankPage DislikedPage { get; set; }
 
+        public RankEntry DeletedEntry { get; set; }
+
+        public RankEntry GuestEntry { get; set; }
+
         public Comment GuestComment { get; set; }
 
         public Comment DeletedComment { get; set; }
@@ -172,6 +176,34 @@ namespace EasyRank.Tests.Common
             };
 
             dbContext.Add<RankPage>(this.DeletedPage);
+
+            this.DeletedEntry = new RankEntry
+            {
+                Id = Guid.NewGuid(),
+                Placement = 3,
+                Title = "DeletedEntry",
+                Image = null,
+                ImageAlt = "DeletedImg",
+                Description = "DeletedDescription",
+                IsDeleted = true,
+                RankPageId = this.GuestPage.Id,
+            };
+
+            dbContext.Add<RankEntry>(this.DeletedEntry);
+
+            this.GuestEntry = new RankEntry
+            {
+                Id = Guid.NewGuid(),
+                Placement = 2,
+                Title = "GuestEntry",
+                Image = null,
+                ImageAlt = "GuestImg",
+                Description = "GuestDescription",
+                IsDeleted = false,
+                RankPageId = this.GuestPage.Id,
+            };
+
+            dbContext.Add<RankEntry>(this.GuestEntry);
 
             this.GuestComment = new Comment
             {

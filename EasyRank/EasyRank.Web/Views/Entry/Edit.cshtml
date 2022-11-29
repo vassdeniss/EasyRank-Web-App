@@ -1,0 +1,40 @@
+﻿@model RankEntryFormModel
+@{
+	this.ViewData["Title"] = "Edit Entry";
+	this.ViewData["ButtonType"] = "Edit";
+}
+
+<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+	<h4 class="alert-heading">Warning!</h4>
+	<p>
+		<strong>Don't forget to upload your cover image again!</strong>
+	</p>
+</div>
+
+@await this.Html.PartialAsync("_RankEntryFormPartial", this.Model)
+
+@section Scripts {
+	<script>
+		$('.form-select').on('change',
+			function () {
+				$('.title-select').text(`#${$('.form-select option:selected').text()}`);
+			});
+
+		$('.form-title').on('input',
+			function () {
+				$('.title').text($('.form-title').val());
+			});
+
+		$('.form-alt').on('input',
+			function () {
+				$('.card-img-top').prop('alt', $('.form-alt').val());
+			});
+
+		$('.form-text').on('input',
+			function () {
+				$('.card-text').text($('.form-text').val());
+			});
+	</script>
+
+	<partial name="_ValidationScriptsPartial" />
+}
