@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,9 @@ builder.Services.AddScoped<IRepository, EasyRankRepository>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IEntryService, EntryService>();
+builder.Services.AddScoped<IEmailSender>(_ =>
+    new SendGridEmailSender(builder.Configuration.GetValue<string>("SendGrid:ApiKey")));
+//builder.Services.AddScoped<IManageService, ManageService>();
 
 WebApplication app = builder.Build();
 
