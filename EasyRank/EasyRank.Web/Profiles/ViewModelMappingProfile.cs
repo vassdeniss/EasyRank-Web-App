@@ -8,6 +8,7 @@
 using AutoMapper;
 
 using EasyRank.Services.Models;
+using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
 
 namespace EasyRank.Web.Profiles
@@ -23,10 +24,13 @@ namespace EasyRank.Web.Profiles
         /// </summary>
         public ViewModelMappingProfile()
         {
+            this.AllowNullCollections = true;
+
             this.CreateMap<RankPageServiceModel, RankPageViewModel>();
             this.CreateMap<RankEntryServiceModel, RankEntryViewModel>();
             this.CreateMap<RankPageServiceModelExtended, RankPageViewModelExtended>();
             this.CreateMap<CommentServiceModel, CommentViewModel>();
+            this.CreateMap<ManageServiceModel, ManageViewModel>();
         }
     }
 }

@@ -9,8 +9,13 @@ using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.UnitTests.Mocks;
 using EasyRank.Tests.Common;
+
+using Microsoft.AspNetCore.Identity;
+
+using Moq;
 
 using NUnit.Framework;
 
@@ -22,6 +27,8 @@ namespace EasyRank.Services.UnitTests
         private EasyRankDbContext dbContext;
         protected IMapper mapper;
         protected IRepository repo;
+        protected Mock<UserManager<EasyRankUser>> userManager;
+        protected Mock<SignInManager<EasyRankUser>> signInManager;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -30,6 +37,11 @@ namespace EasyRank.Services.UnitTests
             this.testDb = new EasyRankTestDb(this.dbContext);
             this.mapper = MapperMock.Instance;
             this.repo = new RepoMock(this.dbContext);
+            this.userManager = UserManagerMock.MockUserManager(new List<EasyRankUser>
+            {
+                this.testDb.GuestUser,
+            });
+            this.signInManager = SignInManagerMock.MockSignInManager();
         }
 
         [OneTimeTearDown]

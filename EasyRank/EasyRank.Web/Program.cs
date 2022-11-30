@@ -59,7 +59,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IEntryService, EntryService>();
 builder.Services.AddScoped<IEmailSender>(_ =>
     new SendGridEmailSender(builder.Configuration.GetValue<string>("SendGrid:ApiKey")));
-//builder.Services.AddScoped<IManageService, ManageService>();
+builder.Services.AddScoped<IManageService, ManageService>();
 
 WebApplication app = builder.Build();
 
@@ -83,9 +83,16 @@ app.UseAuthorization();
 
 //app.UseStatusCodePagesWithRedirects("/Home/Error{0}");
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+app.UseEndpoints(endpoint =>
+{
+    endpoint.MapControllerRoute(
+        name: "Account Management",
+        pattern: "/Account/Manage/{action}/{id?}",
+        defaults: new { controller = "Manage", action = "Index" });
+
+    endpoint.MapDefaultControllerRoute();
+
+    endpoint.MapRazorPages();
+});
 
 app.Run();

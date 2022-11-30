@@ -10,6 +10,7 @@ using System.Linq;
 using AutoMapper;
 
 using EasyRank.Infrastructure.Models;
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Models;
 
 namespace EasyRank.Services.Profiles
@@ -25,6 +26,8 @@ namespace EasyRank.Services.Profiles
         /// </summary>
         public ServiceModelMappingProfile()
         {
+            this.AllowNullCollections = true;
+
             this.CreateMap<RankPage, RankPageServiceModel>()
                 .ForMember(
                     d => d.CreatedOn,
@@ -88,6 +91,8 @@ namespace EasyRank.Services.Profiles
                     d => d.PostedOn,
                     mo => mo.MapFrom(
                         s => s.CreatedOn.ToString("dd/MM/yyyy")));
+
+            this.CreateMap<EasyRankUser, ManageServiceModel>();
         }
     }
 }

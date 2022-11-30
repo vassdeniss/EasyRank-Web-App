@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -25,7 +24,6 @@ using EasyRank.Web.Models.Rank;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -34,7 +32,6 @@ namespace EasyRank.Web.Controllers
     /// <summary>
     /// The controller responsible for account management.
     /// </summary>
-    [Route("Account/Manage")]
     public class ManageController : BaseController
     {
         private readonly UserManager<EasyRankUser> userManager;
@@ -42,6 +39,7 @@ namespace EasyRank.Web.Controllers
         private readonly IEmailSender emailSender;
         private readonly IMapper mapper;
         private readonly IRankService rankService;
+        private readonly IManageService manageService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageController"/> class.
@@ -51,18 +49,21 @@ namespace EasyRank.Web.Controllers
         /// <param name="emailSender">The email sender for the controller.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
         /// <param name="rankService">Instance of the rank service.</param>
+        /// <param name="manageService">Instance of the manage service.</param>
         public ManageController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
             IEmailSender emailSender,
             IMapper mapper,
-            IRankService rankService)
+            IRankService rankService,
+            IManageService manageService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
             this.mapper = mapper;
             this.rankService = rankService;
+            this.manageService = manageService;
         }
 
         /// <summary>
@@ -71,24 +72,11 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view for changing basic user account settings.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        [Route("")]
         public async Task<IActionResult> IndexAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            ManageServiceModel serviceModel = await this.manageService.GetUserInfoAsync(this.User);
 
-            string userName = await this.userManager.GetUserNameAsync(user);
-            //string phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
-            string firstName = user.FirstName!;
-            string lastName = user.LastName!;
-            byte[] profilePicture = user.ProfilePicture!;
-
-            ManageViewModel model = new ManageViewModel
-            {
-                Username = userName,
-                FirstName = firstName,
-                LastName = lastName,
-                ProfilePicture = profilePicture,
-            };
+            ManageViewModel model = this.mapper.Map<ManageViewModel>(serviceModel);
 
             return this.View(model);
         }
@@ -97,10 +85,9 @@ namespace EasyRank.Web.Controllers
         /// The 'Index' action for the controller.
         /// </summary>
         /// <returns>Redirects to the same page with either a success / failure message.</returns>
-        /// <param name="model">The 'Manage' view model for the view.</param>
+        /// <param name="model">The 'ManageViewModel' for verification.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        [Route("")]
         public async Task<IActionResult> IndexAsync(ManageViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -178,16 +165,10 @@ namespace EasyRank.Web.Controllers
         /// <returns>Redirects to the same page with the profile picture deleted.</returns>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        [Route("DeleteProfilePicture")]
         public async Task<IActionResult> DeleteProfilePictureAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            await this.manageService.DeleteProfilePictureAsync(this.User);
 
-            user.ProfilePicture = null;
-
-            await this.userManager.UpdateAsync(user);
-
-            await this.signInManager.RefreshSignInAsync(user);
             this.TempData["StatusMessage"] = "Your profile picture has been updated";
 
             return this.RedirectToAction("Index");
@@ -199,7 +180,6 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view for deleting the users account.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        [Route("DeleteAccount")]
         public IActionResult DeleteAccountAsync()
         {
             DeleteAccountViewModel model = new DeleteAccountViewModel();
@@ -212,11 +192,10 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'DeleteAccount' action for the controller.
         /// </summary>
-        /// <returns>The 'Home' view after the user has been deleted.</returns>
-        /// <param name="model">The delete account view model for the view.</param>
+        /// <returns>The 'Home' controller's Index' view after the user has been deleted.</returns>
+        /// <param name="model">The DeleteAccountViewModel for validation.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        [Route("DeleteAccount")]
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -261,10 +240,6 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> EmailAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             string email = await this.userManager.GetEmailAsync(user);
 
@@ -290,10 +265,6 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> EmailAsync(EmailViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
 
             string email = await this.userManager.GetEmailAsync(user);
 
@@ -316,14 +287,16 @@ namespace EasyRank.Web.Controllers
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
                 string callbackUrl = this.Url.Page(
-                    "/Account/ConfirmEmailChange", // TODO: CHeck functionality
+                    "/Account/ConfirmEmailChange",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = model.NewEmail, code = code },
+                    values: new { area = "Identity", userId, email = model.NewEmail, code },
                     protocol: this.Request.Scheme)!;
 
                 await this.emailSender.SendEmailAsync(
+                    "vassdeniss@gmail.com",
+                    "Denis Vasilev from EasyRank",
                     model.NewEmail,
-                    "Confirm your email",
+                    "[DO NOT REPLY] Confirm your new email for EasyRank!",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 this.TempData["StatusMessage"] = "Confirmation link to change email sent. Please check your email!";
@@ -364,12 +337,14 @@ namespace EasyRank.Web.Controllers
             string callbackUrl = this.Url.Page(
                 "/Account/ConfirmEmail", // TODO: Test
                 pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
+                values: new { area = "Identity", userId, code },
                 protocol: this.Request.Scheme)!;
 
             await this.emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
+                "vassdeniss@gmail.com",
+                "Denis Vasilev from EasyRank",
+                model.NewEmail,
+                "[DO NOT REPLY] Confirm your email for EasyRank!",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
