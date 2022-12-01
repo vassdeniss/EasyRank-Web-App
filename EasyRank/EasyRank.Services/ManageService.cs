@@ -9,6 +9,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -20,6 +22,7 @@ using EasyRank.Services.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace EasyRank.Services
 {
@@ -183,6 +186,62 @@ namespace EasyRank.Services
             await this.userManager.DeleteAsync(user);
             //this.logger.LogInformation($"User with ID '{userId}' deleted themselves.");
             await this.signInManager.SignOutAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> IsEmailConfirmedAsync(ClaimsPrincipal currentUser)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            return await this.userManager.IsEmailConfirmedAsync(user);
+        }
+
+        /// <inheritdoc />
+        public async Task<EmailServiceModel> GetUserEmailAsync(ClaimsPrincipal currentUser)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            string email = await this.userManager.GetEmailAsync(user);
+            return new EmailServiceModel { Email = email, NewEmail = email, };
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> IsEmailTakenAsync(string email)
+        {
+            return await this.userManager.FindByEmailAsync(email) != null;
+        }
+
+        /// <inheritdoc />
+        public async Task<string> GetUserIdAsync(ClaimsPrincipal currentUser)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            return await this.userManager.GetUserIdAsync(user);
+        }
+
+        /// <inheritdoc />
+        public async Task<string> GenerateChangeEmailTokenAsync(ClaimsPrincipal currentUser, string newEmail)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            string code = await this.userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         }
     }
 }

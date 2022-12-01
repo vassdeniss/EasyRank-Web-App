@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System.Security.Claims;
+using System.Text;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
@@ -13,7 +14,7 @@ using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 using NUnit.Framework;
 
@@ -468,6 +469,212 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: user is deleted
             Assert.That(guestUser.UserName, Is.EqualTo($"DELETED{guestUserName}"));
+        }
+
+        [Test]
+        public void Test_IsEmailConfirmed_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.IsEmailConfirmedAsync(invalidPrincipal),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_IsEmailConfirmed_NotConfirmed_ReturnsFalse()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(denisUser);
+
+            // Act: call service method and pass in necessary data
+            bool result = await this.manageService.IsEmailConfirmedAsync(userPrincipal);
+
+            // Assert: the email is not confirmed
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task Test_IsEmailConfirmed_IsConfirmed_ReturnsTrue()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method and pass in necessary data
+            bool result = await this.manageService.IsEmailConfirmedAsync(userPrincipal);
+
+            // Assert: the email is confirmed
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void Test_GetUserEmail_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.GetUserEmailAsync(invalidPrincipal),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GetUserEmail_ReturnsCorrectEmail()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method and pass in necessary data
+            EmailServiceModel serviceResult = await this.manageService.GetUserEmailAsync(userPrincipal);
+
+            // Assert: the email is correct
+            Assert.That(serviceResult.Email, Is.EqualTo(guestUser.Email));
+            Assert.That(serviceResult.NewEmail, Is.EqualTo(guestUser.Email));
+        }
+
+        [Test]
+        public async Task Test_IsEmailTaken_TakenEmail_ReturnsTrue()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Act: call service method and pass in necessary data
+            bool isTaken = await this.manageService.IsEmailTakenAsync(guestUser.Email);
+
+            // Assert: email is taken
+            Assert.That(isTaken, Is.True);
+        }
+
+        [Test]
+        public async Task Test_IsEmailTaken_NotTakenEmail_ReturnsFalse()
+        {
+            // Arrange: create imaginary email
+            string email = "IDontExist@null.undefined";
+
+            // Act: call service method and pass in necessary data
+            bool isTaken = await this.manageService.IsEmailTakenAsync(email);
+
+            // Assert: email is not taken
+            Assert.That(isTaken, Is.False);
+        }
+
+        [Test]
+        public void Test_GetUserId_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.GetUserIdAsync(invalidPrincipal),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GetUserId_ReturnsCorrectId()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a valid claim principal
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method and pass in necessary data
+            string id = await this.manageService.GetUserIdAsync(userPrincipal);
+
+            // Assert: both ids are the same
+            Assert.That(id, Is.EqualTo(guestUser.Id.ToString()));
+        }
+
+        [Test]
+        public void Test_GenerateChangeEmailToken_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.GenerateChangeEmailTokenAsync(invalidPrincipal, invalidUser.Email),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GenerateChangeEmailToken_GeneratesCorrectly()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a valid claim principal
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Arrange: create sample code
+            string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            string actualCode = await this.manageService.GenerateChangeEmailTokenAsync(userPrincipal, guestUser.Email);
+
+            // Assert: both codes are the same
+            Assert.That(actualCode, Is.EqualTo(expectedCode));
         }
 
         private ClaimsPrincipal CreateClaimsPrincipal(EasyRankUser user)

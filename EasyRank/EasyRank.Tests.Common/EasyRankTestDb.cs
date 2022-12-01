@@ -89,7 +89,7 @@ namespace EasyRank.Tests.Common
                 NormalizedEmail = "VASSDENISS@MAIL.COM",
                 FirstName = string.Empty,
                 LastName = string.Empty,
-                EmailConfirmed = true,
+                EmailConfirmed = false,
             };
 
             userManager.CreateAsync(this.DenisUser, "myVeryCoolPassword")

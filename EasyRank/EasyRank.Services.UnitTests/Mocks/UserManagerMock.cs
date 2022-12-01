@@ -69,6 +69,26 @@ namespace EasyRank.Services.UnitTests.Mocks
                     return IdentityResult.Success;
                 });
 
+            userManager.Setup(um => um.IsEmailConfirmedAsync(
+                    It.IsAny<EasyRankUser>()))
+                .ReturnsAsync((EasyRankUser user) => user.EmailConfirmed);
+
+            userManager.Setup(um => um.GetEmailAsync(
+                    It.IsAny<EasyRankUser>()))
+                .ReturnsAsync((EasyRankUser user) => user.Email);
+
+            userManager.Setup(um => um.FindByEmailAsync(
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string email) => userList.FirstOrDefault(u => u.Email == email));
+
+            userManager.Setup(um => um.GetUserIdAsync(
+                    It.IsAny<EasyRankUser>()))
+                .ReturnsAsync((EasyRankUser user) => user.Id.ToString());
+
+            userManager.Setup(um => um.GenerateChangeEmailTokenAsync(
+                    It.IsAny<EasyRankUser>(), It.IsAny<string>()))
+                .ReturnsAsync("random-string");
+
             return userManager;
         }
     }

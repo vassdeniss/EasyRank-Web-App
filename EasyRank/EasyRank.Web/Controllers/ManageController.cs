@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -163,73 +163,101 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EmailAsync()
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
+            EmailServiceModel serviceModel = await this.manageService.GetUserEmailAsync(this.User);
 
-            string email = await this.userManager.GetEmailAsync(user);
-
-            this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
-
-            EmailViewModel model = new EmailViewModel
-            {
-                Email = email,
-                NewEmail = email,
-            };
+            EmailViewModel model = this.mapper.Map<EmailViewModel>(serviceModel);
+            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User);
 
             return this.View(model);
         }
 
         /// <summary>
-        /// The change email action for the controller.
+        /// The 'EmailAsync' action for the controller.
         /// </summary>
-        /// <returns>A redirect back to the change email page with either a success or error message.</returns>
-        /// <param name="model">The email view model for the view.</param>
+        /// <returns>A redirect back to the same page with either a success or error message.</returns>
+        /// <param name="model">The EmailViewModel for validation.</param>
         /// <remarks>Post method.</remarks>
+        /// <remarks>For changing email.</remarks>
         [HttpPost]
-        [Route("Email")]
         public async Task<IActionResult> EmailAsync(EmailViewModel model)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-
-            string email = await this.userManager.GetEmailAsync(user);
-
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
+            EmailServiceModel serviceModel = await this.manageService.GetUserEmailAsync(this.User);
+
+            string email = serviceModel.Email;
             if (model.NewEmail != email)
             {
-                EasyRankUser userWithGivenEmail = await this.userManager.FindByEmailAsync(model.NewEmail);
-                if (userWithGivenEmail != null)
+                if (await this.manageService.IsEmailTakenAsync(model.NewEmail))
                 {
                     this.TempData["StatusMessage"] = "Error: Email taken!";
                     return this.RedirectToAction("Email");
                 }
 
-                string userId = await this.userManager.GetUserIdAsync(user);
-                string code = await this.userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                string userId = await this.manageService.GetUserIdAsync(this.User);
+                string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User, model.NewEmail);
 
-                string callbackUrl = this.Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId, email = model.NewEmail, code },
-                    protocol: this.Request.Scheme)!;
+                string callbackUrl = this.Url.ActionLink(
+                    "ConfirmEmailChange",
+                    "Manage",
+                    new { userId, email = model.NewEmail, code },
+                    this.Request.Scheme)!;
+
+                StringBuilder builder = new StringBuilder();
+
+                builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
+                builder.AppendLine("<h3>You receive this email because you wished to change your email address for your account.</h3>");
+                builder.AppendLine($"<p>In order to do so please confirm that this is the new email you wish to use by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here.</a></p>");
+                builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+                builder.AppendLine("<p>Have a wonderful rest of your day and happy ranking!</p>");
+                builder.AppendLine("<br>");
+                builder.AppendLine("- Denis from EasyRank");
 
                 await this.emailSender.SendEmailAsync(
                     "vassdeniss@gmail.com",
                     "Denis Vasilev from EasyRank",
                     model.NewEmail,
                     "[DO NOT REPLY] Confirm your new email for EasyRank!",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    builder.ToString());
 
                 this.TempData["StatusMessage"] = "Confirmation link to change email sent. Please check your email!";
                 return this.RedirectToAction("Email");
             }
 
-            this.TempData["ConfirmedEmail"] = await this.userManager.IsEmailConfirmedAsync(user);
+            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User);
             this.TempData["StatusMessage"] = "Error: Your email is unchanged.";
             return this.RedirectToAction("Email");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmailChangeAsync(string? userId, string? email, string? code)
+        {
+            if (userId == null || email == null || code == null)
+            {
+                return this.RedirectToAction("Index", "Manage");
+            }
+
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+               // throw
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
+            IdentityResult result = await this.userManager.ChangeEmailAsync(user, email, code);
+            if (!result.Succeeded)
+            {
+                this.TempData["StatusMessage"] = "Error changing email.";
+                return this.View();
+            }
+
+            await this.signInManager.RefreshSignInAsync(user);
+            this.TempData["StatusMessage"] = "Thank you for confirming your email change.";
+            return this.View();
         }
 
         /// <summary>
@@ -239,7 +267,6 @@ namespace EasyRank.Web.Controllers
         /// <param name="model">The email view model for the view.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        [Route("VerifyEmail")]
         public async Task<IActionResult> SendVerificationEmailAsync(EmailViewModel model)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
