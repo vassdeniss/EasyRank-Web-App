@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -67,5 +68,14 @@ namespace EasyRank.Services.Contracts
         public Task<bool> CheckPasswordAsync(
             ClaimsPrincipal currentUser,
             string currentPassword);
+
+        /// <summary>
+        /// Used for deleting a user from the database.
+        /// </summary>
+        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <returns>Task (void).</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        /// <exception cref="InvalidOperationException">Throws when the delete operation failed.</exception>
+        public Task DeleteUserAsync(ClaimsPrincipal currentUser);
     }
 }

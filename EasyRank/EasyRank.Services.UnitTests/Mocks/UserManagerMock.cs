@@ -42,9 +42,30 @@ namespace EasyRank.Services.UnitTests.Mocks
 
             userManager.Setup(um => um.SetUserNameAsync(
                     It.IsAny<EasyRankUser>(), It.IsAny<string>()))!
-                .ReturnsAsync((EasyRankUser rankUser, string newUsername) =>
+                .ReturnsAsync((EasyRankUser user, string newUsername) =>
                 {
-                    rankUser.UserName = newUsername;
+                    user.UserName = newUsername;
+                    return IdentityResult.Success;
+                });
+
+            userManager.Setup(um => um.CheckPasswordAsync(
+                    It.IsAny<EasyRankUser>(), It.IsAny<string>()))
+                .ReturnsAsync((EasyRankUser user, string givenPassword) =>
+                {
+                    PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
+
+                    PasswordVerificationResult result = 
+                        hasher.VerifyHashedPassword(user, user.PasswordHash, givenPassword);
+
+                    return result == PasswordVerificationResult.Success;
+                });
+
+            userManager.Setup(um => um.DeleteAsync(
+                    It.IsAny<EasyRankUser>()))
+                .ReturnsAsync((EasyRankUser user) =>
+                {
+                    user.UserName = $"DELETED{user.UserName}";
+
                     return IdentityResult.Success;
                 });
 

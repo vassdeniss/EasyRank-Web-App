@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
+
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -143,34 +143,13 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-
-            //RequirePassword = await this.userManager.HasPasswordAsync(user);
-            //if (RequirePassword)
-            //{
-            //    if (!await this.userManager.CheckPasswordAsync(user, Input.Password))
-            //    {
-            //        ModelState.AddModelError(string.Empty, "Incorrect password.");
-            //        return Page();
-            //    }
-            //}
-
             if (!await this.manageService.CheckPasswordAsync(this.User, model.Password))
             {
                 this.ModelState.AddModelError(string.Empty, "Incorrect password.");
                 return this.View(model);
             }
 
-            IdentityResult result = await this.userManager.DeleteAsync(user);
-            //string userId = await this.userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new InvalidOperationException("Unexpected error occurred deleting user.");
-            }
-
-            await this.signInManager.SignOutAsync();
-
-            //this.logger.LogInformation($"User with ID '{userId}' deleted themselves.");
+            await this.manageService.DeleteUserAsync(this.User);
 
             return this.RedirectToAction("Index", "Home");
         }

@@ -32,6 +32,9 @@ namespace EasyRank.Services.UnitTests.Mocks
                     It.IsAny<EasyRankUser>()))
                 .Returns(Task.CompletedTask);
 
+            signInManager.Setup(sim => sim.SignOutAsync())
+                .Returns(Task.CompletedTask);
+
             return signInManager;
         }
     }

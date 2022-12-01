@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -157,6 +158,31 @@ namespace EasyRank.Services
             }
 
             return await this.userManager.CheckPasswordAsync(user, currentPassword);
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteUserAsync(ClaimsPrincipal currentUser)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            //RequirePassword = await this.userManager.HasPasswordAsync(user);
+            //if (RequirePassword)
+            //{
+            //    if (!await this.userManager.CheckPasswordAsync(user, Input.Password))
+            //    {
+            //        ModelState.AddModelError(string.Empty, "Incorrect password.");
+            //        return Page();
+            //    }
+            //}
+
+            //string userId = await this.userManager.GetUserIdAsync(user);
+            await this.userManager.DeleteAsync(user);
+            //this.logger.LogInformation($"User with ID '{userId}' deleted themselves.");
+            await this.signInManager.SignOutAsync();
         }
     }
 }

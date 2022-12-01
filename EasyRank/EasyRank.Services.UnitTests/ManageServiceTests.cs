@@ -13,6 +13,7 @@ using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 using NUnit.Framework;
 
@@ -139,7 +140,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async () => await this.manageService.UpdateUserData(
+                async () => await this.manageService.UpdateUserDataAsync(
                     invalidPrincipal,
                     invalidUser.FirstName,
                     invalidUser.LastName, 
@@ -161,7 +162,7 @@ namespace EasyRank.Services.UnitTests
             string newFistName = "John";
 
             // Act: call service method and pass in necessary data
-            await this.manageService.UpdateUserData(
+            await this.manageService.UpdateUserDataAsync(
                 userPrincipal,
                 newFistName,
                 guestUser.LastName,
@@ -185,7 +186,7 @@ namespace EasyRank.Services.UnitTests
             string newLastName = "Doe";
 
             // Act: call service method and pass in necessary data
-            await this.manageService.UpdateUserData(
+            await this.manageService.UpdateUserDataAsync(
                 userPrincipal,
                 guestUser.FirstName,
                 newLastName,
@@ -210,7 +211,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: UsernameTakenException is thrown when trying to change to a taken username
             Assert.That(
-                async() => await this.manageService.UpdateUserData(
+                async() => await this.manageService.UpdateUserDataAsync(
                     userPrincipal,
                     guestUser.FirstName,
                     guestUser.LastName,
@@ -232,7 +233,7 @@ namespace EasyRank.Services.UnitTests
             string newUserName = "NewGuest";
 
             // Act: call service method and pass in necessary data
-            await this.manageService.UpdateUserData(
+            await this.manageService.UpdateUserDataAsync(
                 userPrincipal,
                 guestUser.FirstName,
                 guestUser.LastName,
@@ -266,7 +267,7 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: FileFormatException is thrown when trying to upload an invalid file
             Assert.That(
-                async() => await this.manageService.UpdateUserData(
+                async() => await this.manageService.UpdateUserDataAsync(
                     userPrincipal,
                     guestUser.FirstName,
                     guestUser.LastName,
@@ -298,7 +299,7 @@ namespace EasyRank.Services.UnitTests
             IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
             // Act: call service method and pass in necessary data
-            await this.manageService.UpdateUserData(
+            await this.manageService.UpdateUserDataAsync(
                 userPrincipal,
                 guestUser.FirstName,
                 guestUser.LastName,
@@ -338,7 +339,7 @@ namespace EasyRank.Services.UnitTests
             IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", invalidFileName);
 
             // Act: call service method and pass in necessary data
-            await this.manageService.UpdateUserData(
+            await this.manageService.UpdateUserDataAsync(
                 userPrincipal,
                 newFistName,
                 newLastName,
@@ -357,6 +358,116 @@ namespace EasyRank.Services.UnitTests
             using MemoryStream memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
             Assert.That(guestUser.ProfilePicture, Is.EquivalentTo(memoryStream.ToArray()));
+        }
+
+        [Test]
+        public void Test_CheckPassword_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create some kind of password
+            string password = "123456abc";
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.CheckPasswordAsync(
+                    invalidPrincipal,
+                    password),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_CheckPassword_WrongPassword_ReturnsFalse()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Arrange: create invalid password
+            string invalidPassword = "thisIsNotMyPassword";
+
+            // Act: call service method and pass in necessary data
+            bool result = await this.manageService.CheckPasswordAsync(
+                userPrincipal,
+                invalidPassword);
+
+            // Assert: the password check failed
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task Test_CheckPassword_CorrectPassword_ReturnsTrue()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method and pass in necessary data
+            string guestPassword = "guestPass";
+            bool result = await this.manageService.CheckPasswordAsync(
+                userPrincipal,
+                guestPassword);
+
+            // Assert: the password check succeeds
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void Test_DeleteUser_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.DeleteUserAsync(invalidPrincipal),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_DeleteUser_ValidClaimPrincipal_RemovesSuccessfully()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+            string guestUserName = guestUser.UserName;
+
+            // Arrange: create a new claim principal from the user
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method
+            await this.manageService.DeleteUserAsync(userPrincipal);
+
+            // Assert: user is deleted
+            Assert.That(guestUser.UserName, Is.EqualTo($"DELETED{guestUserName}"));
         }
 
         private ClaimsPrincipal CreateClaimsPrincipal(EasyRankUser user)
