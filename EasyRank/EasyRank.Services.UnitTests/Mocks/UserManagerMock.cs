@@ -35,6 +35,19 @@ namespace EasyRank.Services.UnitTests.Mocks
                     It.IsAny<EasyRankUser>()))
                 .ReturnsAsync(IdentityResult.Success);
 
+            userManager.Setup(um => um.FindByNameAsync(
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string username) =>
+                    userList.FirstOrDefault(u => u.UserName == username));
+
+            userManager.Setup(um => um.SetUserNameAsync(
+                    It.IsAny<EasyRankUser>(), It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser rankUser, string newUsername) =>
+                {
+                    rankUser.UserName = newUsername;
+                    return IdentityResult.Success;
+                });
+
             return userManager;
         }
     }

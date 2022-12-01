@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -15,6 +17,7 @@ using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace EasyRank.Services
@@ -72,6 +75,88 @@ namespace EasyRank.Services
 
             await this.userManager.UpdateAsync(user);
             await this.signInManager.RefreshSignInAsync(user);
+        }
+
+        /// <inheritdoc />
+        public async Task UpdateUserDataAsync(
+            ClaimsPrincipal currentUser,
+            string? inputFirstName,
+            string? inputLastName,
+            string inputUserName,
+            IFormFileCollection inputFiles)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            //var phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
+            //if (Input.PhoneNumber != phoneNumber)
+            //{
+            //    var setPhoneResult = await this.userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            //    if (!setPhoneResult.Succeeded)
+            //    {
+            //        StatusMessage = "Unexpected error when trying to set phone number.";
+            //        return RedirectToPage();
+            //    }
+            //}
+
+            string? firstName = user.FirstName;
+            if (inputFirstName != firstName)
+            {
+                user.FirstName = inputFirstName;
+            }
+
+            string? lastName = user.LastName;
+            if (inputLastName != lastName)
+            {
+                user.LastName = inputLastName;
+            }
+
+            string username = user.UserName;
+            if (inputUserName != username)
+            {
+                EasyRankUser userWithGivenUsername = await this.userManager.FindByNameAsync(inputUserName);
+                if (userWithGivenUsername != null)
+                {
+                    throw new UsernameTakenException();
+                }
+
+                await this.userManager.SetUserNameAsync(user, inputUserName);
+            }
+
+            if (inputFiles.Count > 0)
+            {
+                IFormFile file = inputFiles.First();
+
+                string[] acceptedExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".tif" };
+
+                if (!acceptedExtensions.Contains(Path.GetExtension(file.FileName)))
+                {
+                    throw new FileFormatException();
+                }
+
+                using MemoryStream memoryStream = new MemoryStream();
+
+                await file.CopyToAsync(memoryStream);
+                user.ProfilePicture = memoryStream.ToArray();
+            }
+
+            await this.userManager.UpdateAsync(user);
+            await this.signInManager.RefreshSignInAsync(user);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> CheckPasswordAsync(ClaimsPrincipal currentUser, string currentPassword)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            return await this.userManager.CheckPasswordAsync(user, currentPassword);
         }
     }
 }

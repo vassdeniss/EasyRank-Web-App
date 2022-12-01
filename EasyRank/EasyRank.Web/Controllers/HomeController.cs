@@ -90,6 +90,16 @@ namespace EasyRank.Web.Controllers
                 statusCode = (int)HttpStatusCode.Unauthorized;
                 exceptionMessage = "You do not have permission to execute this action!";
             }
+            else if (exceptionHandlerPathFeature?.Error is FileFormatException)
+            {
+                this.TempData["StatusMessage"] = "Error: Unsupported file!";
+                return this.RedirectToAction("Index", "Manage");
+            }
+            else if (exceptionHandlerPathFeature?.Error is UsernameTakenException)
+            {
+                this.TempData["StatusMessage"] = "Error: Username taken!";
+                return this.RedirectToAction("Index", "Manage");
+            }
             else
             {
                 statusCode = (int)HttpStatusCode.InternalServerError;

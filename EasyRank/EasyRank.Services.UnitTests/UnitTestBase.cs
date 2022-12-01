@@ -40,6 +40,7 @@ namespace EasyRank.Services.UnitTests
             this.userManager = UserManagerMock.MockUserManager(new List<EasyRankUser>
             {
                 this.testDb.GuestUser,
+                this.testDb.DenisUser,
             });
             this.signInManager = SignInManagerMock.MockSignInManager();
         }

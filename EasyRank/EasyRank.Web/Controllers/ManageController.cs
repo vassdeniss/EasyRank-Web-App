@@ -7,8 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -22,7 +20,6 @@ using EasyRank.Web.Claims;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -90,70 +87,18 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(ManageViewModel model)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
-            //var phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
-            //if (Input.PhoneNumber != phoneNumber)
-            //{
-            //    var setPhoneResult = await this.userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            //    if (!setPhoneResult.Succeeded)
-            //    {
-            //        StatusMessage = "Unexpected error when trying to set phone number.";
-            //        return RedirectToPage();
-            //    }
-            //}
+            await this.manageService.UpdateUserDataAsync(
+                this.User,
+                model.FirstName,
+                model.LastName,
+                model.Username,
+                this.Request.Form.Files);
 
-            string firstName = user.FirstName!;
-            if (model.FirstName != firstName)
-            {
-                user.FirstName = model.FirstName;
-            }
-
-            string lastName = user.LastName!;
-            if (model.LastName != lastName)
-            {
-                user.LastName = model.LastName;
-            }
-
-            string username = user.UserName;
-            if (model.Username != username)
-            {
-                EasyRankUser userWithGivenUsername = await this.userManager.FindByNameAsync(model.Username);
-                if (userWithGivenUsername != null)
-                {
-                    this.TempData["StatusMessage"] = "Error: Username taken!";
-                    return this.RedirectToAction("Index");
-                }
-
-                await this.userManager.SetUserNameAsync(user, model.Username);
-            }
-
-            if (this.Request.Form.Files.Count > 0)
-            {
-                IFormFile file = this.Request.Form.Files.First();
-
-                string[] acceptedExtensions = { ".png", ".jpg", ".jpeg", ".gif", ".tif" };
-
-                if (!acceptedExtensions.Contains(Path.GetExtension(file.FileName)))
-                {
-                    this.TempData["StatusMessage"] = "Error: Unsupported file!";
-                    return this.RedirectToAction("Index");
-                }
-
-                using MemoryStream memoryStream = new MemoryStream();
-
-                await file.CopyToAsync(memoryStream);
-                user.ProfilePicture = memoryStream.ToArray();
-            }
-
-            await this.userManager.UpdateAsync(user);
-
-            await this.signInManager.RefreshSignInAsync(user);
             this.TempData["StatusMessage"] = "Your profile has been updated";
 
             return this.RedirectToAction("Index");
@@ -210,7 +155,7 @@ namespace EasyRank.Web.Controllers
             //    }
             //}
 
-            if (!await this.userManager.CheckPasswordAsync(user, model.Password))
+            if (!await this.manageService.CheckPasswordAsync(this.User, model.Password))
             {
                 this.ModelState.AddModelError(string.Empty, "Incorrect password.");
                 return this.View(model);
@@ -231,12 +176,12 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The change email action for the controller.
+        /// The 'EmailAsync' action for the controller.
         /// </summary>
-        /// <returns>A change email view for changing the users email.</returns>
+        /// <returns>A view for changing the users email.</returns>
         /// <remarks>Get method.</remarks>
+        /// <remarks>For changing email.</remarks>
         [HttpGet]
-        [Route("Email")]
         public async Task<IActionResult> EmailAsync()
         {
             EasyRankUser user = await this.userManager.GetUserAsync(this.User);
@@ -343,7 +288,7 @@ namespace EasyRank.Web.Controllers
             await this.emailSender.SendEmailAsync(
                 "vassdeniss@gmail.com",
                 "Denis Vasilev from EasyRank",
-                model.NewEmail,
+                email,
                 "[DO NOT REPLY] Confirm your email for EasyRank!",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
@@ -355,10 +300,9 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'ChangePassword' action for the controller.
         /// </summary>
-        /// <returns>A 'ChangePassword' view for changing the users password.</returns>
+        /// <returns>A view for changing the users password.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        [Route("ChangePassword")]
         public IActionResult ChangePasswordAsync()
         {
             ChangePasswordViewModel model = new ChangePasswordViewModel();
@@ -375,11 +319,10 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'ChangePassword' action for the controller.
         /// </summary>
-        /// <returns>A redirect back to the change password page with either a success or error message.</returns>
-        /// <param name="model">The 'ChangePassword' view model for the view.</param>
+        /// <returns>A redirect back to the same page with either a success or error message.</returns>
+        /// <param name="model">The 'ChangePassword' view model for the validation.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        [Route("ChangePassword")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel model)
         {
             if (!this.ModelState.IsValid)
@@ -422,10 +365,9 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'MyRanks' action for the controller.
         /// </summary>
-        /// <returns>A views showing all the rankings you as a user has made.</returns>
+        /// <returns>A view showing all the rankings you as a user has made.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        [Route("MyRanks")]
         public async Task<IActionResult> MyRanksAsync()
         {
             ICollection<RankPageServiceModel> serviceModel =
@@ -440,10 +382,9 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// The 'MyLikes' action for the controller.
         /// </summary>
-        /// <returns>A views showing all the rankings you as a user has liked.</returns>
+        /// <returns>A view showing all the rankings you as a user has liked.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        [Route("MyLikes")]
         public async Task<IActionResult> MyLikesAsync()
         {
             ICollection<RankPageServiceModel> serviceModel =
