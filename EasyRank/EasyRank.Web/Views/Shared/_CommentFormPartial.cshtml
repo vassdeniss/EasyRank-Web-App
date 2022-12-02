@@ -11,7 +11,7 @@
 }
 
 <h2 class="text-center">@this.ViewData["Title"]</h2>
-<form asp-controller="Comment" asp-action="Edit">
+<form asp-controller="Comment" asp-action="@this.ViewData["ButtonType"]">
 	@if ((string)this.ViewData["ButtonType"]! == "Edit")
 	{
 		<textarea asp-for="Content" class="form-control" rows="2" placeholder="Enter edited comment here..."></textarea>

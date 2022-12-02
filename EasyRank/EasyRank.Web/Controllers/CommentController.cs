@@ -153,10 +153,6 @@ namespace EasyRank.Web.Controllers
                 this.User.Id(),
                 commentId);
 
-            await this.commentService.IsCurrentUserPageOwnerAsync(
-                this.User.Id(),
-                commentId);
-
             CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
 
             CommentViewModel viewModel = this.mapper.Map<CommentViewModel>(serviceModel);

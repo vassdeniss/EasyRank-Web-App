@@ -114,6 +114,21 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_IsCurrentUserCommentOwner_OwnerOfPage_DoesNotThrow()
+        {
+            // Arrange: get guest user id, get denis comment id from test db
+            Guid guestUserId = this.testDb.GuestUser.Id;
+            Guid denisCommentId = this.testDb.DenisComment.Id;
+
+            // Act:
+
+            // Assert: no exceptions are thrown
+            Assert.That(
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, denisCommentId),
+                Throws.Nothing);
+        }
+
+        [Test]
         public void Test_IsCurrentUserCommentOwner_ValidCommentId_DoesNotThrow()
         {
             // Arrange: get guest user id, get guest comment id from test db
@@ -129,81 +144,6 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
-        public void Test_IsCurrentUserPageOwner_InvalidCommentId_ThrowsNotFoundException()
-        {
-            // Arrange: get guest user id, initialise invalid id
-            Guid guestUserId = this.testDb.GuestUser.Id;
-            Guid invalidCommentId = Guid.NewGuid();
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with invalid id
-            Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, invalidCommentId),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_IsCurrentUserPageOwner_DeletedComment_ThrowsNotFoundException()
-        {
-            // Arrange: get guest user id, get deleted comment id from test db
-            Guid guestUserId = this.testDb.GuestUser.Id;
-            Guid deletedCommentId = this.testDb.DeletedComment.Id;
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with deleted comment id
-            Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, deletedCommentId),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_IsCurrentUserPageOwner_DeletedPage_ThrowsNotFoundException()
-        {
-            // Arrange: get guest user id, get comment with deleted page id from test db
-            Guid guestUserId = this.testDb.GuestUser.Id;
-            Guid deletedPageId = this.testDb.CommentWithDeletedPage.Id;
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with deleted comment id
-            Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, deletedPageId),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_IsCurrentUserPageOwner_NotCorrectOwnerId_ThrowsUnauthorizedUserException()
-        {
-            // Arrange: get denis user id, get guest comment id from test db
-            Guid denisUserId = this.testDb.DenisUser.Id;
-            Guid guestCommentId = this.testDb.GuestComment.Id;
-
-            // Act:
-
-            // Assert: UnauthorizedUserException is thrown with denis user id
-            Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwnerAsync(denisUserId, guestCommentId),
-                Throws.Exception.TypeOf<UnauthorizedUserException>());
-        }
-
-        [Test]
-        public void Test_IsCurrentUserPageOwner_ValidCommentId_DoesNotThrow()
-        {
-            // Arrange: get guest user id, get guest comment id from test db
-            Guid guestUserId = this.testDb.GuestUser.Id;
-            Guid guestCommentId = this.testDb.GuestComment.Id;
-
-            // Act:
-
-            // Assert: no exceptions are thrown
-            Assert.That(
-                async() => await this.commentService.IsCurrentUserPageOwnerAsync(guestUserId, guestCommentId),
-                 Throws.Nothing);
-        }
-
-        [Test]
         public void Test_GetCommentPageId_InvalidCommentId_ThrowsNotFoundException()
         {
             // Arrange: initialise invalid id
@@ -214,20 +154,6 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.commentService.GetCommentPageIdAsync(invalidCommentId),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_GetCommentPageId_DeletedComment_ThrowsNotFoundException()
-        {
-            // Arrange: get deleted comment id from test db
-            Guid deletedCommentId = this.testDb.DeletedComment.Id;
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with deleted comment id
-            Assert.That(
-                async() => await this.commentService.GetCommentPageIdAsync(deletedCommentId),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 

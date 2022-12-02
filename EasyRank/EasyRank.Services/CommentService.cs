@@ -110,37 +110,17 @@ namespace EasyRank.Services
             Guid userId,
             Guid commentId)
         {
-            Comment comment = await this.repo.GetByIdAsync<Comment>(commentId);
+            Comment? comment = await this.repo.All<Comment>(
+                c => c.Id == commentId)
+                .Include(c => c.RankPage)
+                .FirstOrDefaultAsync();
 
             if (comment == null || comment.IsDeleted)
             {
                 throw new NotFoundException();
             }
 
-            if (comment.CreatedByUserId != userId)
-            {
-                throw new UnauthorizedUserException();
-            }
-        }
-
-        /// <inheritdoc />
-        public async Task IsCurrentUserPageOwnerAsync(
-            Guid userId,
-            Guid commentId)
-        {
-            Comment comment = await this.repo.All<Comment>(c => c.Id == commentId)
-                 .Where(c => c.IsDeleted == false)
-                 .Include(c => c.RankPage)
-                 .ThenInclude(rp => rp.CreatedByUser)
-                 .FirstOrDefaultAsync()
-                              ?? throw new NotFoundException();
-
-            if (comment.RankPage.IsDeleted)
-            {
-                throw new NotFoundException();
-            }
-
-            if (comment.RankPage.CreatedByUser.Id != userId)
+            if (comment.CreatedByUserId != userId && comment.RankPage.CreatedByUserId != userId)
             {
                 throw new UnauthorizedUserException();
             }
@@ -154,7 +134,7 @@ namespace EasyRank.Services
                     .Include(c => c.RankPage)
                     .FirstOrDefaultAsync();
 
-            if (comment == null || comment.IsDeleted || comment.RankPage.IsDeleted)
+            if (comment == null || comment.RankPage.IsDeleted)
             {
                 throw new NotFoundException();
             }

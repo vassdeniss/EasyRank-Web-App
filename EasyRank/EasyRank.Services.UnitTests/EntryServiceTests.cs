@@ -162,7 +162,7 @@ namespace EasyRank.Services.UnitTests
             ICollection<int> availablePlacements = await this.entryService.GetAvailablePlacementsAsync(guestRankPage.Id);
 
             int maxPlacements = 10;
-            int actualAvailablePlacements = maxPlacements - guestRankPage.Entries.Count;
+            int actualAvailablePlacements = maxPlacements - guestRankPage.Entries.Count(e => !e.IsDeleted);
 
             // Assert: returned count matches expected
             Assert.That(availablePlacements.Count, Is.EqualTo(actualAvailablePlacements));
@@ -308,6 +308,71 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: both ids must be equal
             Assert.That(serviceModel.Id, Is.EqualTo(guestRankEntryId));
+        }
+
+        [Test]
+        public void Test_DeleteEntry_InvalidRankEntryId_ThrowsNotFoundException()
+        {
+            // Arrange: initialise invalid id
+            Guid invalidRankEntryId = Guid.NewGuid();
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.entryService.DeleteEntryAsync(invalidRankEntryId),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_DeleteEntry_DeletedRankEntry_ThrowsNotFoundException()
+        {
+            // Arrange: get deleted rank entry id from test db
+            Guid deletedRankEntryId = this.testDb.DeletedEntry.Id;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.entryService.DeleteEntryAsync(deletedRankEntryId),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_DeleteRank_RemovesSuccessfully()
+        {
+            // Arrange: create data for a new rank entry to be added
+            Guid rankEntryId = Guid.NewGuid();
+            byte[] image = Array.Empty<byte>();
+            string imageAlt = "Alternative text for image for testing delete entry";
+            string entryTitle = "I want to delete this one 8 / 10";
+            int entryPlacement = 8;
+            string entryDescription = "I want to delete this one 8 / 10 really much cause i really don't like it looks and blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah";
+            Guid rankPageId = this.testDb.GuestPage.Id;
+
+            RankEntry newEntry = new RankEntry
+            {
+                Id = rankEntryId,
+                Placement = entryPlacement,
+                Title = entryTitle,
+                Image = image,
+                ImageAlt = imageAlt,
+                Description = entryDescription,
+                IsDeleted = false,
+                RankPageId = rankPageId,
+            };
+
+            // Arrange: add the entry to the db
+            await this.repo.AddAsync<RankEntry>(newEntry);
+            await this.repo.SaveChangesAsync();
+
+            // Act: call the delete service method and pass the necessary data
+            await this.entryService.DeleteEntryAsync(rankEntryId);
+
+            RankEntry rankEntryInDb = await this.repo.GetByIdAsync<RankEntry>(rankEntryId);
+
+            // Assert: the rank entry has been deleted;
+            Assert.That(rankEntryInDb.IsDeleted, Is.True);
         }
     }
 }

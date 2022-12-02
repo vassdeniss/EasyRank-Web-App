@@ -68,7 +68,7 @@ namespace EasyRank.Services.Profiles
                 .ForMember(
                     d => d.Entries,
                     mo => mo.MapFrom(
-                        s => s.Entries.OrderByDescending(e => e.Placement)))
+                        s => s.Entries.Where(e => !e.IsDeleted).OrderByDescending(e => e.Placement)))
                 .ForMember(
                     d => d.Comments,
                     mo => mo.MapFrom(

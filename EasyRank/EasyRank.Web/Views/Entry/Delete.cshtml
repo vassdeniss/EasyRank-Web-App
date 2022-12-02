@@ -1,0 +1,42 @@
+﻿@model RankEntryFormModel
+@{
+	this.ViewData["Title"] = "Delete Entry";
+	this.ViewData["ButtonType"] = "Delete";
+}
+
+<style>
+	.form-select:disabled {
+		background-color: #250d49;
+	}
+</style>
+
+<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+	<h4 class="alert-heading">Warning!</h4>
+	<p>
+		<strong>This will permanently remove this entry, and this cannot be recovered.</strong>
+	</p>
+</div>
+
+@await this.Html.PartialAsync("_RankEntryFormPartial", this.Model)
+
+@section Scripts {
+	<script>
+		$(document).ready(function() {
+			$('.form-title').attr('disabled', true);
+			$('.form-select').attr('disabled', true);
+			$('.form-alt').attr('disabled', true);
+			$('.form-text').attr('disabled', true);
+			$('#img-input').attr('disabled', true);
+			$('#remove-img').removeAttr('onClick');
+
+			$('.form-title').css('cursor', 'not-allowed');
+			$('.form-alt').css('cursor', 'not-allowed');
+			$('.form-select').css('cursor', 'not-allowed');
+			$('.form-text').css('cursor', 'not-allowed');
+			$('#img-input').css('cursor', 'not-allowed');
+			$('#remove-img').css('cursor', 'not-allowed');
+		});
+	</script>
+
+	<partial name="_ValidationScriptsPartial" />
+}

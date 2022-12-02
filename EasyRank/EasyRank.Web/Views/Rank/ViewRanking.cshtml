@@ -67,7 +67,7 @@
 @foreach (RankEntryViewModel entry in this.Model.Entries)
 {
 	<div class="card border-secondary">
-		@if (entry.Image!.Any())
+		@if (entry.Image != null)
 		{
 			<img src="data:image/*; base64, @Convert.ToBase64String(entry.Image!)" class="card-img-top" alt="@entry.ImageAlt" style="object-fit: cover; width: 100%; height: 350px">
 		}
@@ -82,7 +82,7 @@
 			{
 				<a asp-controller="Entry" asp-action="Edit" asp-route-rankId="@this.Model.Id" asp-route-entryId="@entry.Id" class="card-link">Edit Entry</a>
 				<span class="text-primary mx-3">|</span>
-				<a asp-controller="Entry" asp-action="Delete" asp-route-rankId="@this.Model.Id" class="card-link">Delete Entry</a>
+				<a asp-controller="Entry" asp-action="Delete" asp-route-rankId="@this.Model.Id" asp-route-entryId="@entry.Id" class="card-link">Delete Entry</a>
 			}
 		</div>
 	</div>
@@ -128,7 +128,7 @@ else
 	foreach (CommentViewModel comment in this.Model.Comments)
 	{
 		<div class="comment">
-			@if (comment.ProfilePicture!.Any())
+			@if (comment.ProfilePicture != null)
 			{
 				<img class="author-avatar" src="data:image/*; base64, @Convert.ToBase64String(comment.ProfilePicture!)" />
 			}

@@ -92,7 +92,9 @@ namespace EasyRank.Services
                 .FirstOrDefaultAsync()
                     ?? throw new NotFoundException();
 
-            List<int> takenPlacements = page.Entries.Select(e => e.Placement)
+            List<int> takenPlacements = page.Entries
+                .Where(e => !e.IsDeleted)
+                .Select(e => e.Placement)
                 .ToList();
 
             return Enumerable.Range(1, 10)
@@ -137,6 +139,21 @@ namespace EasyRank.Services
             }
 
             return this.mapper.Map<RankEntryServiceModel>(rankEntry);
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteEntryAsync(Guid entryId)
+        {
+            RankEntry entry = await this.repo.GetByIdAsync<RankEntry>(entryId);
+
+            if (entry == null || entry.IsDeleted)
+            {
+                throw new NotFoundException();
+            }
+
+            entry.IsDeleted = true;
+
+            await this.repo.SaveChangesAsync();
         }
     }
 }

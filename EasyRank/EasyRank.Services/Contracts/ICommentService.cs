@@ -59,28 +59,16 @@ namespace EasyRank.Services.Contracts
         Task DeleteCommentAsync(Guid commentId);
 
         /// <summary>
-        /// Checks if the current user owns the comment.
+        /// Checks if the current user owns the comment (or if the user is owner of page).
         /// </summary>
         /// <returns>Task(void).</returns>
         /// <param name="userId">GUID used for retrieving the needed user.</param>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
-        /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
-        /// is not the owner of the comment.</exception>
+        /// <exception cref="UnauthorizedUserException">
+        /// Throws 'UnauthorizedUserException' if the user is not the owner of the comment.
+        /// </exception>
         Task IsCurrentUserCommentOwnerAsync(
-            Guid userId,
-            Guid commentId);
-
-        /// <summary>
-        /// Checks if the current user owns the page.
-        /// </summary>
-        /// <returns>Task(void).</returns>
-        /// <param name="userId">GUID used for retrieving the needed user.</param>
-        /// <param name="commentId">GUID used for retrieving the needed comment.</param>
-        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
-        /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
-        /// is not the owner of the page.</exception>
-        Task IsCurrentUserPageOwnerAsync(
             Guid userId,
             Guid commentId);
 

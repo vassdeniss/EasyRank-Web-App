@@ -83,5 +83,14 @@ namespace EasyRank.Services.Contracts
         /// <param name="entryGuid">GUID used to search for the rank entry.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the rank entry was not found.</exception>
         Task<RankEntryServiceModel> GetRankEntryByGuidAsync(Guid entryGuid);
-    }   
+
+        /// <summary>
+        /// Deletes an entry from the database.
+        /// </summary>
+        /// <returns>Task (void).</returns>
+        /// <param name="entryId">GUID used for retrieving the needed rank entry.</param>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the entry was not found.</exception>
+        /// <remarks>Sets a 'IsDeleted' flag. Doesn't actually delete.</remarks>
+        Task DeleteEntryAsync(Guid entryId);
+    }
 }

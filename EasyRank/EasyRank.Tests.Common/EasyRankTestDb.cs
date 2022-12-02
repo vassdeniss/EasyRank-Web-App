@@ -45,6 +45,8 @@ namespace EasyRank.Tests.Common
 
         public Comment DeletedComment { get; set; }
 
+        public Comment DenisComment { get; set; }
+
         public Comment CommentWithDeletedPage { get; set; }
 
         public EasyRankUserRankPage LikedMap { get; set; }
@@ -228,6 +230,18 @@ namespace EasyRank.Tests.Common
             };
 
             dbContext.Add<Comment>(this.DeletedComment);
+
+            this.DenisComment = new Comment
+            {
+                Id = Guid.NewGuid(),
+                Content = "Deleted comment made by the DenisUser for testing purposes",
+                CreatedOn = DateTime.Now.AddDays(-7),
+                CreatedByUserId = this.DenisUser.Id,
+                RankPageId = this.GuestPage.Id,
+                IsDeleted = false,
+            };
+
+            dbContext.Add<Comment>(this.DenisComment);
 
             this.CommentWithDeletedPage = new Comment
             {

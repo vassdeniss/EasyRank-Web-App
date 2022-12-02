@@ -227,6 +227,59 @@ namespace EasyRank.Web.Controllers
             });
         }
 
+        /// <summary>
+        /// The 'Delete' action for the controller.
+        /// </summary>
+        /// <returns>
+        /// A view for rank entry deletion with a filled rank entry form model.
+        /// 404 if the entry doesn't exist, 401 if the user is not the page owner.</returns>
+        /// <remarks>Get method.</remarks>
+        /// <param name="rankId">The GUID used for retrieving the needed page.</param>
+        /// <param name="entryId">The GUID used for retrieving the needed entry.</param>
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(Guid rankId, Guid entryId)
+        {
+            await this.entryService.IsCurrentUserPageOwnerAsync(
+                this.User.Id(),
+                rankId);
+
+            RankEntryServiceModel serviceModel = await this.entryService.GetRankEntryByGuidAsync(entryId);
+
+            RankEntryViewModel viewModel = this.mapper.Map<RankEntryViewModel>(serviceModel);
+
+            RankEntryFormModel model = new RankEntryFormModel
+            {
+                Id = entryId,
+                Image = viewModel.Image,
+                ImageAlt = viewModel.ImageAlt,
+                Placement = viewModel.Placement,
+                EntryTitle = viewModel.Title,
+                EntryDescription = viewModel.Description,
+                AvailablePlacements = await this.entryService.GetAvailablePlacementsAsync(rankId),
+            };
+
+            this.TempData["EntryDeleteReturnId"] = rankId;
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'Delete' action for the controller.
+        /// </summary>
+        /// <returns>Redirects to the view the entry was deleted from.</returns>
+        /// <remarks>Post method.</remarks>
+        /// <param name="model">The 'RankEntryFormModel' model from the form.</param>
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(RankEntryFormModel model)
+        {
+            await this.entryService.DeleteEntryAsync(model.Id);
+
+            return this.RedirectToAction("ViewRanking", "Rank", new
+            {
+                rankId = this.TempData["EntryDeleteReturnId"],
+            });
+        }
+
         private string SanitizeString(string content)
         {
             HtmlSanitizer sanitizer = new HtmlSanitizer();
