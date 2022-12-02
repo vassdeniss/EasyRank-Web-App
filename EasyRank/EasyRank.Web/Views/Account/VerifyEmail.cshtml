@@ -1,0 +1,30 @@
+﻿@model VerifyEmailViewModel
+@{
+	this.ViewData["Title"] = "Resend Email Confirmation";
+}
+
+@if (this.TempData.ContainsKey("StatusMessage"))
+{
+	<div class="alert alert-success" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+		@this.TempData["StatusMessage"]
+	</div>
+}
+
+<h1>@this.ViewData["Title"]</h1>
+<hr />
+<div class="row">
+	<div class="col-md-12">
+		<form method="post">
+			<div class="form-floating">
+				<input asp-for="Email" class="form-control" aria-required="true" />
+				<label asp-for="Email" class="form-label"></label>
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+			<button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
