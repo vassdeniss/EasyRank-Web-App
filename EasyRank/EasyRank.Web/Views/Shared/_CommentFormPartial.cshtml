@@ -1,15 +1,5 @@
 ﻿@model CommentFormModelExtended
 
-@if ((string)this.ViewData["ButtonType"]! == "Delete")
-{
-	<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
-		<h4 class="alert-heading">Warning!</h4>
-		<p>
-			<strong>This will permanently delete your comment, and this cannot be recovered.</strong>
-		</p>
-	</div>
-}
-
 <h2 class="text-center">@this.ViewData["Title"]</h2>
 <form asp-controller="Comment" asp-action="@this.ViewData["ButtonType"]">
 	@if ((string)this.ViewData["ButtonType"]! == "Edit")

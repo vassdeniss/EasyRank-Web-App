@@ -677,6 +677,49 @@ namespace EasyRank.Services.UnitTests
             Assert.That(actualCode, Is.EqualTo(expectedCode));
         }
 
+        [Test]
+        public void Test_GenerateEmailConfirmationToken_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.GenerateEmailConfirmationTokenAsync(invalidPrincipal),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GenerateEmailConfirmationToken_GeneratesCorrectly()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: create a valid claim principal
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Arrange: create sample code
+            string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            string actualCode = await this.manageService.GenerateEmailConfirmationTokenAsync(userPrincipal);
+
+            // Assert: both codes are the same
+            Assert.That(actualCode, Is.EqualTo(expectedCode));
+        }
+
         private ClaimsPrincipal CreateClaimsPrincipal(EasyRankUser user)
         {
             List<Claim> userClaims = new List<Claim>

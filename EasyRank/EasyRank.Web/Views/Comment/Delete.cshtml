@@ -4,4 +4,11 @@
 	this.ViewData["ButtonType"] = "Delete";
 }
 
+<div class="alert alert-warning" role="alert" style="text-shadow: rgb(24 26 27 / 30%) 0px 0px 1px;">
+	<h4 class="alert-heading">Warning!</h4>
+	<p>
+		<strong>This will permanently delete your comment, and this cannot be recovered.</strong>
+	</p>
+</div>
+
 @await this.Html.PartialAsync("_CommentFormPartial", this.Model)

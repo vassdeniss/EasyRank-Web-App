@@ -243,5 +243,17 @@ namespace EasyRank.Services
             string code = await this.userManager.GenerateChangeEmailTokenAsync(user, newEmail);
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        }
     }
 }

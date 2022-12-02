@@ -117,5 +117,13 @@ namespace EasyRank.Services.Contracts
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<string> GenerateChangeEmailTokenAsync(ClaimsPrincipal currentUser, string newEmail);
+
+        /// <summary>
+        /// Used for generating an email confirmation token for the current user.
+        /// </summary>
+        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <returns>The token as a string.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        public Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser);
     }
 }
