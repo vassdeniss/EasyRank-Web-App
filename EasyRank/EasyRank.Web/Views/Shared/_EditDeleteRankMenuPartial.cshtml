@@ -17,7 +17,7 @@
 			{
 				<tr>
 					<th scope="row">
-						<a asp-action="@this.ViewData["ActionType"]" asp-route-rankId="@rankPage.Id">@rankPage.RankingTitle</a>
+						<a asp-area="" asp-action="@this.ViewData["ActionType"]" asp-route-rankId="@rankPage.Id">@rankPage.RankingTitle</a>
 					</th>
 					<td>@rankPage.CreatedOn</td>
 					<td>@rankPage.LikeCount</td>

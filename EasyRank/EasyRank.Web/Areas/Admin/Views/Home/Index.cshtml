@@ -1,0 +1,29 @@
+﻿@{
+	this.ViewData["Title"] = "Admin Home Page";
+}
+
+<div class="mt-4 p-5 text-center">
+	<h2 class="display-4">Hello, Admin @this.User.Identity!.Name!</h2>
+	<p class="lead mb-1 mt-3">
+		This is your administrator area!
+		<br />You can <b class="text-secondary">read</b>, <b class="text-secondary">create</b>, <b class="text-secondary">delete</b> and <b class="text-secondary">edit</b> every <b class="text-secondary">rank</b>, <b class="text-secondary">entry</b>, or <b class="text-secondary">comment</b>.
+	</p>
+	<p class="lead mb-1">
+		Beware, with great <b class="text-secondary">power</b> comes great <b class="text-secondary">responsibility</b>.
+	</p>
+	<p class="lead">
+		Protect the users of EasyRank and use your administrating powers wisely.
+	</p>
+	<hr class="my-4">
+	<a asp-area="Admin" asp-controller="Rank" asp-action="All"
+	   class="btn btn-primary mx-2">All Ranks</a>
+	<span>|</span>
+	<a asp-area="Admin" asp-controller="Entry" asp-action="All"
+	   class="btn btn-primary mx-2">All Entries</a>
+	<span>|</span>
+	<a asp-area="Admin" asp-controller="Comment" asp-action="All"
+	   class="btn btn-primary mx-2">All Comments</a>
+	<span>|</span>
+	<a asp-area="Admin" asp-controller="Users" asp-action="All"
+	   class="btn btn-primary mx-2">All Users</a>
+</div>

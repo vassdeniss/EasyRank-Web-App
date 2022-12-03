@@ -39,6 +39,11 @@ namespace EasyRank.Web.Controllers
         /// <returns>The home page view.</returns>
         public IActionResult Index()
         {
+            if (this.User.IsInRole("Administrator"))
+            {
+                return this.RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
+
             if (!this.User.Identity!.IsAuthenticated)
             {
                 return this.View();

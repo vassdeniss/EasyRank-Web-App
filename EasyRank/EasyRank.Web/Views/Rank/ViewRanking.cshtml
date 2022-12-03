@@ -1,5 +1,7 @@
 ﻿@using System.Security.Claims
 @using EasyRank.Web.Claims
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<EasyRankUser> UserManager
 @model RankPageViewModelExtended
 @{
 	this.ViewData["Title"] = this.Model.RankingTitle;
@@ -137,7 +139,20 @@ else
 				<div class="author-avatar-empty"></div>
 			}
 			<div class="columnedFlex">
-				@if (comment.Username == this.Model.CreatedByUserName)
+				@if (await this.UserManager.IsInRoleAsync(
+							await this.UserManager.FindByNameAsync(comment.Username),
+						"Administrator")
+						&& comment.Username == this.Model.CreatedByUserName)
+				{
+					<h6 class="text-warning">@comment.Username <b>(Admin)</b> <b>(Author)</b> &#x2022; @comment.PostedOn</h6>
+				}
+				else if (await this.UserManager.IsInRoleAsync(
+							await this.UserManager.FindByNameAsync(comment.Username),
+						"Administrator"))
+				{
+					<h6 class="text-warning">@comment.Username <b>(Admin)</b> &#x2022; @comment.PostedOn</h6>
+				}
+				else if (comment.Username == this.Model.CreatedByUserName)
 				{
 					<h6 class="text-secondary">@comment.Username <b>(Author)</b> &#x2022; @comment.PostedOn</h6>
 				}
@@ -157,6 +172,10 @@ else
 					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name))
 					{
 						<a class="text-warning" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id">Edit</a>
+					}
+					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name)
+					     && this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+					{
 						<span class="text-primary mx-3">|</span>
 					}
 					@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))

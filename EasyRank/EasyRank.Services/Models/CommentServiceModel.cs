@@ -43,5 +43,10 @@ namespace EasyRank.Services.Models
         /// Gets or sets a value indicating whether a comment has been edited.
         /// </summary>
         public bool IsEdited { get; set; }
+
+        /// <summary>
+        /// Gets or sets the id of the person who made the comment.
+        /// </summary>
+        public Guid UserId { get; set; }
     }
 }

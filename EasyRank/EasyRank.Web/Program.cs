@@ -5,20 +5,25 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
+using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services;
 using EasyRank.Services.Contracts;
+using EasyRank.Web.Claims;
 using EasyRank.Web.Controllers;
+using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +46,7 @@ builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
     options.Password.RequireUppercase = builder.Configuration.GetValue<bool>("Account:RequireUppercase");
     options.Password.RequireLowercase = builder.Configuration.GetValue<bool>("Account:RequireLowercase");
 })
+    .AddRoles<EasyRankRole>()
     .AddEntityFrameworkStores<EasyRankDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -60,6 +66,7 @@ builder.Services.AddScoped<IEntryService, EntryService>();
 builder.Services.AddScoped<IEmailSender>(_ =>
     new SendGridEmailSender(builder.Configuration.GetValue<string>("SendGrid:ApiKey")));
 builder.Services.AddScoped<IManageService, ManageService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 WebApplication app = builder.Build();
 
@@ -81,18 +88,25 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.SeedAdmin();
+
 //app.UseStatusCodePagesWithRedirects("/Home/Error{0}");
 
-app.UseEndpoints(endpoint =>
+app.UseEndpoints(endpoints =>
 {
-    endpoint.MapControllerRoute(
+    endpoints.MapControllerRoute(
+        name: "areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+
+    endpoints.MapControllerRoute(
         name: "Account Management",
         pattern: "/Account/Manage/{action}/{id?}",
         defaults: new { controller = "Manage", action = "Index" });
 
-    endpoint.MapDefaultControllerRoute();
+    endpoints.MapDefaultControllerRoute();
 
-    endpoint.MapRazorPages();
+    endpoints.MapRazorPages();
 });
 
 app.Run();

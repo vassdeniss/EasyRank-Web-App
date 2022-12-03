@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EasyRank.Web.Models.Rank  
+namespace EasyRank.Web.Models.Rank
 {
     /// <summary>
     /// Extended model of the rank page holding more needed properties.

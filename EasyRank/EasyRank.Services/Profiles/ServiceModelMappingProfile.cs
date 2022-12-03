@@ -90,7 +90,10 @@ namespace EasyRank.Services.Profiles
                 .ForMember(
                     d => d.PostedOn,
                     mo => mo.MapFrom(
-                        s => s.CreatedOn.ToString("dd/MM/yyyy")));
+                        s => s.CreatedOn.ToString("dd/MM/yyyy")))
+                .ForMember(d => d.UserId,
+                    mo => mo.MapFrom(
+                        s => s.CreatedByUser.Id));
 
             this.CreateMap<EasyRankUser, ManageServiceModel>();
         }

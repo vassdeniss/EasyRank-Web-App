@@ -15,14 +15,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace EasyRank.Infrastructure.Data
 {
     /// <summary>
     /// The database context for the app.
     /// </summary>
-    public class EasyRankDbContext : IdentityDbContext<EasyRankUser, IdentityRole<Guid>, Guid>
+    public class EasyRankDbContext : IdentityDbContext<EasyRankUser, EasyRankRole, Guid>
     {
         private readonly bool isSeed;
 
@@ -61,6 +59,8 @@ namespace EasyRank.Infrastructure.Data
         private EasyRankUser GuestUser { get; set; }
 
         private EasyRankUser GuestUserTwo { get; set; }
+
+        private EasyRankUser AdminUser { get; set; }
 
         private RankPage RankPage { get; set; }
 
@@ -119,8 +119,23 @@ namespace EasyRank.Infrastructure.Data
 
             this.GuestUserTwo.PasswordHash = hasher.HashPassword(this.GuestUserTwo, "guestPasswordTwo");
 
+            this.AdminUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = "vassdeniss",
+                NormalizedUserName = "VASSDENISS",
+                Email = "vassdeniss@gmail.com",
+                NormalizedEmail = "VASSDENISS@GMAIL.COM",
+                FirstName = "Denis",
+                LastName = "Vasilev",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+            };
+
+            this.AdminUser.PasswordHash = hasher.HashPassword(this.AdminUser, "admin-pass");
+
             builder.Entity<EasyRankUser>()
-                .HasData(this.GuestUser, this.GuestUserTwo);
+                .HasData(this.GuestUser, this.GuestUserTwo, this.AdminUser);
 
             this.RankPage = new RankPage
             {

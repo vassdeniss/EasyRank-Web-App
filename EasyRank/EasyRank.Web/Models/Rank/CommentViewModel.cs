@@ -17,7 +17,7 @@ namespace EasyRank.Web.Models.Rank
         /// <summary>
         /// Gets or sets the comments GUID.
         /// </summary>
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the profile picture of the user.
@@ -43,5 +43,10 @@ namespace EasyRank.Web.Models.Rank
         /// Gets or sets a value indicating whether a comment has been edited.
         /// </summary>
         public bool IsEdited { get; set; }
+
+        /// <summary>
+        /// Gets or sets the id of the person who made the comment.
+        /// </summary>
+        public Guid UserId { get; set; }
     }
 }
