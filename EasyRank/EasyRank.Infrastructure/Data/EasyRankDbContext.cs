@@ -213,6 +213,106 @@ namespace EasyRank.Infrastructure.Data
                         CreatedOn = DateTime.Today,
                         CreatedByUserId = this.GuestUserTwo.Id,
                         IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
+                    },
+                    new RankPage
+                    {
+                        Id = Guid.NewGuid(),
+                        Image = null,
+                        ImageAlt = "Yoda",
+                        RankingTitle = "Top 5 Favorite Characters",
+                        CreatedOn = DateTime.Today,
+                        CreatedByUserId = this.GuestUserTwo.Id,
+                        IsDeleted = false,
                     });
 
             builder.Entity<Comment>()

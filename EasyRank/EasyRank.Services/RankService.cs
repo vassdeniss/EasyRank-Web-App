@@ -46,16 +46,25 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
+        public async Task<AllRanksServiceModel> GetAllRankingsAsync(int page, int perPage)
         {
-            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+            ICollection<RankPageServiceModel> pages = this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>()
                     .Where(rp => rp.IsDeleted == false)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
                     .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
+                    .Skip((page - 1) * perPage)
+                    .Take(perPage)
                     .ToListAsync());
+
+            return new AllRanksServiceModel
+            {
+                CurrentPage = page,
+                Ranks = pages,
+                RankCount = await this.repo.AllReadonly<RankPage>().CountAsync(),
+            };
         }
 
         /// <inheritdoc />

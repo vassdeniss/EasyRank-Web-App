@@ -1,6 +1,6 @@
-﻿@model ICollection<RankPageViewModel>
+﻿@model AllRanksViewModel
 @{
-	Layout = null;
+	this.Layout = null;
 }
 
 <!DOCTYPE html>
@@ -39,9 +39,9 @@
 								<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
 									<li>
 										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="All">All Rankings</a>
-										<a class="dropdown-item" asp-controller="Rank" asp-action="Create">Create Rank</a>
-										<a class="dropdown-item" asp-controller="Rank" asp-action="EditMenu">Edit Rank</a>
-										<a class="dropdown-item" asp-controller="Rank" asp-action="DeleteMenu">Delete Rank</a>
+										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="Create">Create Rank</a>
+										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="EditMenu">Edit Rank</a>
+										<a class="dropdown-item" asp-area="" asp-controller="Rank" asp-action="DeleteMenu">Delete Rank</a>
 									</li>
 								</ul>
 							</li>
@@ -55,18 +55,18 @@
 	    <div class="container-fluid">
 	        <main role="main" class="pb-3">
 		        <div class="text-center row">
-			        @foreach (RankPageViewModel rank in this.Model)
+			        @foreach (RankPageViewModel rank in this.Model.Ranks)
 			        {
-				        <div class="card border-secondary m-2 p-0" style="width: 15rem;">
-							@if (rank.Image != null)
-							{
-								<img class="card-img-top" style="object-fit: fill;" src="data:image/*;base64,@(Convert.ToBase64String(rank.Image))" alt="@rank.ImageAlt">
-							}
-							else
-							{
-								<img class="card-img-top" style="object-fit: fill;" src="" alt="@rank.ImageAlt">
+				        <div class="card border-secondary m-3 p-0" style="width: 15rem;">
+					        @if (rank.Image != null)
+					        {
+						        <img class="card-img-top" style="object-fit: fill;" src="data:image/*;base64,@(Convert.ToBase64String(rank.Image))" alt="@rank.ImageAlt">
+					        }
+					        else
+					        {
+						        <img class="card-img-top" style="object-fit: fill;" src="" alt="@rank.ImageAlt">
 
-							}
+					        }
 					        <div class="card-body">
 						        <h5 class="card-title mt-1">@rank.RankingTitle</h5>
 						        <p class="mb-0">Created by: @rank.CreatedByUserName</p>
@@ -80,7 +80,7 @@
 							        <span class="text-primary mx-3">|</span>
 							        <a asp-controller="Rank" asp-action="Edit" asp-route-rankId="@rank.Id" class="card-link">Edit</a>
 							        <span class="text-primary mx-3">|</span>
-									<a asp-controller="Rank" asp-action="Delete" asp-route-rankId="@rank.Id" class="card-link">Delete</a>
+							        <a asp-controller="Rank" asp-action="Delete" asp-route-rankId="@rank.Id" class="card-link">Delete</a>
 						        }
 					        </div>
 					        <div class="card-footer text-muted" style="font-size: 14px; text-align: center;">
@@ -88,6 +88,31 @@
 					        </div>
 				        </div>
 			        }
+		        </div>
+				
+		        @{
+			        int previousPage = this.Model.CurrentPage - 1;
+			        if (previousPage < 1)
+			        {
+				        previousPage = 1;
+			        }
+
+			        double maxPage = 
+				        Math.Ceiling((double)this.Model.RankCount / 12);
+
+			        bool shouldButtonBeDisabled = 
+				        this.Model.CurrentPage == maxPage || !this.Model.Ranks.Any();
+		        }
+
+		        <div class="mt-5">
+			        <ul class="pagination justify-content-center">
+					<li class="page-item bg-secondary @(this.Model.CurrentPage == 1 ? "disabled" : string.Empty) mx-2">
+					        <a class="page-link active" asp-action="All" asp-route-page="@previousPage">&laquo;</a>
+				        </li>
+				        <li class="page-item bg-secondary @(shouldButtonBeDisabled ? "disabled" : string.Empty) mx-2">
+					        <a class="page-link active" asp-action="All" asp-route-page="@(this.Model.CurrentPage + 1)">&raquo;</a>
+				        </li>
+			        </ul>
 		        </div>
 	        </main>
 	    </div>

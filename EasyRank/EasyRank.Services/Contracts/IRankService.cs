@@ -23,7 +23,9 @@ namespace EasyRank.Services.Contracts
         /// Used for retrieving all rankings from the database.
         /// </summary>
         /// <returns>A collection of rank page service models.</returns>
-        Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync();
+        /// <param name="page">The current page to take ranks for.</param>
+        /// <param name="perPage">Number of ranks per page.</param>
+        Task<AllRanksServiceModel> GetAllRankingsAsync(int page, int perPage);
 
         /// <summary>
         /// Used for retrieving a rank page from the database by its GUID.

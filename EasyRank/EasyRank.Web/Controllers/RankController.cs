@@ -53,12 +53,12 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> AllAsync()
+        public async Task<IActionResult> AllAsync(int page = 1)
         {
-            ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsAsync();
+            int ranksPerPage = 12;
+            AllRanksServiceModel serviceModel = await this.rankService.GetAllRankingsAsync(page, ranksPerPage);
 
-            ICollection<RankPageViewModel> model =
-                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+            AllRanksViewModel model = this.mapper.Map<AllRanksViewModel>(serviceModel);
 
             return this.View(model);
         }
