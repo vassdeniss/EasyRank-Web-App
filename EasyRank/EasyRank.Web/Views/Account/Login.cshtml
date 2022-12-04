@@ -22,16 +22,12 @@
 	                <label asp-for="Password" class="text-light"></label>
 	                <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <a asp-controller="Account" asp-action="Register" style="display: inline-block;" class="text-warning">Don't have an account? Register now!</a>
-                <a asp-controller="Account" asp-action="VerifyEmail" style="display: inline-block;" class="text-warning mb-3">Resend verification email</a>
+                <a asp-controller="Account" asp-action="Register" style="display: inline-block;" class="text-warning">Don't have an account? Register now!</a><br/>
+                <a asp-controller="Account" asp-action="VerifyEmail" style="display: inline-block;" class="text-warning">Resend verification email</a><br/>
+                <a asp-controller="Account" asp-action="ForgotPassword" style="display: inline-block;" class="text-warning mb-3">Forgot your password?</a>
                 <div>
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                 </div>
-@*                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                </div>*@
             </form>
         </section>
     </div>

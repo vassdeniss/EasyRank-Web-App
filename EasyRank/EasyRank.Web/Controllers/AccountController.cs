@@ -5,14 +5,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Text.Encodings.Web;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Models.Account;
-using EasyRank.Web.Models.Manage;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -114,7 +113,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string? returnUrl = null)
+        public IActionResult LoginAsync(string? returnUrl = null)
         {
             if (this.User.Identity!.IsAuthenticated)
             {
@@ -137,7 +136,7 @@ namespace EasyRank.Web.Controllers
         /// <param name="model">The 'LoginViewModel' for the view.</param>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -169,7 +168,6 @@ namespace EasyRank.Web.Controllers
             }
 
             this.ModelState.AddModelError(string.Empty, "Invalid login!");
-
             return this.View(model);
         }
 
@@ -179,7 +177,7 @@ namespace EasyRank.Web.Controllers
         /// <returns>Redirect to the home page.</returns>
         /// <remarks>Post method.</remarks>
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
             await this.signInManager.SignOutAsync();
 
@@ -216,6 +214,16 @@ namespace EasyRank.Web.Controllers
             }
 
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return this.View(model);
+            }
+
+            if (await this.userManager.IsEmailConfirmedAsync(user))
+            {
+                this.ModelState.AddModelError(string.Empty, "Email already verified!");
+                return this.View(model);
+            }
 
             string userId = await this.userManager.GetUserIdAsync(user);
             string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -246,6 +254,146 @@ namespace EasyRank.Web.Controllers
 
             this.TempData["StatusMessage"] = "Verification email sent. Please check your email.";
             return this.RedirectToAction("VerifyEmail");
+        }
+
+        /// <summary>
+        /// The 'ForgotPassword' action for the controller.
+        /// </summary>
+        /// <returns>A view for requesting a password reset email.</returns>
+        /// <remarks>Get method. Guest access allowed.</remarks>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            VerifyEmailViewModel model = new VerifyEmailViewModel();
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'ForgotPassword' action for the controller.
+        /// </summary>
+        /// <param name="model">The 'VerifyEmailViewModel' for the validation.</param>
+        /// <returns>The same view with error or success message.</returns>
+        /// <remarks>Post method. Guest access allowed.</remarks>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPasswordAsync(VerifyEmailViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
+            if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
+            {
+                return this.RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            string code = await this.userManager.GeneratePasswordResetTokenAsync(user);
+
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            string callbackUrl = this.Url.ActionLink(
+                "ResetPassword",
+                "Account",
+                new { code },
+                this.Request.Scheme)!;
+
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
+            builder.AppendLine("<h3>You receive this email because you requested a link to reset your password on EasyRank.</h3>");
+            builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
+            builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+            builder.AppendLine("<p>Have a wonderful rest of your day happy ranking!</p>");
+            builder.AppendLine("<br>");
+            builder.AppendLine("- Denis from EasyRank");
+
+            await this.emailSender.SendEmailAsync(
+                "vassdeniss@gmail.com",
+                "Denis Vasilev from EasyRank",
+                model.Email,
+                "[DO NOT REPLY] Reset your password for EasyRank!",
+                builder.ToString());
+
+            return this.RedirectToAction("ForgotPasswordConfirmation");
+        }
+
+        /// <summary>
+        /// The 'ForgotPasswordConfirmation' for the controller.
+        /// </summary>
+        /// <returns>A view for confirming a password email was sent.</returns>
+        /// <remarks>Get method. Guest access allowed.</remarks>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return this.View();
+        }
+
+        /// <summary>
+        /// The 'ResetPassword' for the controller.
+        /// </summary>
+        /// <returns>A view for requesting a password reset email.</returns>
+        /// <param name="code">The reset password token.</param>
+        /// <remarks>Get method. Guest access allowed.</remarks>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string? code = null)
+        {
+            if (code == null)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            ResetPasswordViewModel model = new ResetPasswordViewModel
+            {
+                Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code)),
+            };
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return this.RedirectToAction("ResetPassword", model);
+            }
+
+            IdentityResult result = await this.userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return this.RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            foreach (IdentityError error in result.Errors)
+            {
+                this.ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'ResetPasswordConfirmation' for the controller.
+        /// </summary>
+        /// <returns>A view for confirming a password reset happened.</returns>
+        /// <remarks>Get method. Guest access allowed.</remarks>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return this.View();
         }
     }
 }
