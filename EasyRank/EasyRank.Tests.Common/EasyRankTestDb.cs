@@ -29,6 +29,8 @@ namespace EasyRank.Tests.Common
 
         public EasyRankUser DislikedUser { get; set; }
 
+        public EasyRankUser UnconfirmedUser { get; set; }
+
         public RankPage GuestPage { get; set; }
 
         public RankPage DeletedPage { get; set; }
@@ -125,6 +127,21 @@ namespace EasyRank.Tests.Common
             };
 
             userManager.CreateAsync(this.DislikedUser, "iDislikePagesYay")
+                .Wait();
+
+            this.UnconfirmedUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = $"Unconfirmed{DateTime.Now.Ticks.ToString().Substring(10)}",
+                NormalizedUserName = $"UNCONFIRMED{DateTime.Now.Ticks.ToString().Substring(10)}",
+                Email = "unconfirmed@mail.com",
+                NormalizedEmail = "UNCONFIRMED@MAIL.COM",
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                EmailConfirmed = false,
+            };
+
+            userManager.CreateAsync(this.UnconfirmedUser, "unconfirmed")
                 .Wait();
 
             this.GuestPage = new RankPage

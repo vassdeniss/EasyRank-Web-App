@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using System.Security.Claims;
 using System.Text;
 
@@ -14,6 +15,7 @@ using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
 using NUnit.Framework;
@@ -52,7 +54,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.GetUserInfoAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -94,7 +96,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.DeleteProfilePictureAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -382,7 +384,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.CheckPasswordAsync(
                     invalidPrincipal,
@@ -414,17 +416,17 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_CheckPassword_CorrectPassword_ReturnsTrue()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: create a new claim principal from the user
-            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
+            ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(denisUser);
 
             // Act: call service method and pass in necessary data
-            string guestPassword = "guestPass";
+            string denisPassword = "myVeryCoolPassword";
             bool result = await this.manageService.CheckPasswordAsync(
                 userPrincipal,
-                guestPassword);
+                denisPassword);
 
             // Assert: the password check succeeds
             Assert.That(result, Is.True);
@@ -448,7 +450,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.DeleteUserAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -489,7 +491,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.IsEmailConfirmedAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -545,7 +547,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.GetUserEmailAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -612,7 +614,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.GetUserIdAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -652,7 +654,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.GenerateChangeEmailTokenAsync(invalidPrincipal, invalidUser.Email),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -695,7 +697,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: NotFoundException is thrown with invalid id
+            // Assert: NotFoundException is thrown with invalid claim
             Assert.That(
                 async() => await this.manageService.GenerateEmailConfirmationTokenAsync(invalidPrincipal),
                 Throws.Exception.TypeOf<NotFoundException>());
@@ -718,6 +720,126 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: both codes are the same
             Assert.That(actualCode, Is.EqualTo(expectedCode));
+        }
+
+        [Test]
+        public void Test_ChangeEmail_InvalidId_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid id
+            string invalidId = Guid.NewGuid().ToString();
+
+            // Arrange: make new email and code
+            string email = "email-test@mail.com";
+            string code = "some-code";
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.ChangeEmailAsync(invalidId, email, code),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_ChangeEmail_ChangesSuccessfully()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Arrange: make new email and code
+            string email = "email-test@mail.com";
+            string code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            IdentityResult result = await this.manageService.ChangeEmailAsync(guestUser.Id.ToString(), email, code);
+
+            // Assert: identity result is successful, and user has new email
+            Assert.That(result, Is.EqualTo(IdentityResult.Success));
+            Assert.That(guestUser.Email, Is.EqualTo(email));
+        }
+
+        [Test]
+        public void Test_ConfirmEmail_InvalidId_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid id
+            string invalidId = Guid.NewGuid().ToString();
+
+            // Arrange: make code
+            string code = "some-code";
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.ConfirmEmailAsync(invalidId, code),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_ConfirmEmail_ConfirmsSuccessfully()
+        {
+            // Arrange: get unconfirmed user from test db
+            EasyRankUser unconfirmedUser = this.testDb.UnconfirmedUser;
+
+            // Arrange: make code
+            string code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            IdentityResult result = await this.manageService.ConfirmEmailAsync(unconfirmedUser.Id.ToString(), code);
+
+            // Assert: identity result is successful, and user has confirmed email
+            Assert.That(result, Is.EqualTo(IdentityResult.Success));
+            Assert.That(unconfirmedUser.EmailConfirmed, Is.True);
+        }
+
+        [Test]
+        public void Test_ChangePassword_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
+
+            // Arrange: create old, new passwords
+            string oldPass = "123";
+            string newPass = "321";
+
+            // Arrange: create an invalid claim principal
+            ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid claim
+            Assert.That(
+                async() => await this.manageService.ChangePasswordAsync(invalidPrincipal, oldPass, newPass),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_ChangePassword_ChangesSuccessfully()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+            string oldHash = guestUser.PasswordHash;
+
+            // Arrange: set old pass, create new password
+            string oldPass = "guestPass";
+            string newPass = "1234567abc";
+
+            // Arrange: create a valid claim principal
+            ClaimsPrincipal validPrincipal = this.CreateClaimsPrincipal(guestUser);
+
+            // Act: call service method and pass in necessary data
+            IdentityResult result = await this.manageService.ChangePasswordAsync(validPrincipal, oldPass, newPass);
+
+            // Assert: identity result is successful, and user has changed password
+            Assert.That(result, Is.EqualTo(IdentityResult.Success));
+            Assert.That(guestUser.PasswordHash, Is.Not.EqualTo(oldHash));
         }
 
         private ClaimsPrincipal CreateClaimsPrincipal(EasyRankUser user)

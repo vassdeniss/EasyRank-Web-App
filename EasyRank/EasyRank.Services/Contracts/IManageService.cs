@@ -13,6 +13,7 @@ using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace EasyRank.Services.Contracts
 {
@@ -125,5 +126,42 @@ namespace EasyRank.Services.Contracts
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser);
+
+        /// <summary>
+        /// Used for changing the current user's email.
+        /// </summary>
+        /// <param name="userId">The ID of the current user.</param>
+        /// <param name="newEmail">The new email for the user.</param>
+        /// <param name="code">The change email verification token for the user.</param>
+        /// <returns>Result indicating success or failure.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        public Task<IdentityResult> ChangeEmailAsync(
+            string userId,
+            string newEmail,
+            string code);
+
+        /// <summary>
+        /// Used for confirming the current user's email.
+        /// </summary>
+        /// <param name="userId">The ID of the current user.</param>
+        /// <param name="code">The change email verification token for the user.</param>
+        /// <returns>Result indicating success or failure.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        public Task<IdentityResult> ConfirmEmailAsync(
+            string userId,
+            string code);
+
+        /// <summary>
+        /// Used for changing the password of the current user.
+        /// </summary>
+        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="oldPass">The old password of the current user.</param>
+        /// <param name="newPass">The new password of the current user.</param>
+        /// <returns>Result indicating success or failure.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        public Task<IdentityResult> ChangePasswordAsync(
+            ClaimsPrincipal currentUser,
+            string oldPass,
+            string newPass);
     }
 }

@@ -93,6 +93,41 @@ namespace EasyRank.Services.UnitTests.Mocks
                     It.IsAny<EasyRankUser>()))
                 .ReturnsAsync("random-string");
 
+            userManager.Setup(um => um.FindByIdAsync(
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string id) =>
+                    userList.FirstOrDefault(u => u.Id == Guid.Parse(id)));
+
+            userManager.Setup(um => um.ChangeEmailAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string email, string token) =>
+                {
+                    user.Email = email;
+                    return IdentityResult.Success;
+                });
+
+            userManager.Setup(um => um.ConfirmEmailAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string token) =>
+                {
+                    user.EmailConfirmed = true;
+                    return IdentityResult.Success;
+                });
+
+            userManager.Setup(um => um.ChangePasswordAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string oldPass, string newPass) =>
+                {
+                    PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
+                    user.PasswordHash = hasher.HashPassword(user, newPass);
+                    return IdentityResult.Success;
+                });
+
             return userManager;
         }
     }

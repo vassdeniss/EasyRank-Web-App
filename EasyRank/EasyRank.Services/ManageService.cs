@@ -244,6 +244,7 @@ namespace EasyRank.Services
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         }
 
+        /// <inheritdoc />
         public async Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser)
         {
             EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
@@ -254,6 +255,60 @@ namespace EasyRank.Services
 
             string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        }
+
+        /// <inheritdoc />
+        public async Task<IdentityResult> ChangeEmailAsync(string userId, string newEmail, string code)
+        {
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            string token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
+            IdentityResult result = await this.userManager.ChangeEmailAsync(user, newEmail, token);
+            if (result.Succeeded)
+            {
+                await this.signInManager.RefreshSignInAsync(user);
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc />
+        public async Task<IdentityResult> ConfirmEmailAsync(string userId, string code)
+        {
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            string token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            return await this.userManager.ConfirmEmailAsync(user, token);
+        }
+
+        /// <inheritdoc />
+        public async Task<IdentityResult> ChangePasswordAsync(ClaimsPrincipal currentUser, string oldPass, string newPass)
+        {
+            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            IdentityResult result = await this.userManager.ChangePasswordAsync(user,
+                oldPass,
+                newPass);
+            if (result.Succeeded)
+            {
+                await this.signInManager.RefreshSignInAsync(user);
+            }
+
+            //this.logger.LogInformation("User changed their password successfully.");
+            return result;
         }
     }
 }

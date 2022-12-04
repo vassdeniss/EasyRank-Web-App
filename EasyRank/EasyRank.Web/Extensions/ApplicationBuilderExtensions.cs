@@ -1,4 +1,11 @@
-﻿using System;
+﻿// -----------------------------------------------------------------------
+// <copyright file="ApplicationBuilderExtensions.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models;
@@ -10,8 +17,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EasyRank.Web.Extensions
 {
+    /// <summary>
+    /// Class used for adding additional logic to the app builder.
+    /// </summary>
     public static class ApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Used for getting a user and making him an administrator.
+        /// </summary>
+        /// <param name="app">The current app.</param>
+        /// <returns>The same app with the executed logic.</returns>
         public static IApplicationBuilder SeedAdmin(this IApplicationBuilder app)
         {
             using IServiceScope scopedServices = app.ApplicationServices.CreateScope();
@@ -23,16 +38,14 @@ namespace EasyRank.Web.Extensions
 
             Task.Run(async () =>
             {
-                if (await roleManager.RoleExistsAsync("Administrator"))
+                if (!await roleManager.RoleExistsAsync("Administrator"))
                 {
-                    return;
+                    EasyRankRole role = new EasyRankRole("Administrator");
+                    await roleManager.CreateAsync(role);
                 }
 
-                EasyRankRole role = new EasyRankRole("Administrator");
-                await roleManager.CreateAsync(role);
-
                 EasyRankUser admin = await userManager.FindByEmailAsync("vassdeniss@gmail.com");
-                await userManager.AddToRoleAsync(admin, role.Name);
+                await userManager.AddToRoleAsync(admin, "Administrator");
             })
             .GetAwaiter()
             .GetResult();

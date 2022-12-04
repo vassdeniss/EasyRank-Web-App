@@ -42,6 +42,7 @@ namespace EasyRank.Services.UnitTests
             {
                 this.testDb.GuestUser,
                 this.testDb.DenisUser,
+                this.testDb.UnconfirmedUser,
             });
             this.signInManager = SignInManagerMock.MockSignInManager();
         }

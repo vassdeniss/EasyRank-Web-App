@@ -5,25 +5,25 @@
 	<div class="col-md">
 		<table class="table table-hover table-striped table-dark">
 			<thead>
-			<tr class="table-primary">
-				<th scope="col">Title</th>
-				<th scope="col">Created On</th>
-				<th scope="col">Likes</th>
-				<th scope="col">Comments</th>
-			</tr>
+				<tr class="table-primary">
+					<th scope="col">Title</th>
+					<th scope="col">Created On</th>
+					<th scope="col">Likes</th>
+					<th scope="col">Comments</th>
+				</tr>
 			</thead>
 			<tbody>
-			@foreach (RankPageViewModel rankPage in this.Model)
-			{
-				<tr>
-					<th scope="row">
-						<a asp-area="" asp-action="@this.ViewData["ActionType"]" asp-route-rankId="@rankPage.Id">@rankPage.RankingTitle</a>
-					</th>
-					<td>@rankPage.CreatedOn</td>
-					<td>@rankPage.LikeCount</td>
-					<td>@rankPage.CommentCount</td>
-				</tr>
-			}
+				@foreach (RankPageViewModel rankPage in this.Model)
+				{
+					<tr>
+						<th scope="row">
+							<a asp-area="" asp-action="@this.ViewData["ActionType"]" asp-route-rankId="@rankPage.Id">@rankPage.RankingTitle</a>
+						</th>
+						<td>@rankPage.CreatedOn</td>
+						<td>@rankPage.LikeCount</td>
+						<td>@rankPage.CommentCount</td>
+					</tr>
+				}
 			</tbody>
 		</table>
 	</div>

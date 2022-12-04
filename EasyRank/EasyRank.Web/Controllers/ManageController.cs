@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -13,7 +12,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 using EasyRank.Web.Claims;
@@ -23,7 +21,6 @@ using EasyRank.Web.Models.Rank;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace EasyRank.Web.Controllers
 {
@@ -32,8 +29,6 @@ namespace EasyRank.Web.Controllers
     /// </summary>
     public class ManageController : BaseController
     {
-        private readonly UserManager<EasyRankUser> userManager;
-        private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
         private readonly IMapper mapper;
         private readonly IRankService rankService;
@@ -42,22 +37,16 @@ namespace EasyRank.Web.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageController"/> class.
         /// </summary>
-        /// <param name="userManager">The user manager for the controller.</param>
-        /// <param name="signInManager">The sign in manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
         /// <param name="rankService">Instance of the rank service.</param>
         /// <param name="manageService">Instance of the manage service.</param>
         public ManageController(
-            UserManager<EasyRankUser> userManager,
-            SignInManager<EasyRankUser> signInManager,
             IEmailSender emailSender,
             IMapper mapper,
             IRankService rankService,
             IManageService manageService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             this.emailSender = emailSender;
             this.mapper = mapper;
             this.rankService = rankService;
@@ -156,7 +145,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The 'EmailAsync' action for the controller.
+        /// The 'Email' action for the controller.
         /// </summary>
         /// <returns>A view for changing the users email.</returns>
         /// <remarks>Get method.</remarks>
@@ -173,7 +162,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The 'EmailAsync' action for the controller.
+        /// The 'Email' action for the controller.
         /// </summary>
         /// <returns>A redirect back to the same page with either a success or error message.</returns>
         /// <param name="model">The EmailViewModel for validation.</param>
@@ -230,6 +219,13 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("Email");
         }
 
+        /// <summary>
+        /// The 'ConfirmEmailChange' action for the controller.
+        /// </summary>
+        /// <param name="userId">The ID of the user.</param>
+        /// <param name="email">The email of the user.</param>
+        /// <param name="code">The email verification token for the user.</param>
+        /// <returns>Redirect with error message with invalid data or success message.</returns>
         [HttpGet]
         public async Task<IActionResult> ConfirmEmailChangeAsync(string? userId, string? email, string? code)
         {
@@ -238,22 +234,13 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Index", "Manage");
             }
 
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-               // throw
-            }
-
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-
-            IdentityResult result = await this.userManager.ChangeEmailAsync(user!, email, code);
+            IdentityResult result = await this.manageService.ChangeEmailAsync(userId, email, code);
             if (!result.Succeeded)
             {
                 this.TempData["StatusMessage"] = "Error changing email.";
                 return this.View();
             }
 
-            await this.signInManager.RefreshSignInAsync(user!);
             this.TempData["StatusMessage"] = "Thank you for confirming your email change.";
             return this.View();
         }
@@ -303,6 +290,12 @@ namespace EasyRank.Web.Controllers
             return this.RedirectToAction("Email");
         }
 
+        /// <summary>
+        /// The 'ConfirmEmail' action for the controller.
+        /// </summary>
+        /// <param name="userId">The ID of the user.</param>
+        /// <param name="code">The email verification token for the user.</param>
+        /// <returns>Redirect with error message with invalid data or success message.</returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmailAsync(string? userId, string? code)
@@ -312,15 +305,7 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Index", "Manage");
             }
 
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                // throw
-            }
-
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-
-            IdentityResult result = await this.userManager.ConfirmEmailAsync(user!, code);
+            IdentityResult result = await this.manageService.ConfirmEmailAsync(userId, code);
             this.TempData["StatusMessage"] = result.Succeeded
                 ? "Thank you for confirming your email."
                 : "Error confirming your email.";
@@ -363,21 +348,15 @@ namespace EasyRank.Web.Controllers
             if (model.OldPassword == model.NewPassword)
             {
                 this.TempData["StatusMessage"] = "Error: Password is the same!";
-                return this.View();
+                return this.View(model);
             }
 
-            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                return this.NotFound($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
-
-            IdentityResult changePasswordResult = await this.userManager.ChangePasswordAsync(user,
+            IdentityResult result = await this.manageService.ChangePasswordAsync(this.User,
                 model.OldPassword,
                 model.NewPassword);
-            if (!changePasswordResult.Succeeded)
+            if (!result.Succeeded)
             {
-                foreach (IdentityError error in changePasswordResult.Errors)
+                foreach (IdentityError error in result.Errors)
                 {
                     this.ModelState.AddModelError(string.Empty, error.Description);
                 }
@@ -385,10 +364,7 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            await this.signInManager.RefreshSignInAsync(user);
-            //this.logger.LogInformation("User changed their password successfully.");
             this.TempData["StatusMessage"] = "Your password has been changed.";
-
             return this.RedirectToAction("ChangePassword");
         }
 
