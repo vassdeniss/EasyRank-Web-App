@@ -8,6 +8,7 @@
 using AutoMapper;
 
 using EasyRank.Services.Models;
+using EasyRank.Web.Areas.Admin.Models;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
 
@@ -33,6 +34,7 @@ namespace EasyRank.Web.Profiles
             this.CreateMap<ManageServiceModel, ManageViewModel>();
             this.CreateMap<EmailServiceModel, EmailViewModel>();
             this.CreateMap<AllRanksServiceModel, AllRanksViewModel>();
+            this.CreateMap<RankEntryServiceModelExtended, RankEntryViewModelExtended>();
         }
     }
 }

@@ -25,12 +25,14 @@ namespace EasyRank.Services.Contracts
         /// <returns>Task(void).</returns>
         /// <param name="userId">GUID used for retrieving the needed user.</param>
         /// <param name="rankId">GUID used for retrieving the needed page.</param>
+        /// <param name="isAdmin">Flag indicating if the user is an admin.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
         /// <exception cref="UnauthorizedUserException">Throws 'UnauthorizedUserException' if the user
         /// is not the owner of the page.</exception>
         Task IsCurrentUserPageOwnerAsync(
             Guid userId,
-            Guid rankId);
+            Guid rankId,
+            bool isAdmin);
 
         /// <summary>
         /// Retrieves the form the user inputted, creates a page entry and saves it to the database.

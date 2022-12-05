@@ -47,12 +47,21 @@ namespace EasyRank.Services
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
         {
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
-                await this.repo.AllReadonly<RankPage>()
-                    .Where(rp => rp.IsDeleted == false)
+                await this.repo.AllReadonly<RankPage>(rp => !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
                     .Include(rp => rp.LikedBy)
                     .OrderByDescending(rp => rp.CreatedOn)
+                    .ToListAsync());
+        }
+
+        /// <inheritdoc />
+        public async Task<ICollection<RankEntryServiceModelExtended>> GetAllEntriesAsync()
+        {
+            return this.mapper.Map<ICollection<RankEntryServiceModelExtended>>(
+                await this.repo.AllReadonly<RankEntry>(re => !re.IsDeleted)
+                    .Include(re => re.RankPage)
+                    .ThenInclude(rp => rp.CreatedByUser)
                     .ToListAsync());
         }
     }

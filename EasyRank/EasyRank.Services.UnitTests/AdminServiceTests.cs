@@ -29,13 +29,28 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GetAllRankings_ReturnsCorrectCount()
         {
-            // Arrange: get 'RankPage' count from database (where pages are not deleted)
-            int databaseCount = await this.repo.AllReadonly<RankPage>()
-                .Where(rp => !rp.IsDeleted)
+            // Arrange: get rank pages count from database (where pages are not deleted)
+            int databaseCount = await this.repo.AllReadonly<RankPage>(rp => !rp.IsDeleted)
                 .CountAsync();
 
-            // Act: call service method and get ranks count (take only first page)
+            // Act: call service method and get count
             ICollection<RankPageServiceModel> serviceModel = await this.adminService.GetAllRankingsAsync();
+            int serviceCount = serviceModel.Count;
+
+            // Assert: service count equals database count
+            Assert.That(serviceCount, Is.EqualTo(databaseCount));
+        }
+
+        [Test]
+        public async Task Test_GetAllEntries_ReturnsCorrectCount()
+        {
+            // Arrange: get rank entries count from database (where entries are not deleted)
+            int databaseCount = await this.repo.AllReadonly<RankEntry>(
+                    re => !re.IsDeleted)
+                .CountAsync();
+
+            // Act: call service method and get count
+            ICollection<RankEntryServiceModelExtended> serviceModel = await this.adminService.GetAllEntriesAsync();
             int serviceCount = serviceModel.Count;
 
             // Assert: service count equals database count

@@ -22,5 +22,11 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>A collection of rank page service models.</returns>
         Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync();
+
+        /// <summary>
+        /// Used for retrieving all entries from the database.
+        /// </summary>
+        /// <returns>A collection of rank entry service models.</returns>
+        Task<ICollection<RankEntryServiceModelExtended>> GetAllEntriesAsync();
     }
 }

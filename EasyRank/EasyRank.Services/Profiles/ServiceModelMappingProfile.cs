@@ -91,11 +91,18 @@ namespace EasyRank.Services.Profiles
                     d => d.PostedOn,
                     mo => mo.MapFrom(
                         s => s.CreatedOn.ToString("dd/MM/yyyy")))
-                .ForMember(d => d.UserId,
+                .ForMember(
+                    d => d.UserId,
                     mo => mo.MapFrom(
                         s => s.CreatedByUser.Id));
 
             this.CreateMap<EasyRankUser, ManageServiceModel>();
+
+            this.CreateMap<RankEntry, RankEntryServiceModelExtended>()
+                .ForMember(
+                    d => d.Username,
+                    mo => mo.MapFrom(
+                        s => s.RankPage.CreatedByUser.UserName));
         }
     }
 }

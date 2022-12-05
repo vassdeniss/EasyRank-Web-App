@@ -57,7 +57,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.entryService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
-                rankId);
+                rankId,
+                this.User.IsAdmin());
 
             RankEntryFormModel model = new RankEntryFormModel
             {
@@ -145,7 +146,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.entryService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
-                rankId);
+                rankId,
+                this.User.IsAdmin());
 
             RankEntryServiceModel serviceModel = await this.entryService.GetRankEntryByGuidAsync(entryId);
 
@@ -221,6 +223,12 @@ namespace EasyRank.Web.Controllers
                 sanitizedAltText,
                 sanitizedDescription);
 
+            if (this.User.IsAdmin())
+            {
+                this.TempData.Remove("EntryEditReturnId");
+                return this.RedirectToAction("All", "Entry", new { area = "Admin" });
+            }
+
             return this.RedirectToAction("ViewRanking", "Rank", new
             {
                 rankId = this.TempData["EntryEditReturnId"],
@@ -241,7 +249,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.entryService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
-                rankId);
+                rankId,
+                this.User.IsAdmin());
 
             RankEntryServiceModel serviceModel = await this.entryService.GetRankEntryByGuidAsync(entryId);
 
@@ -273,6 +282,12 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> DeleteAsync(RankEntryFormModel model)
         {
             await this.entryService.DeleteEntryAsync(model.Id);
+
+            if (this.User.IsAdmin())
+            {
+                this.TempData.Remove("EntryEditReturnId");
+                return this.RedirectToAction("All", "Entry", new { area = "Admin" });
+            }
 
             return this.RedirectToAction("ViewRanking", "Rank", new
             {

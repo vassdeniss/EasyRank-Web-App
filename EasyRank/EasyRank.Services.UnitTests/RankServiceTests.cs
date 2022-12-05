@@ -211,11 +211,29 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: UnauthorizedUserException is thrown with denis user id
             Assert.That(
-                async () => await this.rankService.IsCurrentUserPageOwnerAsync(
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(
                     denisUserId,
                     guestRankPageId, 
                     false),
                 Throws.Exception.TypeOf<UnauthorizedUserException>());
+        }
+
+        [Test]
+        public void Test_IsCurrentUserPageOwner_Admin_DoesNotThrow()
+        {
+            // Arrange: get denis user id, get guest rank page id from test db
+            Guid denisUserId = this.testDb.DenisUser.Id;
+            Guid guestRankPageId = this.testDb.GuestPage.Id;
+
+            // Act:
+
+            // Assert: no exceptions are thrown
+            Assert.That(
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(
+                    denisUserId,
+                    guestRankPageId,
+                    true),
+                Throws.Nothing);
         }
 
         [Test]
