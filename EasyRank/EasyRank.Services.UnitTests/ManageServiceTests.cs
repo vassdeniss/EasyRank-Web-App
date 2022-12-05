@@ -36,18 +36,6 @@ namespace EasyRank.Services.UnitTests
                 this.mapper);
         }
 
-        private EasyRankUser CreateInvalidUser()
-        {
-            return new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
-        }
-        
         [Test]
         public void Test_GetUserInfo_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
@@ -775,6 +763,18 @@ namespace EasyRank.Services.UnitTests
             // Assert: identity result is successful, and user has changed password
             Assert.That(result, Is.EqualTo(IdentityResult.Success));
             Assert.That(guestUser.PasswordHash, Is.Not.EqualTo(oldHash));
+        }
+
+        private EasyRankUser CreateInvalidUser()
+        {
+            return new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                Email = "testManage@mail.com",
+                FirstName = "test",
+                LastName = "manage",
+                UserName = "TestManage",
+            };
         }
 
         private ClaimsPrincipal CreateClaimsPrincipal(EasyRankUser user)

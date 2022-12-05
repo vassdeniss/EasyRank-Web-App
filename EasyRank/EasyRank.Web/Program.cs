@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models;
@@ -17,7 +15,6 @@ using EasyRank.Web.Controllers;
 using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +26,6 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration.GetConnectionString("DockerConnection");
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddAutoMapper(typeof(IRankService).Assembly, typeof(RankController).Assembly);
 
@@ -50,6 +46,7 @@ builder.Services.AddDefaultIdentity<EasyRankUser>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.AccessDeniedPath = "/Home/Error401";
     options.LoginPath = "/Account/Login";
 });
 
@@ -89,7 +86,7 @@ app.UseAuthorization();
 
 app.SeedAdmin();
 
-//app.UseStatusCodePagesWithRedirects("/Home/Error{0}");
+app.UseStatusCodePagesWithRedirects("/Home/Error{0}");
 
 app.UseEndpoints(endpoints =>
 {

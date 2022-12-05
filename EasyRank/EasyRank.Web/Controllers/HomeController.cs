@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Net;
 
 using EasyRank.Infrastructure.Models.Accounts;
@@ -34,7 +35,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'Index' for the controller.
+        /// The 'Index' action for the controller.
         /// </summary>
         /// <returns>The home page view.</returns>
         public IActionResult Index()
@@ -75,7 +76,7 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// Method 'Error' for the controller.
+        /// The 'Error' action for the controller.
         /// </summary>
         /// <returns>An error page depending on the error.</returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -83,39 +84,54 @@ namespace EasyRank.Web.Controllers
         {
             IExceptionHandlerPathFeature? exceptionHandlerPathFeature = this.HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
-            int statusCode = 0;
-            string exceptionMessage = string.Empty;
-            if (exceptionHandlerPathFeature?.Error is NotFoundException)
+            Exception error = exceptionHandlerPathFeature?.Error!;
+            switch (error)
             {
-                statusCode = (int)HttpStatusCode.NotFound;
-                exceptionMessage = "The requested data was not found on the server!";
+                case NotFoundException:
+                    return this.RedirectToAction("Error404");
+                case UnauthorizedUserException:
+                    return this.RedirectToAction("Error401");
+                case FileFormatException:
+                    this.TempData["StatusMessage"] = "Error: Unsupported file!";
+                    return this.RedirectToAction("Index", "Manage");
+                case UsernameTakenException:
+                    this.TempData["StatusMessage"] = "Error: Username taken!";
+                    return this.RedirectToAction("Index", "Manage");
+                default: return this.RedirectToAction("Error500");
             }
-            else if (exceptionHandlerPathFeature?.Error is UnauthorizedUserException)
-            {
-                statusCode = (int)HttpStatusCode.Unauthorized;
-                exceptionMessage = "You do not have permission to execute this action!";
-            }
-            else if (exceptionHandlerPathFeature?.Error is FileFormatException)
-            {
-                this.TempData["StatusMessage"] = "Error: Unsupported file!";
-                return this.RedirectToAction("Index", "Manage");
-            }
-            else if (exceptionHandlerPathFeature?.Error is UsernameTakenException)
-            {
-                this.TempData["StatusMessage"] = "Error: Username taken!";
-                return this.RedirectToAction("Index", "Manage");
-            }
-            else
-            {
-                statusCode = (int)HttpStatusCode.InternalServerError;
-                exceptionMessage = "An error occurred while processing your request.";
-            }
+        }
 
-            return this.View(new ErrorViewModel
-            {
-                ExceptionMessage = exceptionMessage,
-                StatusCode = statusCode,
-            });
+        /// <summary>
+        /// The 'Error404' action for the controller.
+        /// </summary>
+        /// <returns>A 404 error page.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public IActionResult Error404()
+        {
+            return this.View();
+        }
+
+        /// <summary>
+        /// The 'Error401' action for the controller.
+        /// </summary>
+        /// <returns>A 401 error page.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public IActionResult Error401()
+        {
+            return this.View();
+        }
+
+        /// <summary>
+        /// The 'Error500' action for the controller.
+        /// </summary>
+        /// <returns>A 500 error page.</returns>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public IActionResult Error500()
+        {
+            return this.View();
         }
     }
 }
