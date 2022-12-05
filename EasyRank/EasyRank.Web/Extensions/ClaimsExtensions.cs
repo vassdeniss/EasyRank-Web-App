@@ -8,7 +8,7 @@
 using System;
 using System.Security.Claims;
 
-namespace EasyRank.Web.Claims
+namespace EasyRank.Web.Extensions
 {
     /// <summary>
     /// The class for different claim extensions.
@@ -23,6 +23,16 @@ namespace EasyRank.Web.Claims
         public static Guid Id(this ClaimsPrincipal user)
         {
             return Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+
+        /// <summary>
+        /// An extension 'IsAdmin' for getting a flag if the user is an admin.
+        /// </summary>
+        /// <param name="user">The current user.</param>
+        /// <returns>Flag indicating if the user is an admin.</returns>
+        public static bool IsAdmin(this ClaimsPrincipal user)
+        {
+            return user.IsInRole("Administrator");
         }
     }
 }

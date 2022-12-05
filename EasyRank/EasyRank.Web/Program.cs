@@ -13,7 +13,6 @@ using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services;
 using EasyRank.Services.Contracts;
-using EasyRank.Web.Claims;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Extensions;
 

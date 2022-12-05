@@ -140,7 +140,7 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId)
+        public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId, bool isAdmin)
         {
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
@@ -148,7 +148,7 @@ namespace EasyRank.Services
                     .FirstOrDefaultAsync()
                         ?? throw new NotFoundException();
 
-            if (page.CreatedByUser.Id != userId)
+            if (page.CreatedByUser.Id != userId && !isAdmin)
             {
                 throw new UnauthorizedUserException();
             }

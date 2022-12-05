@@ -15,7 +15,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
-using EasyRank.Web.Claims;
+using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Rank;
 
 using Ganss.Xss;
@@ -157,7 +157,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.rankService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
-                rankId);
+                rankId,
+                this.User.IsAdmin());
 
             RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
 
@@ -216,6 +217,12 @@ namespace EasyRank.Web.Controllers
             }
 
             await this.rankService.EditRankAsync(model.Id, sanitizedTitle, sanitizedAltText, image);
+
+            if (this.User.IsAdmin())
+            {
+                return this.RedirectToAction("All", "Rank", new { area = "Admin" });
+            }
+
             return this.RedirectToAction("MyRanks", "Manage");
         }
 
@@ -249,7 +256,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.rankService.IsCurrentUserPageOwnerAsync(
                 this.User.Id(),
-                rankId);
+                rankId,
+                this.User.IsAdmin());
 
             RankPageServiceModel serviceModel = await this.rankService.GetRankPageByGuidAsync(rankId);
 
@@ -276,6 +284,11 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> DeleteAsync(RankPageFormModel model)
         {
             await this.rankService.DeleteRankAsync(model.Id);
+
+            if (this.User.IsAdmin())
+            {
+                return this.RedirectToAction("All", "Rank", new { area = "Admin" });
+            }
 
             return this.RedirectToAction("MyRanks", "Manage");
         }

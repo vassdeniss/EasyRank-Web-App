@@ -13,7 +13,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
-using EasyRank.Web.Claims;
+using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Comment;
 using EasyRank.Web.Models.Rank;
 

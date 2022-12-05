@@ -36,11 +36,9 @@ namespace EasyRank.Services.UnitTests
                 this.mapper);
         }
 
-        [Test]
-        public void Test_GetUserInfo_InvalidClaimPrincipal_ThrowsNotFoundException()
+        private EasyRankUser CreateInvalidUser()
         {
-            // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
+            return new EasyRankUser
             {
                 Id = Guid.NewGuid(),
                 Email = "testManage@mail.com",
@@ -48,6 +46,13 @@ namespace EasyRank.Services.UnitTests
                 LastName = "manage",
                 UserName = "TestManage",
             };
+        }
+        
+        [Test]
+        public void Test_GetUserInfo_InvalidClaimPrincipal_ThrowsNotFoundException()
+        {
+            // Arrange: create an invalid user
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -82,14 +87,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_DeleteProfilePicture_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -127,14 +125,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_UpdateUserData_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -367,14 +358,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_CheckPassword_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create some kind of password
             string password = "123456abc";
@@ -436,14 +420,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_DeleteUser_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -477,14 +454,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_IsEmailConfirmed_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -533,14 +503,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_GetUserEmail_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -600,14 +563,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_GetUserId_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -640,14 +596,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_GenerateChangeEmailToken_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -683,14 +632,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_GenerateEmailConfirmationToken_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create an invalid claim principal
             ClaimsPrincipal invalidPrincipal = this.CreateClaimsPrincipal(invalidUser);
@@ -796,14 +738,7 @@ namespace EasyRank.Services.UnitTests
         public void Test_ChangePassword_InvalidClaimPrincipal_ThrowsNotFoundException()
         {
             // Arrange: create an invalid user
-            EasyRankUser invalidUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                Email = "testManage@mail.com",
-                FirstName = "test",
-                LastName = "manage",
-                UserName = "TestManage",
-            };
+            EasyRankUser invalidUser = this.CreateInvalidUser();
 
             // Arrange: create old, new passwords
             string oldPass = "123";
