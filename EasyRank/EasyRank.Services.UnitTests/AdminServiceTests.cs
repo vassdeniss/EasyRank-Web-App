@@ -56,5 +56,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
         }
+
+        [Test]
+        public async Task Test_GetAllComments_ReturnsCorrectCount()
+        {
+            // Arrange: get comments count from database (where comments are not deleted)
+            int databaseCount = await this.repo.AllReadonly<Comment>(c => !c.IsDeleted)
+                .CountAsync();
+
+            // Act: call service method and get count
+            ICollection<CommentServiceModelExtended> serviceModel = await this.adminService.GetAllCommentsAsync();
+            int serviceCount = serviceModel.Count;
+
+            // Assert: service count equals database count
+            Assert.That(serviceCount, Is.EqualTo(databaseCount));
+        }
     }
 }

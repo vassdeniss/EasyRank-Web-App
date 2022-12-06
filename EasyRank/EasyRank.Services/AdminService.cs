@@ -64,5 +64,15 @@ namespace EasyRank.Services
                     .ThenInclude(rp => rp.CreatedByUser)
                     .ToListAsync());
         }
+
+        /// <inheritdoc />
+        public async Task<ICollection<CommentServiceModelExtended>> GetAllCommentsAsync()
+        {
+            return this.mapper.Map<ICollection<CommentServiceModelExtended>>(
+                await this.repo.AllReadonly<Comment>(c => !c.IsDeleted)
+                    .Include(c => c.CreatedByUser)
+                    .OrderByDescending(c => c.CreatedOn)
+                    .ToListAsync());
+        }
     }
 }

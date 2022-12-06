@@ -49,8 +49,7 @@ namespace EasyRank.Services
         public async Task<AllRanksServiceModel> GetAllRankingsAsync(int page, int perPage)
         {
             ICollection<RankPageServiceModel> pages = this.mapper.Map<ICollection<RankPageServiceModel>>(
-                await this.repo.AllReadonly<RankPage>()
-                    .Where(rp => rp.IsDeleted == false)
+                await this.repo.AllReadonly<RankPage>(rp => !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
                     .Include(rp => rp.LikedBy)
@@ -63,7 +62,7 @@ namespace EasyRank.Services
             {
                 CurrentPage = page,
                 Ranks = pages,
-                RankCount = await this.repo.AllReadonly<RankPage>().CountAsync(),
+                TotalRankCount = await this.repo.AllReadonly<RankPage>().CountAsync(),
             };
         }
 

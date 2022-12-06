@@ -95,7 +95,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.commentService.IsCurrentUserCommentOwnerAsync(
                 this.User.Id(),
-                commentId);
+                commentId,
+                this.User.IsAdmin());
 
             CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
 
@@ -132,6 +133,12 @@ namespace EasyRank.Web.Controllers
             }
 
             await this.commentService.EditCommentAsync(model.Id, sanitizedContent);
+
+            if (this.User.IsAdmin())
+            {
+                return this.RedirectToAction("All", "Comment", new { area = "Admin" });
+            }
+
             return this.RedirectToAction("ViewRanking", "Rank", new
             {
                 rankId = await this.commentService.GetCommentPageIdAsync(model.Id),
@@ -151,7 +158,8 @@ namespace EasyRank.Web.Controllers
         {
             await this.commentService.IsCurrentUserCommentOwnerAsync(
                 this.User.Id(),
-                commentId);
+                commentId,
+                this.User.IsAdmin());
 
             CommentServiceModel serviceModel = await this.commentService.GetCommentByIdAsync(commentId);
 
@@ -176,6 +184,11 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> DeleteAsync(CommentFormModelExtended model)
         {
             await this.commentService.DeleteCommentAsync(model.Id);
+
+            if (this.User.IsAdmin())
+            {
+                return this.RedirectToAction("All", "Comment", new { area = "Admin" });
+            }
 
             return this.RedirectToAction("ViewRanking", "Rank", new
             {

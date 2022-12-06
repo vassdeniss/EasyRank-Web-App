@@ -108,7 +108,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserCommentOwnerAsync(
             Guid userId,
-            Guid commentId)
+            Guid commentId,
+            bool isAdmin)
         {
             Comment? comment = await this.repo.All<Comment>(
                 c => c.Id == commentId)
@@ -120,7 +121,9 @@ namespace EasyRank.Services
                 throw new NotFoundException();
             }
 
-            if (comment.CreatedByUserId != userId && comment.RankPage.CreatedByUserId != userId)
+            if (comment.CreatedByUserId != userId
+                && comment.RankPage.CreatedByUserId != userId
+                && !isAdmin)
             {
                 throw new ForbiddenException();
             }

@@ -27,23 +27,24 @@ namespace EasyRank.Services.UnitTests
             this.rankService = new RankService(this.repo, this.mapper);
         }
 
-        //[Test]
-        //public async Task Test_GetAllRankings_ReturnsCorrectCount()
-        //{
-        //    // Arrange: get 'RankPage' count from database (where pages are not deleted) (only first page)
-        //    int ranksPerPage = 12;
-        //    int databaseCount = await this.repo.AllReadonly<RankPage>()
-        //        .Where(rp => !rp.IsDeleted)
-        //        .Take(ranksPerPage)
-        //        .CountAsync();
+        [Test]
+        public async Task Test_GetAllRankings_ReturnsCorrectCount()
+        {
+            // Arrange: get count from database (where pages are not deleted)
+            int ranksPerPage = 10;
+            int databaseCount = await this.repo.AllReadonly<RankPage>()
+                .Where(rp => !rp.IsDeleted)
+                .Take(ranksPerPage)
+                .CountAsync();
 
-        //    // Act: call service method and get ranks count (take only first page)
-        //    ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllRankingsAsync(1);
-        //    int serviceCount = serviceModel.Count;
+            // Act: call service method and get count
+            int currentPage = 1;
+            AllRanksServiceModel serviceModel = await this.rankService.GetAllRankingsAsync(currentPage, ranksPerPage);
+            int serviceCount = serviceModel.Ranks.Count;
 
-        //    // Assert: service count equals database count
-        //    Assert.That(serviceCount, Is.EqualTo(databaseCount));
-        //}
+            // Assert: service count equals database count
+            Assert.That(serviceCount, Is.EqualTo(databaseCount));
+        }
 
         [Test]
         public void Test_GetRankPageByGuid_InvalidRankId_ThrowsNotFoundException()
@@ -191,7 +192,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: UnauthorizedUserException is thrown with denis user id
+            // Assert: ForbiddenException is thrown with denis user id
             Assert.That(
                 async() => await this.rankService.IsCurrentUserPageOwnerAsync(
                     denisUserId,
@@ -209,7 +210,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: UnauthorizedUserException is thrown with denis user id
+            // Assert: ForbiddenException is thrown with denis user id
             Assert.That(
                 async() => await this.rankService.IsCurrentUserPageOwnerAsync(
                     denisUserId,

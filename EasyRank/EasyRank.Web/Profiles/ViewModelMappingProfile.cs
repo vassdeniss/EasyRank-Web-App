@@ -35,6 +35,7 @@ namespace EasyRank.Web.Profiles
             this.CreateMap<EmailServiceModel, EmailViewModel>();
             this.CreateMap<AllRanksServiceModel, AllRanksViewModel>();
             this.CreateMap<RankEntryServiceModelExtended, RankEntryViewModelExtended>();
+            this.CreateMap<CommentServiceModelExtended, CommentViewModelExtended>();
         }
     }
 }

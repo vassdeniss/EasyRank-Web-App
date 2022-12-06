@@ -27,7 +27,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="rankId">GUID used for retrieving the needed page.</param>
         /// <param name="isAdmin">Flag indicating if the user is an admin.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
-        /// <exception cref="ForbiddenException">Throws 'UnauthorizedUserException' if the user
+        /// <exception cref="ForbiddenException">Throws 'ForbiddenException' if the user
         /// is not the owner of the page.</exception>
         Task IsCurrentUserPageOwnerAsync(
             Guid userId,

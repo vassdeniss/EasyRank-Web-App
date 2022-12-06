@@ -1,0 +1,44 @@
+﻿@using EasyRank.Web.Areas.Admin.Models
+@model ICollection<CommentViewModelExtended>
+@{
+	this.ViewData["Title"] = "All Comments";
+}
+
+<h3 class="mb-3">@this.ViewData["Title"]</h3>
+<div class="row">
+	<div class="table-responsive">
+		<table class="table table-hover table-striped table-dark">
+			<thead>
+				<tr class="table-primary">
+					<th scope="col">Created By</th>
+					<th scope="col">Posted On</th>
+					<th scope="col">Content</th>
+					<th scope="col">Edited?</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (CommentViewModelExtended comment in this.Model)
+				{
+					<tr>
+						<th scope="row">@comment.Username</th>
+						<td>@comment.PostedOn</td>
+						<td>@comment.Content</td>
+						<td>@(comment.IsEdited ? "Yes" : "No")</td>
+						<td>
+							<a asp-area="" asp-controller="Rank" asp-action="ViewRanking" asp-route-rankId="@comment.RankPageId">View</a>
+							<span class="text-primary mx-3">|</span>
+							<a asp-area="" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id">Edit</a>
+							<span class="text-primary mx-3">|</span>
+							<a asp-area="" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id">Delete</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

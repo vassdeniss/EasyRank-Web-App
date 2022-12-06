@@ -64,13 +64,15 @@ namespace EasyRank.Services.Contracts
         /// <returns>Task(void).</returns>
         /// <param name="userId">GUID used for retrieving the needed user.</param>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
+        /// <param name="isAdmin">Flag indicating if the user is an admin.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
         /// <exception cref="ForbiddenException">
-        /// Throws 'UnauthorizedUserException' if the user is not the owner of the comment.
+        /// Throws 'ForbiddenException' if the user is not the owner of the comment.
         /// </exception>
         Task IsCurrentUserCommentOwnerAsync(
             Guid userId,
-            Guid commentId);
+            Guid commentId,
+            bool isAdmin);
 
         /// <summary>
         /// Gets the page id through the comment.

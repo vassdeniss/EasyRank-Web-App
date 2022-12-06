@@ -72,7 +72,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: UnauthorizedUserException is thrown with denis user id
+            // Assert: ForbiddenException is thrown with denis user id
             Assert.That(
                 async() => await this.entryService.IsCurrentUserPageOwnerAsync(
                     denisUserId,
@@ -90,7 +90,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: UnauthorizedUserException is thrown with denis user id
+            // Assert: ForbiddenException is thrown with denis user id
             Assert.That(
                 async() => await this.entryService.IsCurrentUserPageOwnerAsync(
                     denisUserId,

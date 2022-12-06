@@ -20,13 +20,19 @@ namespace EasyRank.Services.Contracts
         /// <summary>
         /// Used for retrieving all rankings from the database.
         /// </summary>
-        /// <returns>A collection of rank page service models.</returns>
+        /// <returns>A collection of rank pages.</returns>
         Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync();
 
         /// <summary>
         /// Used for retrieving all entries from the database.
         /// </summary>
-        /// <returns>A collection of rank entry service models.</returns>
+        /// <returns>A collection of rank entries.</returns>
         Task<ICollection<RankEntryServiceModelExtended>> GetAllEntriesAsync();
+
+        /// <summary>
+        /// Used for retrieving all comments from the database.
+        /// </summary>
+        /// <returns>A collection of comments.</returns>
+        Task<ICollection<CommentServiceModelExtended>> GetAllCommentsAsync();
     }
 }

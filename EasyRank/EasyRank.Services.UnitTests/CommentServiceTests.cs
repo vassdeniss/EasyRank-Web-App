@@ -79,7 +79,10 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, invalidPageId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    guestUserId, 
+                    invalidPageId,
+                    false),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -94,7 +97,10 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: NotFoundException is thrown with deleted comment id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, deletedCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    guestUserId,
+                    deletedCommentId, 
+                    false),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -107,9 +113,12 @@ namespace EasyRank.Services.UnitTests
 
             // Act:
 
-            // Assert: UnauthorizedUserException is thrown with denis user id
+            // Assert: ForbiddenException is thrown with denis user id
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(denisUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    denisUserId,
+                    guestCommentId, 
+                    false),
                 Throws.Exception.TypeOf<ForbiddenException>());
         }
 
@@ -124,7 +133,46 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: no exceptions are thrown
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, denisCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    guestUserId,
+                    denisCommentId, 
+                    false),
+                Throws.Nothing);
+        }
+
+        [Test]
+        public void Test_IsCurrentUserCommentOwner_NotAdmin_ThrowsForbiddenException()
+        {
+            // Arrange: get denis user id, get guest comment id from test db
+            Guid denisUserId = this.testDb.DenisUser.Id;
+            Guid guestCommentId = this.testDb.GuestComment.Id;
+
+            // Act:
+
+            // Assert: ForbiddenException is thrown with denis user id
+            Assert.That(
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    denisUserId,
+                    guestCommentId,
+                    false),
+                Throws.Exception.TypeOf<ForbiddenException>());
+        }
+
+        [Test]
+        public void Test_IsCurrentUserCommentOwner_Admin_DoesNotThrow()
+        {
+            // Arrange: get denis user id, get guest comment id from test db
+            Guid denisUserId = this.testDb.DenisUser.Id;
+            Guid guestCommentId = this.testDb.GuestComment.Id;
+
+            // Act:
+
+            // Assert: no exceptions are thrown
+            Assert.That(
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    denisUserId,
+                    guestCommentId,
+                    true),
                 Throws.Nothing);
         }
 
@@ -139,7 +187,10 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: no exceptions are thrown
             Assert.That(
-                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(guestUserId, guestCommentId),
+                async() => await this.commentService.IsCurrentUserCommentOwnerAsync(
+                    guestUserId,
+                    guestCommentId, 
+                    false),
                  Throws.Nothing);
         }
 
