@@ -65,7 +65,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">GUID used for retrieving the needed user.</param>
         /// <param name="commentId">GUID used for retrieving the needed comment.</param>
         /// <exception cref="NotFoundException">Throws 'NotFoundException' if the comment was not found.</exception>
-        /// <exception cref="UnauthorizedUserException">
+        /// <exception cref="ForbiddenException">
         /// Throws 'UnauthorizedUserException' if the user is not the owner of the comment.
         /// </exception>
         Task IsCurrentUserCommentOwnerAsync(

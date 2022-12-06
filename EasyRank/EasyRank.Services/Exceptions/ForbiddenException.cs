@@ -12,22 +12,22 @@ namespace EasyRank.Services.Exceptions
     /// <summary>
     /// The exception thrown when a user does not have access to a given action.
     /// </summary>
-    public class UnauthorizedUserException : Exception
+    public class ForbiddenException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedUserException"/> class.
+        /// Initializes a new instance of the <see cref="ForbiddenException"/> class.
         /// </summary>
-        public UnauthorizedUserException()
+        public ForbiddenException()
             : base()
         {
 
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedUserException"/> class.
+        /// Initializes a new instance of the <see cref="ForbiddenException"/> class.
         /// </summary>
         /// <param name="message">Message for the exception.</param>
-        public UnauthorizedUserException(string message)
+        public ForbiddenException(string message)
             : base(message)
         {
 

@@ -150,7 +150,7 @@ namespace EasyRank.Services
 
             if (page.CreatedByUser.Id != userId && !isAdmin)
             {
-                throw new UnauthorizedUserException();
+                throw new ForbiddenException();
             }
         }
 

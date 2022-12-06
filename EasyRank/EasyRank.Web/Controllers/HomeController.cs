@@ -89,8 +89,8 @@ namespace EasyRank.Web.Controllers
             {
                 case NotFoundException:
                     return this.RedirectToAction("Error404");
-                case UnauthorizedUserException:
-                    return this.RedirectToAction("Error401");
+                case ForbiddenException:
+                    return this.RedirectToAction("Error403");
                 case FileFormatException:
                     this.TempData["StatusMessage"] = "Error: Unsupported file!";
                     return this.RedirectToAction("Index", "Manage");
@@ -113,12 +113,12 @@ namespace EasyRank.Web.Controllers
         }
 
         /// <summary>
-        /// The 'Error401' action for the controller.
+        /// The 'Error403' action for the controller.
         /// </summary>
-        /// <returns>A 401 error page.</returns>
+        /// <returns>A 403 error page.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult Error401()
+        public IActionResult Error403()
         {
             return this.View();
         }

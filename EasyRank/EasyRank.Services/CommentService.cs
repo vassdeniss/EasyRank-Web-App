@@ -122,7 +122,7 @@ namespace EasyRank.Services
 
             if (comment.CreatedByUserId != userId && comment.RankPage.CreatedByUserId != userId)
             {
-                throw new UnauthorizedUserException();
+                throw new ForbiddenException();
             }
         }
 

@@ -64,7 +64,7 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
-        public void Test_IsCurrentUserPageOwner_NotCorrectOwnerId_ThrowsUnauthorizedUserException()
+        public void Test_IsCurrentUserPageOwner_NotCorrectOwnerId_ThrowsForbiddenException()
         {
             // Arrange: get denis user id, get guest rank page id from test db
             Guid denisUserId = this.testDb.DenisUser.Id;
@@ -78,11 +78,11 @@ namespace EasyRank.Services.UnitTests
                     denisUserId,
                     guestRankPageId,
                     false),
-                Throws.Exception.TypeOf<UnauthorizedUserException>());
+                Throws.Exception.TypeOf<ForbiddenException>());
         }
 
         [Test]
-        public void Test_IsCurrentUserPageOwner_NotAdmin_ThrowsUnauthorizedUserException()
+        public void Test_IsCurrentUserPageOwner_NotAdmin_ThrowsForbiddenException()
         {
             // Arrange: get denis user id, get guest rank page id from test db
             Guid denisUserId = this.testDb.DenisUser.Id;
@@ -96,7 +96,7 @@ namespace EasyRank.Services.UnitTests
                     denisUserId,
                     guestRankPageId,
                     false),
-                Throws.Exception.TypeOf<UnauthorizedUserException>());
+                Throws.Exception.TypeOf<ForbiddenException>());
         }
 
         [Test]

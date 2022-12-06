@@ -99,7 +99,7 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
-        public void Test_IsCurrentUserCommentOwner_NotCorrectOwnerId_ThrowsUnauthorizedUserException()
+        public void Test_IsCurrentUserCommentOwner_NotCorrectOwnerId_ThrowsForbiddenException()
         {
             // Arrange: get denis user id, get guest comment id from test db
             Guid denisUserId = this.testDb.DenisUser.Id;
@@ -110,7 +110,7 @@ namespace EasyRank.Services.UnitTests
             // Assert: UnauthorizedUserException is thrown with denis user id
             Assert.That(
                 async() => await this.commentService.IsCurrentUserCommentOwnerAsync(denisUserId, guestCommentId),
-                Throws.Exception.TypeOf<UnauthorizedUserException>());
+                Throws.Exception.TypeOf<ForbiddenException>());
         }
 
         [Test]
