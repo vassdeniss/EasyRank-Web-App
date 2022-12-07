@@ -119,7 +119,6 @@ namespace EasyRank.Web.Controllers
             }
 
             Guid userId = this.User.Id();
-
             byte[]? image = null;
             if (this.Request.Form.Files.Count > 0)
             {

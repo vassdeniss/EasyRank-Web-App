@@ -80,7 +80,7 @@
 		<div class="card-body">
 			<h3 class="card-title">#@entry.Placement<br/>@entry.Title</h3>
 			<p class="card-text">@entry.Description</p>
-			@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+			@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name) || this.User.IsAdmin())
 			{
 				<a asp-controller="Entry" asp-action="Edit" asp-route-rankId="@this.Model.Id" asp-route-entryId="@entry.Id" class="card-link">Edit Entry</a>
 				<span class="text-primary mx-3">|</span>
@@ -90,10 +90,13 @@
 	</div>
 }
 
-@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name) || this.User.IsAdmin())
 {
 	<div class="d-flex justify-content-center mb-3">
-		<a asp-controller="Entry" asp-action="Create" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Create New Entry</a>
+		@if (this.Model.Entries.Count < 10)
+		{
+			<a asp-controller="Entry" asp-action="Create" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Create New Entry</a>
+		}
 		<a asp-action="Edit" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Edit Page</a>
 		<a asp-action="Delete" asp-route-rankId="@this.Model.Id" class="btn btn-secondary mx-2 action-button">Delete Page</a>
 	</div>
@@ -169,16 +172,17 @@ else
 					<p>@comment.Content</p>
 				}
 				<div class="actions-flex">
-					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name))
+					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name) || this.User.IsAdmin())
 					{
 						<a class="text-warning" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@comment.Id">Edit</a>
 					}
-					@if (comment.Username == this.User.FindFirstValue(ClaimTypes.Name)
+					@if ((comment.Username == this.User.FindFirstValue(ClaimTypes.Name)
 					     && this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+							|| this.User.IsAdmin())
 					{
 						<span class="text-primary mx-3">|</span>
 					}
-					@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name))
+					@if (this.Model.CreatedByUserName == this.User.FindFirstValue(ClaimTypes.Name) || this.User.IsAdmin())
 					{
 						<a class="text-warning" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id">Delete</a>
 					}
