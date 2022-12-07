@@ -6,11 +6,9 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Net;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Exceptions;
-using EasyRank.Web.Models;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;

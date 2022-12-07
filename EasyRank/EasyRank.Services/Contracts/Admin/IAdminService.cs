@@ -9,8 +9,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Models;
+using EasyRank.Services.Models.Admin;
 
-namespace EasyRank.Services.Contracts
+namespace EasyRank.Services.Contracts.Admin
 {
     /// <summary>
     /// The interface for the AdminService.
@@ -21,18 +22,24 @@ namespace EasyRank.Services.Contracts
         /// Used for retrieving all rankings from the database.
         /// </summary>
         /// <returns>A collection of rank pages.</returns>
-        Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync();
+        Task<IEnumerable<RankPageServiceModel>> GetAllRankingsAsync();
 
         /// <summary>
         /// Used for retrieving all entries from the database.
         /// </summary>
         /// <returns>A collection of rank entries.</returns>
-        Task<ICollection<RankEntryServiceModelExtended>> GetAllEntriesAsync();
+        Task<IEnumerable<RankEntryServiceModelExtended>> GetAllEntriesAsync();
 
         /// <summary>
         /// Used for retrieving all comments from the database.
         /// </summary>
         /// <returns>A collection of comments.</returns>
-        Task<ICollection<CommentServiceModelExtended>> GetAllCommentsAsync();
+        Task<IEnumerable<CommentServiceModelExtended>> GetAllCommentsAsync();
+
+        /// <summary>
+        /// Used for retrieving all users from the database.
+        /// </summary>
+        /// <returns>A collection of users.</returns>
+        Task<IEnumerable<EasyRankUserServiceModel>> GetAllUsersAsync();
     }
 }

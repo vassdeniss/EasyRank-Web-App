@@ -13,9 +13,12 @@ using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
-using EasyRank.Services.Contracts;
+using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Models;
+using EasyRank.Services.Models.Admin;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -28,6 +31,7 @@ namespace EasyRank.Services
     {
         private readonly IRepository repo;
         private readonly IMapper mapper;
+        private readonly UserManager<EasyRankUser> userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminService"/> class.
@@ -35,18 +39,21 @@ namespace EasyRank.Services
         /// </summary>
         /// <param name="repo">The implementation of a repository to be used.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
+        /// <param name="userManager">The user manager for the service.</param>
         public AdminService(
             IRepository repo,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<EasyRankUser> userManager)
         {
             this.repo = repo;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<RankPageServiceModel>> GetAllRankingsAsync()
+        public async Task<IEnumerable<RankPageServiceModel>> GetAllRankingsAsync()
         {
-            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+            return this.mapper.Map<IEnumerable<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(rp => !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
                     .Include(rp => rp.Comments)
@@ -56,9 +63,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<RankEntryServiceModelExtended>> GetAllEntriesAsync()
+        public async Task<IEnumerable<RankEntryServiceModelExtended>> GetAllEntriesAsync()
         {
-            return this.mapper.Map<ICollection<RankEntryServiceModelExtended>>(
+            return this.mapper.Map<IEnumerable<RankEntryServiceModelExtended>>(
                 await this.repo.AllReadonly<RankEntry>(re => !re.IsDeleted)
                     .Include(re => re.RankPage)
                     .ThenInclude(rp => rp.CreatedByUser)
@@ -66,13 +73,32 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<CommentServiceModelExtended>> GetAllCommentsAsync()
+        public async Task<IEnumerable<CommentServiceModelExtended>> GetAllCommentsAsync()
         {
-            return this.mapper.Map<ICollection<CommentServiceModelExtended>>(
+            return this.mapper.Map<IEnumerable<CommentServiceModelExtended>>(
                 await this.repo.AllReadonly<Comment>(c => !c.IsDeleted)
                     .Include(c => c.CreatedByUser)
                     .OrderByDescending(c => c.CreatedOn)
                     .ToListAsync());
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<EasyRankUserServiceModel>> GetAllUsersAsync()
+        {
+            IEnumerable<EasyRankUser> users = await this.repo.AllReadonly<EasyRankUser>().ToListAsync();
+
+            return users.Select(u => new EasyRankUserServiceModel
+            {
+                Id = u.Id,
+                Username = u.UserName,
+                FullName = $"{u.FirstName} {u.LastName}",
+                Email = u.Email,
+                IsEmailConfirmed = u.EmailConfirmed,
+                IsAdmin = this.userManager.IsInRoleAsync(u, "Administrator")
+                    .GetAwaiter()
+                    .GetResult(),
+            })
+            .ToList();
         }
     }
 }

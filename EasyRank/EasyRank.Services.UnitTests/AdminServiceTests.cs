@@ -6,8 +6,10 @@
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Models;
-using EasyRank.Services.Contracts;
+using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Models;
+using EasyRank.Services.Models.Admin;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +25,7 @@ namespace EasyRank.Services.UnitTests
         [SetUp]
         public void SetUp()
         {
-            this.adminService = new AdminService(this.repo, this.mapper);
+            this.adminService = new AdminService(this.repo, this.mapper, this.userManager.Object);
         }
 
         [Test]
@@ -34,8 +36,8 @@ namespace EasyRank.Services.UnitTests
                 .CountAsync();
 
             // Act: call service method and get count
-            ICollection<RankPageServiceModel> serviceModel = await this.adminService.GetAllRankingsAsync();
-            int serviceCount = serviceModel.Count;
+            IEnumerable<RankPageServiceModel> serviceModel = await this.adminService.GetAllRankingsAsync();
+            int serviceCount = serviceModel.Count();
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
@@ -50,8 +52,8 @@ namespace EasyRank.Services.UnitTests
                 .CountAsync();
 
             // Act: call service method and get count
-            ICollection<RankEntryServiceModelExtended> serviceModel = await this.adminService.GetAllEntriesAsync();
-            int serviceCount = serviceModel.Count;
+            IEnumerable<RankEntryServiceModelExtended> serviceModel = await this.adminService.GetAllEntriesAsync();
+            int serviceCount = serviceModel.Count();
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
@@ -65,8 +67,23 @@ namespace EasyRank.Services.UnitTests
                 .CountAsync();
 
             // Act: call service method and get count
-            ICollection<CommentServiceModelExtended> serviceModel = await this.adminService.GetAllCommentsAsync();
-            int serviceCount = serviceModel.Count;
+            IEnumerable<CommentServiceModelExtended> serviceModel = await this.adminService.GetAllCommentsAsync();
+            int serviceCount = serviceModel.Count();
+
+            // Assert: service count equals database count
+            Assert.That(serviceCount, Is.EqualTo(databaseCount));
+        }
+
+        [Test]
+        public async Task Test_GetAllUsers_ReturnsCorrectCount()
+        {
+            // Arrange: get users count from database
+            int databaseCount = await this.repo.AllReadonly<EasyRankUser>()
+                .CountAsync();
+
+            // Act: call service method and get count
+            IEnumerable<EasyRankUserServiceModel> serviceModel = await this.adminService.GetAllUsersAsync();
+            int serviceCount = serviceModel.Count();
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));

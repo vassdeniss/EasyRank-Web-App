@@ -1,0 +1,57 @@
+﻿@using EasyRank.Web.Areas.Admin.Models.User
+@model IEnumerable<EasyRankUserViewModel>
+@{
+	this.ViewData["Title"] = "All Users";
+}
+
+<h3 class="mb-3">@this.ViewData["Title"]</h3>
+<div class="row">
+	<div class="table-responsive">
+		<table class="table table-hover table-striped table-dark">
+			<thead>
+				<tr class="table-primary">
+					<th scope="col">Username</th>
+					<th scope="col">Full Name</th>
+					<th scope="col">Email</th>
+					<th scope="col">Email Confirmed?</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (EasyRankUserViewModel user in this.Model)
+				{
+					<tr>
+						<th scope="row">@user.Username</th>
+						@if (string.IsNullOrWhiteSpace(user.FullName))
+						{
+							<td>(No Name Given)</td>
+						}
+						else
+						{
+							<td>@user.FullName</td>
+						}
+						<td>@user.Email</td>
+						<td>@(user.IsEmailConfirmed ? "Yes" : "No")</td>
+						<td>
+							@*<a asp-are="" asp-controller="Account" asp-action="View">View Profile</a>*@
+							<a asp-area="Admin" asp-controller="User" asp-action="Delete" asp-route-rankId="@user.Id">Delete User</a>
+							<span class="text-primary mx-3">|</span>
+							@if (user.IsAdmin)
+							{
+								<a asp-area="Admin" asp-controller="User" asp-action="RemoveAdmin" asp-route-userId="@user.Id">Remove Admin</a>
+							}
+							else
+							{
+								<a asp-area="Admin" asp-controller="User" asp-action="MakeAdmin" asp-route-userId="@user.Id">Make Admin</a>
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

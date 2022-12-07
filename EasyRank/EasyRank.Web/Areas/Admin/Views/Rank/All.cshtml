@@ -1,4 +1,4 @@
-﻿@model ICollection<RankPageViewModel>
+﻿@model IEnumerable<RankPageViewModel>
 @{
 	this.ViewData["Title"] = "All Rankings";
 }
@@ -23,8 +23,8 @@
 				{
 					<tr>
 						<th scope="row">@rankPage.RankingTitle</th>
-						<td>@rankPage.CreatedByUserName</td>
 						<td>@rankPage.ImageAlt</td>
+						<td>@rankPage.CreatedByUserName</td>
 						<td>@rankPage.CreatedOn</td>
 						<td>@rankPage.LikeCount</td>
 						<td>@rankPage.CommentCount</td>

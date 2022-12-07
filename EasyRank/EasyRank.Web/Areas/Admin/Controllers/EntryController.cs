@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using EasyRank.Services.Contracts;
+using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Models;
 using EasyRank.Web.Areas.Admin.Models;
 
@@ -46,10 +46,10 @@ namespace EasyRank.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> AllAsync()
         {
-            ICollection<RankEntryServiceModelExtended> serviceModel = await this.adminService.GetAllEntriesAsync();
+            IEnumerable<RankEntryServiceModelExtended> serviceModel = await this.adminService.GetAllEntriesAsync();
 
-            ICollection<RankEntryViewModelExtended> model =
-                this.mapper.Map<ICollection<RankEntryViewModelExtended>>(serviceModel);
+            IEnumerable<RankEntryViewModelExtended> model =
+                this.mapper.Map<IEnumerable<RankEntryViewModelExtended>>(serviceModel);
 
             return this.View(model);
         }
