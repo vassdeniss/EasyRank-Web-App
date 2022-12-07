@@ -34,7 +34,7 @@
 						<td>@(user.IsEmailConfirmed ? "Yes" : "No")</td>
 						<td>
 							@*<a asp-are="" asp-controller="Account" asp-action="View">View Profile</a>*@
-							<a asp-area="Admin" asp-controller="User" asp-action="Delete" asp-route-rankId="@user.Id">Delete User</a>
+							<a asp-area="Admin" asp-controller="User" asp-action="Forget" asp-route-userId="@user.Id" asp-route-username="@user.Username">Delete User</a>
 							<span class="text-primary mx-3">|</span>
 							@if (user.IsAdmin)
 							{

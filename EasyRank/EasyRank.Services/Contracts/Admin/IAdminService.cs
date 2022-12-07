@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -41,5 +42,12 @@ namespace EasyRank.Services.Contracts.Admin
         /// </summary>
         /// <returns>A collection of users.</returns>
         Task<IEnumerable<EasyRankUserServiceModel>> GetAllUsersAsync();
+
+        /// <summary>
+        /// Used for deleting a user from the database.
+        /// </summary>
+        /// <param name="userId">The ID user to be deleted.</param>
+        /// <returns>Task (void).</returns>
+        Task DeleteUserAsync(Guid userId);
     }
 }

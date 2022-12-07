@@ -85,19 +85,18 @@ namespace EasyRank.Infrastructure.Models
         public virtual ICollection<EasyRankUserRankPage> LikedBy { get; set; }
 
         /// <summary>
-        /// Gets or sets the guid of the user who created the ranking page.
+        /// Gets or sets the guid of the user who created the rank page.
         /// </summary>
         /// <remarks>Foreign key to the 'EasyRankUser' table.</remarks>
-        [Required]
         [ForeignKey(nameof(CreatedByUser))]
-        [Comment("Gets or sets the guid of the user who created the ranking page.")]
-        public Guid CreatedByUserId { get; set; }
+        [Comment("Gets or sets the guid of the user who created the rank page.")]
+        public Guid? CreatedByUserId { get; set; }
 
         /// <summary>
         /// Gets or sets the user who created the ranking page.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
-        public virtual EasyRankUser CreatedByUser { get; set; } = null!;
+        public virtual EasyRankUser? CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or sets every comment on the given rank page.

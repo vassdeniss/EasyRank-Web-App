@@ -76,7 +76,6 @@ namespace EasyRank.Services.Contracts
         /// <param name="currentUser">The claims principal of the current user.</param>
         /// <returns>Task (void).</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        /// <exception cref="InvalidOperationException">Throws when the delete operation failed.</exception>
         public Task DeleteUserAsync(ClaimsPrincipal currentUser);
 
         /// <summary>

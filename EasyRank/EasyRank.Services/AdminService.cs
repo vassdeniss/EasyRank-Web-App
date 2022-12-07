@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts.Admin;
+using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -99,6 +102,40 @@ namespace EasyRank.Services
                     .GetResult(),
             })
             .ToList();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteUserAsync(Guid userId)
+        {
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            List<RankPage> userRanks = await this.repo.All<RankPage>(
+                    rp => !rp.IsDeleted && rp.CreatedByUserId == user.Id)
+                .Include(rp => rp.Entries)
+                .Include(rp => rp.Comments)
+                .ToListAsync();
+
+            foreach (RankPage page in userRanks)
+            {
+                foreach (Comment comment in page.Comments)
+                {
+                    comment.IsDeleted = true;
+                }
+
+                foreach (RankEntry entry in page.Entries)
+                {
+                    entry.IsDeleted = true;
+                }
+
+                page.IsDeleted = true;
+            }
+
+            await this.repo.SaveChangesAsync();
+            await this.userManager.DeleteAsync(user);
         }
     }
 }
