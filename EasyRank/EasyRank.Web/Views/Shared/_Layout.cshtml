@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using EasyRank.Web.Extensions
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,19 +24,35 @@
 							<a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						</li>
 						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Rankings
+							</a>
+							<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+								<li>
+									<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="All">All Rankings</a>
+									<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="Create">Create Rank</a>
+									<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="EditMenu">Edit Rank</a>
+									<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="DeleteMenu">Delete Rank</a>
+								</li>
+							</ul>
+						</li>
+						@if (this.User.IsAdmin())
+						{
+							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Rankings
+									Admin
 								</a>
 								<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
 									<li>
-										<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="All">All Rankings</a>
-										<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="Create">Create Rank</a>
-										<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="EditMenu">Edit Rank</a>
-										<a asp-area="" class="dropdown-item" asp-controller="Rank" asp-action="DeleteMenu">Delete Rank</a>
+										<a asp-area="Admin" class="dropdown-item" asp-controller="Rank" asp-action="All">All Rankings</a>
+										<a asp-area="Admin" class="dropdown-item" asp-controller="Entry" asp-action="All">All Entries</a>
+										<a asp-area="Admin" class="dropdown-item" asp-controller="Comment" asp-action="All">All Comments</a>
+										<a asp-area="Admin" class="dropdown-item" asp-controller="User" asp-action="All">All Users</a>
 									</li>
 								</ul>
 							</li>
-						</ul>
+						}
+					</ul>
 					<partial name="_LoginPartial" />
 				</div>
 			</div>

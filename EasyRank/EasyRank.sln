@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Services.UnitTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Web.IntegrationTests", "EasyRank.Web.IntegrationTests\EasyRank.Web.IntegrationTests.csproj", "{F7D9E6DD-02B5-4C49-8980-55504789B681}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

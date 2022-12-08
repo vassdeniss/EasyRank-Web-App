@@ -33,7 +33,8 @@ namespace EasyRank.Services.UnitTests
             this.manageService = new ManageService(
                 this.userManager.Object, 
                 this.signInManager.Object,
-                this.mapper);
+                this.mapper,
+                this.repo);
         }
 
         [Test]
@@ -236,14 +237,13 @@ namespace EasyRank.Services.UnitTests
             ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
 
             // Arrange: create a fake file with invalid file name / extension
-            string invalidFileName = "hacked.exe";
-            using MemoryStream stream = new MemoryStream();
-            await using StreamWriter writer = new StreamWriter(stream);
-            await writer.WriteAsync("Random text");
-            await writer.FlushAsync();
-            stream.Position = 0;
-
-            IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", invalidFileName);
+            byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
+            IFormFile file = new FormFile(
+                new MemoryStream(bytes),
+                0,
+                bytes.Length,
+                "Data",
+                "appsettings.json");
 
             // Act:
 
@@ -271,14 +271,13 @@ namespace EasyRank.Services.UnitTests
             ClaimsPrincipal userPrincipal = this.CreateClaimsPrincipal(guestUser);
 
             // Arrange: create a file with valid file name / extension
-            string fileName = "picture.jpg";
-            using MemoryStream stream = new MemoryStream();
-            await using StreamWriter writer = new StreamWriter(stream);
-            await writer.WriteAsync("Random text");
-            await writer.FlushAsync();
-            stream.Position = 0;
-
-            IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+            byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
+            IFormFile file = new FormFile(
+                new MemoryStream(bytes),
+                0,
+                bytes.Length,
+                "Data",
+                "avatar.jpg");
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
@@ -312,13 +311,13 @@ namespace EasyRank.Services.UnitTests
             string newFistName = "John2";
             string newLastName = "Doe2";
             string newUserName = "NewGuest2";
-            string invalidFileName = "picture.jpg";
-            using MemoryStream stream = new MemoryStream();
-            await using StreamWriter writer = new StreamWriter(stream);
-            await writer.WriteAsync("Random text2");
-            await writer.FlushAsync();
-            stream.Position = 0;
-            IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", invalidFileName);
+            byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
+            IFormFile file = new FormFile(
+                new MemoryStream(bytes),
+                0,
+                bytes.Length,
+                "Data",
+                "avatar.png");
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(

@@ -24,7 +24,10 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// For development
 string connectionString = builder.Configuration.GetConnectionString("DockerConnection");
+// For production
+// string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
 
