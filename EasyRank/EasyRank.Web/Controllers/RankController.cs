@@ -231,7 +231,7 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view showing all the rankings you as a user has made (for editing).</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public async Task<IActionResult> EditMenu()
+        public async Task<IActionResult> EditMenuAsync()
         {
             ICollection<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
@@ -298,7 +298,7 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view showing all the rankings you as a user has made (for deleting).</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public async Task<IActionResult> DeleteMenu()
+        public async Task<IActionResult> DeleteMenuAsync()
         {
             ICollection<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
