@@ -46,7 +46,23 @@
 									</li>
 								</ul>
 							</li>
-							</ul>
+							@if (this.User.IsAdmin())
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Admin
+									</a>
+									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+										<li>
+											<a asp-area="Admin" class="dropdown-item" asp-controller="Rank" asp-action="All">All Rankings</a>
+											<a asp-area="Admin" class="dropdown-item" asp-controller="Entry" asp-action="All">All Entries</a>
+											<a asp-area="Admin" class="dropdown-item" asp-controller="Comment" asp-action="All">All Comments</a>
+											<a asp-area="Admin" class="dropdown-item" asp-controller="User" asp-action="All">All Users</a>
+										</li>
+									</ul>
+								</li>
+							}
+						</ul>
 						<partial name="_LoginPartial" />
 					</div>
 				</div>
