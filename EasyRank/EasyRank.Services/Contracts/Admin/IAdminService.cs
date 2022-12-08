@@ -49,5 +49,19 @@ namespace EasyRank.Services.Contracts.Admin
         /// <param name="userId">The ID user to be deleted.</param>
         /// <returns>Task (void).</returns>
         Task DeleteUserAsync(Guid userId);
+
+        /// <summary>
+        /// Used for making a user an admin of the site.
+        /// </summary>
+        /// <param name="userId">The ID of the user to be made admin.</param>
+        /// <returns>Task (void).</returns>
+        Task MakeUserAdminAsync(Guid userId);
+
+        /// <summary>
+        /// Used for removing an admin user for the site.
+        /// </summary>
+        /// <param name="userId">The ID of the user to be removed.</param>
+        /// <returns>Task (void).</returns>
+        Task RemoveAdminUserAsync(Guid userId);
     }
 }

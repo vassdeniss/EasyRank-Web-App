@@ -79,12 +79,78 @@ namespace EasyRank.Web.Areas.Admin.Controllers
         /// The 'Forget' action for the controller.
         /// </summary>
         /// <returns>Back to all users view.</returns>
-        /// <param name="model">The 'ActionUserViewModel' for the deletion.</param>
+        /// <param name="model">The 'ActionUserViewModel' for the action.</param>
         /// <remarks>Post method.</remarks>
         [HttpPost]
         public async Task<IActionResult> ForgetAsync(ActionUserViewModel model)
         {
             await this.adminService.DeleteUserAsync(model.Id);
+
+            return this.RedirectToAction("All", "User");
+        }
+
+        /// <summary>
+        /// The 'MakeAdmin' action for the controller.
+        /// </summary>
+        /// <returns>A confirmation view for making user admin.</returns>
+        /// <param name="userId">The ID of the user to be made admin.</param>
+        /// <param name="username">The username of the user to be made admin.</param>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public IActionResult MakeAdminAsync(Guid userId, string username)
+        {
+            ActionUserViewModel model = new ActionUserViewModel
+            {
+                Id = userId,
+                Username = username,
+            };
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'MakeAdmin' action for the controller.
+        /// </summary>
+        /// <returns>Back to all users view.</returns>
+        /// <param name="model">The 'ActionUserViewModel' for the action.</param>
+        /// <remarks>Post method.</remarks>
+        [HttpPost]
+        public async Task<IActionResult> MakeAdminAsync(ActionUserViewModel model)
+        {
+            await this.adminService.MakeUserAdminAsync(model.Id);
+
+            return this.RedirectToAction("All", "User");
+        }
+
+        /// <summary>
+        /// The 'RemoveAdmin' action for the controller.
+        /// </summary>
+        /// <returns>A confirmation view for removing admin user.</returns>
+        /// <param name="userId">The ID of the user to be removed.</param>
+        /// <param name="username">The username of the user to be removed.</param>
+        /// <remarks>Get method.</remarks>
+        [HttpGet]
+        public IActionResult RemoveAdminAsync(Guid userId, string username)
+        {
+            ActionUserViewModel model = new ActionUserViewModel
+            {
+                Id = userId,
+                Username = username,
+            };
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        /// The 'RemoveAdmin' action for the controller.
+        /// </summary>
+        /// <returns>Back to all users view.</returns>
+        /// <param name="model">The 'ActionUserViewModel' for the action.</param>
+        /// <remarks>Post method.</remarks>
+        [HttpPost]
+        public async Task<IActionResult> RemoveAdminAsync(ActionUserViewModel model)
+        {
+            await this.adminService.RemoveAdminUserAsync(model.Id);
 
             return this.RedirectToAction("All", "User");
         }

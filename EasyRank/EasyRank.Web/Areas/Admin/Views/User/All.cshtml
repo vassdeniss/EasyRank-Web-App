@@ -1,4 +1,5 @@
 ﻿@using EasyRank.Web.Areas.Admin.Models.User
+@using EasyRank.Web.Extensions
 @model IEnumerable<EasyRankUserViewModel>
 @{
 	this.ViewData["Title"] = "All Users";
@@ -18,7 +19,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (EasyRankUserViewModel user in this.Model)
+				@foreach (EasyRankUserViewModel user in this.Model.Where(u => u.Id != this.User.Id()))
 				{
 					<tr>
 						<th scope="row">@user.Username</th>
@@ -38,11 +39,11 @@
 							<span class="text-primary mx-3">|</span>
 							@if (user.IsAdmin)
 							{
-								<a asp-area="Admin" asp-controller="User" asp-action="RemoveAdmin" asp-route-userId="@user.Id">Remove Admin</a>
+								<a asp-area="Admin" asp-controller="User" asp-action="RemoveAdmin" asp-route-userId="@user.Id" asp-route-username="@user.Username">Remove Admin</a>
 							}
 							else
 							{
-								<a asp-area="Admin" asp-controller="User" asp-action="MakeAdmin" asp-route-userId="@user.Id">Make Admin</a>
+								<a asp-area="Admin" asp-controller="User" asp-action="MakeAdmin" asp-route-userId="@user.Id" asp-route-username="@user.Username">Make Admin</a>
 							}
 						</td>
 					</tr>

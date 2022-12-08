@@ -21,7 +21,6 @@ using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -136,6 +135,36 @@ namespace EasyRank.Services
 
             await this.repo.SaveChangesAsync();
             await this.userManager.DeleteAsync(user);
+        }
+
+        /// <inheritdoc />
+        public async Task MakeUserAdminAsync(Guid userId)
+        {
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await this.userManager.AddToRoleAsync(user, "Administrator");
+        }
+
+        /// <inheritdoc />
+        public async Task RemoveAdminUserAsync(Guid userId)
+        {
+            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            EasyRankUser adminUser = await this.userManager.FindByEmailAsync("vassdeniss@gmail.com");
+            if (user.Id == adminUser.Id)
+            {
+                throw new ForbiddenException();
+            }
+
+            await this.userManager.RemoveFromRoleAsync(user, "Administrator");
         }
     }
 }

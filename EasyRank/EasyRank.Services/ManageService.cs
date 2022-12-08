@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -15,6 +16,8 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using EasyRank.Infrastructure.Common;
+using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
@@ -23,6 +26,7 @@ using EasyRank.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
 {
@@ -35,6 +39,7 @@ namespace EasyRank.Services
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IMapper mapper;
+        private readonly IRepository repo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageService"/> class.
@@ -42,14 +47,17 @@ namespace EasyRank.Services
         /// <param name="userManager">The user manager for the service.</param>
         /// <param name="signInManager">The sign in manager for the service.</param>
         /// <param name="mapper">Instance of an AutoMapper.</param>
+        /// <param name="repo">The implementation of a repository to be used.</param>
         public ManageService(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
-            IMapper mapper)
+            IMapper mapper,
+            IRepository repo)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
+            this.repo = repo;
         }
 
         /// <inheritdoc />
@@ -181,6 +189,29 @@ namespace EasyRank.Services
             //        return Page();
             //    }
             //}
+
+            List<RankPage> userRanks = await this.repo.All<RankPage>(
+                    rp => !rp.IsDeleted && rp.CreatedByUserId == user.Id)
+                .Include(rp => rp.Entries)
+                .Include(rp => rp.Comments)
+                .ToListAsync();
+
+            foreach (RankPage page in userRanks)
+            {
+                foreach (Comment comment in page.Comments)
+                {
+                    comment.IsDeleted = true;
+                }
+
+                foreach (RankEntry entry in page.Entries)
+                {
+                    entry.IsDeleted = true;
+                }
+
+                page.IsDeleted = true;
+            }
+
+            await this.repo.SaveChangesAsync();
 
             //string userId = await this.userManager.GetUserIdAsync(user);
             await this.userManager.DeleteAsync(user);
