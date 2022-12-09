@@ -12,7 +12,7 @@ using AutoMapper;
 
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Models;
-using EasyRank.Web.Areas.Admin.Models;
+using EasyRank.Web.Areas.Admin.Models.Entry;
 
 using Microsoft.AspNetCore.Mvc;
 

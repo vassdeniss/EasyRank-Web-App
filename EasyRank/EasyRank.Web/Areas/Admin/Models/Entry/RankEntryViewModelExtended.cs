@@ -9,7 +9,7 @@ using System;
 
 using EasyRank.Web.Models.Rank;
 
-namespace EasyRank.Web.Areas.Admin.Models
+namespace EasyRank.Web.Areas.Admin.Models.Entry
 {
     /// <summary>
     /// Extended model of the rank entry holding more needed properties.

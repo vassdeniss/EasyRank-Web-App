@@ -9,7 +9,8 @@ using AutoMapper;
 
 using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
-using EasyRank.Web.Areas.Admin.Models;
+using EasyRank.Web.Areas.Admin.Models.Comment;
+using EasyRank.Web.Areas.Admin.Models.Entry;
 using EasyRank.Web.Areas.Admin.Models.User;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
