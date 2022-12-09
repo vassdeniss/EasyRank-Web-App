@@ -6,19 +6,13 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-using EasyRank.Infrastructure.Models;
-using EasyRank.Infrastructure.Models.Accounts;
-using EasyRank.Services;
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Web.Areas.Admin.Controllers;
 using EasyRank.Web.Areas.Admin.Models;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using Moq;
 
@@ -29,22 +23,18 @@ namespace EasyRank.Web.IntegrationTests.Admin
     [TestFixture]
     public class CommentControllerTests : IntegrationTestBase
     {
-        private IAdminService adminService;
         private CommentController commentController;
 
         [SetUp]
         public void SetUp()
         {
-            this.adminService = new AdminService(this.repo, this.mapper, this.userManager.Object);
-            this.commentController = new CommentController(this.mapper, this.adminService);
+            this.commentController = new CommentController(this.mapper, new Mock<IAdminService>().Object);
         }
 
         [Test]
         public async Task Test_All_ReturnsCorrectView()
         {
-            // Arrange: get count of comments from db
-            int commentCount = await this.repo.AllReadonly<Comment>(c => !c.IsDeleted)
-                .CountAsync();
+            // Arrange:
 
             // Act: invoke the controller method
             IActionResult result = await this.commentController.AllAsync();
@@ -56,11 +46,6 @@ namespace EasyRank.Web.IntegrationTests.Admin
             // Assert: view model is a collection of type 'CommentViewModelExtended'
             ViewResult viewResult = (result as ViewResult)!;
             Assert.That(viewResult.ViewData.Model, Is.InstanceOf<IEnumerable<CommentViewModelExtended>>());
-
-            // Assert: collection count is correct
-            IEnumerable<CommentViewModelExtended> modelCollection = 
-                (viewResult.ViewData.Model as IEnumerable<CommentViewModelExtended>)!;
-            Assert.That(modelCollection.Count(), Is.EqualTo(commentCount));
         }
     }
 }

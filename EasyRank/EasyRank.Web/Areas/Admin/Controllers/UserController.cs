@@ -14,7 +14,6 @@ using AutoMapper;
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Models.Admin;
 using EasyRank.Web.Areas.Admin.Models.User;
-using EasyRank.Web.Models.Manage;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,7 +63,7 @@ namespace EasyRank.Web.Areas.Admin.Controllers
         /// <param name="username">The username of the user to be deleted.</param>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult ForgetAsync(Guid userId, string username)
+        public IActionResult Forget(Guid userId, string username)
         {
             ActionUserViewModel model = new ActionUserViewModel
             {
@@ -97,7 +96,7 @@ namespace EasyRank.Web.Areas.Admin.Controllers
         /// <param name="username">The username of the user to be made admin.</param>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult MakeAdminAsync(Guid userId, string username)
+        public IActionResult MakeAdmin(Guid userId, string username)
         {
             ActionUserViewModel model = new ActionUserViewModel
             {
@@ -130,7 +129,7 @@ namespace EasyRank.Web.Areas.Admin.Controllers
         /// <param name="username">The username of the user to be removed.</param>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult RemoveAdminAsync(Guid userId, string username)
+        public IActionResult RemoveAdmin(Guid userId, string username)
         {
             ActionUserViewModel model = new ActionUserViewModel
             {
