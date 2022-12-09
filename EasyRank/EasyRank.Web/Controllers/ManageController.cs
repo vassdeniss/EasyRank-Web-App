@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -61,7 +62,7 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            ManageServiceModel serviceModel = await this.manageService.GetUserInfoAsync(this.User);
+            ManageServiceModel serviceModel = await this.manageService.GetUserInfoAsync(this.User.Id());
 
             ManageViewModel model = this.mapper.Map<ManageViewModel>(serviceModel);
 
@@ -83,7 +84,7 @@ namespace EasyRank.Web.Controllers
             }
 
             await this.manageService.UpdateUserDataAsync(
-                this.User,
+                this.User.Id(),
                 model.FirstName,
                 model.LastName,
                 model.Username,
@@ -102,7 +103,7 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteProfilePictureAsync()
         {
-            await this.manageService.DeleteProfilePictureAsync(this.User);
+            await this.manageService.DeleteProfilePictureAsync(this.User.Id());
 
             this.TempData["StatusMessage"] = "Your profile picture has been updated";
 
@@ -133,13 +134,13 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
         {
-            if (!await this.manageService.CheckPasswordAsync(this.User, model.Password))
+            if (!await this.manageService.CheckPasswordAsync(this.User.Id(), model.Password))
             {
                 this.ModelState.AddModelError(string.Empty, "Incorrect password.");
                 return this.View(model);
             }
 
-            await this.manageService.DeleteUserAsync(this.User);
+            await this.manageService.DeleteUserAsync(this.User.Id());
 
             return this.RedirectToAction("Index", "Home");
         }
@@ -153,10 +154,10 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EmailAsync()
         {
-            EmailServiceModel serviceModel = await this.manageService.GetUserEmailAsync(this.User);
+            EmailServiceModel serviceModel = await this.manageService.GetUserEmailAsync(this.User.Id());
 
             EmailViewModel model = this.mapper.Map<EmailViewModel>(serviceModel);
-            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User);
+            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
 
             return this.View(model);
         }
@@ -184,8 +185,8 @@ namespace EasyRank.Web.Controllers
                     return this.RedirectToAction("Email");
                 }
 
-                string userId = await this.manageService.GetUserIdAsync(this.User);
-                string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User, model.NewEmail);
+                string userId = await this.manageService.GetUserIdAsync(this.User.Id());
+                string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
 
                 string callbackUrl = this.Url.ActionLink(
                     "ConfirmEmailChange",
@@ -214,7 +215,7 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Email");
             }
 
-            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User);
+            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
             this.TempData["StatusMessage"] = "Error: Your email is unchanged.";
             return this.RedirectToAction("Email");
         }
@@ -234,7 +235,7 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Index", "Manage");
             }
 
-            IdentityResult result = await this.manageService.ChangeEmailAsync(userId, email, code);
+            IdentityResult result = await this.manageService.ChangeEmailAsync(Guid.Parse(userId), email, code);
             if (!result.Succeeded)
             {
                 this.TempData["StatusMessage"] = "Error changing email.";
@@ -260,8 +261,8 @@ namespace EasyRank.Web.Controllers
                 return this.View("Email", model);
             }
 
-            string userId = await this.manageService.GetUserIdAsync(this.User);
-            string code = await this.manageService.GenerateEmailConfirmationTokenAsync(this.User);
+            string userId = await this.manageService.GetUserIdAsync(this.User.Id());
+            string code = await this.manageService.GenerateEmailConfirmationTokenAsync(this.User.Id());
             string callbackUrl = this.Url.ActionLink(
                 "ConfirmEmail",
                 "Manage",
@@ -285,7 +286,7 @@ namespace EasyRank.Web.Controllers
                 "[DO NOT REPLY] Confirm your email for EasyRank!",
                 builder.ToString());
 
-            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User);
+            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
             this.TempData["StatusMessage"] = "Verification email sent. Please check your email.";
             return this.RedirectToAction("Email");
         }
@@ -305,7 +306,7 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Index", "Manage");
             }
 
-            IdentityResult result = await this.manageService.ConfirmEmailAsync(userId, code);
+            IdentityResult result = await this.manageService.ConfirmEmailAsync(Guid.Parse(userId), code);
             this.TempData["StatusMessage"] = result.Succeeded
                 ? "Thank you for confirming your email."
                 : "Error confirming your email.";
@@ -351,7 +352,8 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            IdentityResult result = await this.manageService.ChangePasswordAsync(this.User,
+            IdentityResult result = await this.manageService.ChangePasswordAsync(
+                this.User.Id(),
                 model.OldPassword,
                 model.NewPassword);
             if (!result.Succeeded)

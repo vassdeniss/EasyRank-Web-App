@@ -25,23 +25,23 @@ namespace EasyRank.Services.Contracts
         /// <summary>
         /// Used for retrieving information about the current user.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>A ManageServiceModel with user info.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<ManageServiceModel> GetUserInfoAsync(ClaimsPrincipal currentUser);
+        public Task<ManageServiceModel> GetUserInfoAsync(Guid userId);
 
         /// <summary>
         /// Used for deleting the current users profile picture.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>Task (void).</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task DeleteProfilePictureAsync(ClaimsPrincipal currentUser);
+        public Task DeleteProfilePictureAsync(Guid userId);
 
         /// <summary>
         /// Used for updating the current users profile settings.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <param name="inputFirstName">The first name inputted by the user.</param>
         /// <param name="inputLastName">The last name inputted by the user.</param>
         /// <param name="inputUserName">The user name inputted by the user.</param>
@@ -53,7 +53,7 @@ namespace EasyRank.Services.Contracts
         /// Thrown when the user's uploaded profile picture is in invalid format.
         /// </exception>
         public Task UpdateUserDataAsync(
-            ClaimsPrincipal currentUser,
+            Guid userId,
             string? inputFirstName,
             string? inputLastName,
             string inputUserName,
@@ -62,37 +62,37 @@ namespace EasyRank.Services.Contracts
         /// <summary>
         /// Used for checking if the inputted password matches the current user's password.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <param name="currentPassword">The password of the current user.</param>
         /// <returns>Flag indicating if the passwords match.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<bool> CheckPasswordAsync(
-            ClaimsPrincipal currentUser,
+            Guid userId,
             string currentPassword);
 
         /// <summary>
         /// Used for deleting a user from the database.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>Task (void).</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task DeleteUserAsync(ClaimsPrincipal currentUser);
+        public Task DeleteUserAsync(Guid userId);
 
         /// <summary>
         /// Used for checking if the current user's email is confirmed.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>Flag indicating if the email is confirmed.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<bool> IsEmailConfirmedAsync(ClaimsPrincipal currentUser);
+        public Task<bool> IsEmailConfirmedAsync(Guid userId);
 
         /// <summary>
         /// Used for retrieving the current user's email.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>An EmailServiceModel with the users email.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<EmailServiceModel> GetUserEmailAsync(ClaimsPrincipal currentUser);
+        public Task<EmailServiceModel> GetUserEmailAsync(Guid userId);
 
         /// <summary>
         /// Used for checking if a given email is taken by some user.
@@ -104,27 +104,27 @@ namespace EasyRank.Services.Contracts
         /// <summary>
         /// Used for retrieving the current user's ID.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>The ID of the user.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GetUserIdAsync(ClaimsPrincipal currentUser);
+        public Task<string> GetUserIdAsync(Guid userId);
 
         /// <summary>
         /// Used for generating a change email token for the current user.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <param name="newEmail">The new email for the user.</param>
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateChangeEmailTokenAsync(ClaimsPrincipal currentUser, string newEmail);
+        public Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail);
 
         /// <summary>
         /// Used for generating an email confirmation token for the current user.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser);
+        public Task<string> GenerateEmailConfirmationTokenAsync(Guid userId);
 
         /// <summary>
         /// Used for changing the current user's email.
@@ -135,7 +135,7 @@ namespace EasyRank.Services.Contracts
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<IdentityResult> ChangeEmailAsync(
-            string userId,
+            Guid userId,
             string newEmail,
             string code);
 
@@ -147,19 +147,19 @@ namespace EasyRank.Services.Contracts
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<IdentityResult> ConfirmEmailAsync(
-            string userId,
+            Guid userId,
             string code);
 
         /// <summary>
         /// Used for changing the password of the current user.
         /// </summary>
-        /// <param name="currentUser">The claims principal of the current user.</param>
+        /// <param name="userId">The ID of the current user.</param>
         /// <param name="oldPass">The old password of the current user.</param>
         /// <param name="newPass">The new password of the current user.</param>
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
         public Task<IdentityResult> ChangePasswordAsync(
-            ClaimsPrincipal currentUser,
+            Guid userId,
             string oldPass,
             string newPass);
     }

@@ -9,9 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -61,9 +59,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ManageServiceModel> GetUserInfoAsync(ClaimsPrincipal currentUser)
+        public async Task<ManageServiceModel> GetUserInfoAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -75,9 +73,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task DeleteProfilePictureAsync(ClaimsPrincipal currentUser)
+        public async Task DeleteProfilePictureAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -91,13 +89,13 @@ namespace EasyRank.Services
 
         /// <inheritdoc />
         public async Task UpdateUserDataAsync(
-            ClaimsPrincipal currentUser,
+            Guid userId,
             string? inputFirstName,
             string? inputLastName,
             string inputUserName,
             IFormFileCollection inputFiles)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -160,9 +158,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> CheckPasswordAsync(ClaimsPrincipal currentUser, string currentPassword)
+        public async Task<bool> CheckPasswordAsync(Guid userId, string currentPassword)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -172,9 +170,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task DeleteUserAsync(ClaimsPrincipal currentUser)
+        public async Task DeleteUserAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -220,9 +218,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> IsEmailConfirmedAsync(ClaimsPrincipal currentUser)
+        public async Task<bool> IsEmailConfirmedAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -232,9 +230,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<EmailServiceModel> GetUserEmailAsync(ClaimsPrincipal currentUser)
+        public async Task<EmailServiceModel> GetUserEmailAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -251,9 +249,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<string> GetUserIdAsync(ClaimsPrincipal currentUser)
+        public async Task<string> GetUserIdAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -263,9 +261,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<string> GenerateChangeEmailTokenAsync(ClaimsPrincipal currentUser, string newEmail)
+        public async Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -276,9 +274,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<string> GenerateEmailConfirmationTokenAsync(ClaimsPrincipal currentUser)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -289,9 +287,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<IdentityResult> ChangeEmailAsync(string userId, string newEmail, string code)
+        public async Task<IdentityResult> ChangeEmailAsync(Guid userId, string newEmail, string code)
         {
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -309,9 +307,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<IdentityResult> ConfirmEmailAsync(string userId, string code)
+        public async Task<IdentityResult> ConfirmEmailAsync(Guid userId, string code)
         {
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -322,9 +320,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<IdentityResult> ChangePasswordAsync(ClaimsPrincipal currentUser, string oldPass, string newPass)
+        public async Task<IdentityResult> ChangePasswordAsync(Guid userId, string oldPass, string newPass)
         {
-            EasyRankUser user = await this.userManager.GetUserAsync(currentUser);
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
             if (user == null)
             {
                 throw new NotFoundException();
