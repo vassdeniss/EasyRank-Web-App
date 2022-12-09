@@ -12,7 +12,7 @@ using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Tests.Common;
 using EasyRank.Tests.Common.Mocks;
-using EasyRank.Web.IntegrationTests.Mocks;
+using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Identity;
 
@@ -20,9 +20,9 @@ using Moq;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests
+namespace EasyRank.Web.UnitTests
 {
-    public class IntegrationTestBase
+    public class UnitTestBase
     {
         protected EasyRankTestDb testDb;
         private EasyRankDbContext dbContext;

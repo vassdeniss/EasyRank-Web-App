@@ -18,10 +18,10 @@ using Moq;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests.Admin
+namespace EasyRank.Web.UnitTests.Admin
 {
     [TestFixture]
-    public class CommentControllerTests : IntegrationTestBase
+    public class CommentControllerTests : UnitTestBase
     {
         private CommentController commentController;
 

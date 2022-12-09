@@ -13,8 +13,8 @@ using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
-using EasyRank.Web.IntegrationTests.Mocks;
 using EasyRank.Web.Models.Entry;
+using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +24,10 @@ using Moq;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests
+namespace EasyRank.Web.UnitTests
 {
     [TestFixture]
-    public class EntryControllerTests : IntegrationTestBase
+    public class EntryControllerTests : UnitTestBase
     {
         private IEntryService entryService;
         private EntryController entryController;
@@ -342,7 +342,7 @@ namespace EasyRank.Web.IntegrationTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
 
-            // Assert: controller name is 'ViewRanking', action name is 'Rank'
+            // Assert: controller name is 'Rank', action name is 'ViewRanking'
             RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
             Assert.That(redirectResult.ControllerName, Is.EqualTo("Rank"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("ViewRanking"));
@@ -427,7 +427,7 @@ namespace EasyRank.Web.IntegrationTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
 
-            // Assert: controller name is 'ViewRanking', action name is 'Rank'
+            // Assert: controller name is 'Rank', action name is 'ViewRanking'
             RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
             Assert.That(redirectResult.ControllerName, Is.EqualTo("Rank"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("ViewRanking"));

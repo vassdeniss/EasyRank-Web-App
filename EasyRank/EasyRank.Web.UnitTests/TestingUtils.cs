@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
-namespace EasyRank.Web.IntegrationTests
+namespace EasyRank.Web.UnitTests
 {
     public class TestingUtils
     {

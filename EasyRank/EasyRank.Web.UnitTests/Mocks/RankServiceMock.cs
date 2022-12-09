@@ -1,15 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿// -----------------------------------------------------------------------
+// <copyright file="RankServiceMock.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
 
-using AutoMapper;
+using System;
 
-using EasyRank.Infrastructure.Common;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 
 using Moq;
 
-namespace EasyRank.Web.IntegrationTests.Mocks
+namespace EasyRank.Web.UnitTests.Mocks
 {
     public class RankServiceMock
     {

@@ -140,7 +140,7 @@ namespace EasyRank.Web.Controllers
 
             await this.rankService.CreateRankAsync(image, sanitizedAltText, sanitizedTitle, userId);
 
-            return this.RedirectToAction("All");
+            return this.RedirectToAction("All", "Rank");
         }
 
         /// <summary>

@@ -129,7 +129,7 @@ namespace EasyRank.Web.Controllers
             if (string.IsNullOrEmpty(sanitizedContent))
             {
                 this.TempData["Error"] = "Please don't try to XSS :)";
-                return this.View();
+                return this.View(model);
             }
 
             await this.commentService.EditCommentAsync(model.Id, sanitizedContent);

@@ -11,10 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests.Admin
+namespace EasyRank.Web.UnitTests.Admin
 {
     [TestFixture]
-    public class HomeControllerTests : IntegrationTestBase
+    public class HomeControllerTests : UnitTestBase
     {
         private HomeController homeController;
 

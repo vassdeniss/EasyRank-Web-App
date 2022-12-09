@@ -12,17 +12,14 @@ using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Web.Controllers;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
-using Moq;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests
+namespace EasyRank.Web.UnitTests
 {
     [TestFixture]
-    public class HomeControllerTests : IntegrationTestBase
+    public class HomeControllerTests : UnitTestBase
     {
         private HomeController homeController;
 

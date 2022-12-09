@@ -10,7 +10,7 @@ using AutoMapper;
 using EasyRank.Services.Profiles;
 using EasyRank.Web.Profiles;
 
-namespace EasyRank.Web.IntegrationTests.Mocks
+namespace EasyRank.Web.UnitTests.Mocks
 {
     public static class MapperMock
     {

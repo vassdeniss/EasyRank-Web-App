@@ -13,8 +13,8 @@ using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
-using EasyRank.Web.IntegrationTests.Mocks;
 using EasyRank.Web.Models.Rank;
+using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +24,10 @@ using Moq;
 
 using NUnit.Framework;
 
-namespace EasyRank.Web.IntegrationTests
+namespace EasyRank.Web.UnitTests
 {
     [TestFixture]
-    public class RankControllerTests : IntegrationTestBase
+    public class RankControllerTests : UnitTestBase
     {
         private IRankService rankService;
         private RankController rankController;
@@ -194,9 +194,9 @@ namespace EasyRank.Web.IntegrationTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
 
-            // Assert: controller name is the same (or null), action name is 'All'
+            // Assert: controller name is 'Rank', action name is 'All'
             RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
-            Assert.That(redirectResult.ControllerName, Is.Null);
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Rank"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("All"));
         }
 
