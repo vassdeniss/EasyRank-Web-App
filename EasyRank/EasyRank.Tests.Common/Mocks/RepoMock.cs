@@ -5,11 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
@@ -17,7 +13,7 @@ using EasyRank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace EasyRank.Web.IntegrationTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
     public class RepoMock : IRepository
     {

@@ -6,11 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models;
@@ -19,12 +15,10 @@ using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.IntegrationTests.Mocks;
 using EasyRank.Web.Models.Entry;
-using EasyRank.Web.Models.Rank;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Primitives;
 
 using Moq;
 

@@ -9,7 +9,7 @@ using EasyRank.Infrastructure.Data;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyRank.Services.UnitTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
     public static class DatabaseMock
     {

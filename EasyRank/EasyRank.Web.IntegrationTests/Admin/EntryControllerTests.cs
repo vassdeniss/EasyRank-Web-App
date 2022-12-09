@@ -10,13 +10,17 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models;
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services;
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Web.Areas.Admin.Controllers;
 using EasyRank.Web.Areas.Admin.Models;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+using Moq;
 
 using NUnit.Framework;
 
@@ -31,6 +35,7 @@ namespace EasyRank.Web.IntegrationTests.Admin
         [SetUp]
         public void SetUp()
         {
+            this.adminService = new AdminService(this.repo, this.mapper, userManager.Object);
             this.adminService = new AdminService(this.repo, this.mapper, this.userManager.Object);
             this.entryController = new EntryController(this.mapper, this.adminService);
         }

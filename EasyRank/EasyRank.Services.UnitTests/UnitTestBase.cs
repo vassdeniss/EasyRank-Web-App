@@ -10,15 +10,17 @@ using AutoMapper;
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
-using EasyRank.Services.Contracts;
 using EasyRank.Services.UnitTests.Mocks;
 using EasyRank.Tests.Common;
+using EasyRank.Tests.Common.Mocks;
 
 using Microsoft.AspNetCore.Identity;
 
 using Moq;
 
 using NUnit.Framework;
+
+using DatabaseMock = EasyRank.Tests.Common.Mocks.DatabaseMock;
 
 namespace EasyRank.Services.UnitTests
 {

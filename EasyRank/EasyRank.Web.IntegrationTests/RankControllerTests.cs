@@ -1,8 +1,12 @@
-﻿using System;
+﻿// -----------------------------------------------------------------------
+// <copyright file="RankControllerTests.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models;
@@ -15,7 +19,6 @@ using EasyRank.Web.Models.Rank;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Primitives;
 
 using Moq;
 
@@ -144,7 +147,7 @@ namespace EasyRank.Web.IntegrationTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and invalid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "appsettings.json");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user, "appsettings.json");
 
             // Arrange: clear the model state
             this.rankController.ModelState.Clear();
@@ -175,7 +178,7 @@ namespace EasyRank.Web.IntegrationTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user, "image.jpg");
 
             // Arrange: clear the model state
             this.rankController.ModelState.Clear();
@@ -205,7 +208,7 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.EditAsync(page.Id);
@@ -268,7 +271,7 @@ namespace EasyRank.Web.IntegrationTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and invalid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "appsettings.json");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user, "appsettings.json");
 
             // Arrange: clear the model state
             this.rankController.ModelState.Clear();
@@ -300,8 +303,9 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user,
-                "image.jpg", 
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(
+                user,
+                "image.jpg",
                 true);
 
             // Arrange: clear the model state
@@ -336,7 +340,7 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user, "image.jpg");
 
             // Arrange: clear the model state
             this.rankController.ModelState.Clear();
@@ -367,7 +371,7 @@ namespace EasyRank.Web.IntegrationTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.EditMenuAsync();
@@ -389,7 +393,7 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.DeleteAsync(page.Id);
@@ -411,9 +415,9 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user,
-                "image.jpg",
-                true);
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(
+                user,
+                shouldBeAdmin: true);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.DeleteAsync(new RankPageFormModel
@@ -441,7 +445,7 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.DeleteAsync(new RankPageFormModel
@@ -466,7 +470,7 @@ namespace EasyRank.Web.IntegrationTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.DeleteMenuAsync();
@@ -488,7 +492,7 @@ namespace EasyRank.Web.IntegrationTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.rankController.ControllerContext = this.CreateControllerContext(user, "image.jpg");
+            this.rankController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method
             IActionResult result = await this.rankController.LikeRankAsync(page.Id);
@@ -503,57 +507,6 @@ namespace EasyRank.Web.IntegrationTests
             Assert.That(redirectResult.ActionName, Is.EqualTo("ViewRanking"));
             Assert.That(redirectResult.RouteValues!.ContainsKey("rankId"), Is.True);
             Assert.That(redirectResult.RouteValues["rankId"], Is.EqualTo(page.Id));
-        }
-
-        private ControllerContext CreateControllerContext(EasyRankUser user, string fileName, bool shouldBeAdmin = false)
-        {
-            // Create user
-            List<Claim> userClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}"),
-            };
-
-            if (shouldBeAdmin)
-            {
-                userClaims.Add(new Claim(ClaimTypes.Role, "Administrator"));
-            }
-
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(userClaims);
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            // Create test file
-            byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
-            IFormFile file = new FormFile(
-                new MemoryStream(bytes),
-                0,
-                bytes.Length,
-                "Data",
-                fileName);
-
-            // Create form collections
-            Dictionary<string, StringValues> emptyFieldsDictionary = new Dictionary<string, StringValues>();
-            FormFileCollection formFiles = new FormFileCollection
-            {
-                file,
-            };
-
-            // Create form
-            IFormCollection form = new FormCollection(emptyFieldsDictionary, formFiles);
-
-            // Create HTTP context
-            return new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = claimsPrincipal,
-                    Request =
-                    {
-                        Form = form,
-                    }
-                }
-            };
         }
     }
 }
