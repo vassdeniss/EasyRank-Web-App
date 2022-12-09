@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Services.UnitTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Web.IntegrationTests", "EasyRank.Web.IntegrationTests\EasyRank.Web.IntegrationTests.csproj", "{F7D9E6DD-02B5-4C49-8980-55504789B681}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Web.UnitTests", "EasyRank.Web.UnitTests\EasyRank.Web.UnitTests.csproj", "{F7D9E6DD-02B5-4C49-8980-55504789B681}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

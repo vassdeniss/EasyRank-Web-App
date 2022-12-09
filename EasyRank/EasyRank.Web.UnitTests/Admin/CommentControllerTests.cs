@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Web.Areas.Admin.Controllers;
-using EasyRank.Web.Areas.Admin.Models;
+using EasyRank.Web.Areas.Admin.Models.Comment;
 
 using Microsoft.AspNetCore.Mvc;
 
