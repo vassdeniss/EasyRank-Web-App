@@ -128,6 +128,24 @@ namespace EasyRank.Services.UnitTests.Mocks
                     return IdentityResult.Success;
                 });
 
+            userManager.Setup(um => um.AddToRoleAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string role) =>
+                {
+                    user.UserName = $"{user.UserName}IS-ADMIN";
+                    return IdentityResult.Success;
+                });
+
+            userManager.Setup(um => um.RemoveFromRoleAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string role) =>
+                {
+                    user.UserName = $"{user.UserName}IS-NOT-ADMIN";
+                    return IdentityResult.Success;
+                });
+
             return userManager;
         }
     }

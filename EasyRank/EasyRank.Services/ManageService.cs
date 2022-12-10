@@ -232,6 +232,15 @@ namespace EasyRank.Services
                 page.IsDeleted = true;
             }
 
+            List<Comment> userComments = await this.repo.All<Comment>(
+                    c => !c.IsDeleted && c.CreatedByUserId == user.Id)
+                .ToListAsync();
+
+            foreach (Comment comment in userComments)
+            {
+                comment.IsDeleted = true;
+            }
+
             await this.repo.SaveChangesAsync();
 
             //string userId = await this.userManager.GetUserIdAsync(user);

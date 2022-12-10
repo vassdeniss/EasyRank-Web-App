@@ -21,7 +21,6 @@ using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -32,8 +31,6 @@ namespace EasyRank.Services
     /// <remarks>Implementation of <see cref="IAdminService"/>.</remarks>
     public class AdminService : IAdminService
     {
-        // TODO: write tests for new methods, write test for forgotten user
-
         private readonly IRepository repo;
         private readonly IMapper mapper;
         private readonly UserManager<EasyRankUser> userManager;

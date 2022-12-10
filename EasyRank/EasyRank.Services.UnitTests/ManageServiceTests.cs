@@ -7,6 +7,7 @@
 
 using System.Text;
 
+using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
@@ -15,6 +16,7 @@ using EasyRank.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 using NUnit.Framework;
 
@@ -65,16 +67,16 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GetUserInfo_ReturnsCorrectInfo()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Act: call service method and pass in necessary data
-            ManageServiceModel serviceModel = await this.manageService.GetUserInfoAsync(guestUser.Id);
+            ManageServiceModel serviceModel = await this.manageService.GetUserInfoAsync(denisUser.Id);
 
             // Assert: the guest user and service user are the same
-            Assert.That(serviceModel.Username, Is.EqualTo(guestUser.UserName));
-            Assert.That(serviceModel.FirstName, Is.EqualTo(guestUser.FirstName));
-            Assert.That(serviceModel.LastName, Is.EqualTo(guestUser.LastName));
+            Assert.That(serviceModel.Username, Is.EqualTo(denisUser.UserName));
+            Assert.That(serviceModel.FirstName, Is.EqualTo(denisUser.FirstName));
+            Assert.That(serviceModel.LastName, Is.EqualTo(denisUser.LastName));
         }
 
         [Test]
@@ -143,50 +145,50 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_UpdateUserData_ChangesFirstNameSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: set new first name for user
             string newFistName = "John";
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
-                guestUser.Id,
+                denisUser.Id,
                 newFistName,
-                guestUser.LastName,
-                guestUser.UserName,
+                denisUser.LastName,
+                denisUser.UserName,
                 new FormFileCollection());
 
-            // Assert: the guest user first name has changed
-            Assert.That(guestUser.FirstName, Is.EqualTo(newFistName));
+            // Assert: the denis user first name has changed
+            Assert.That(denisUser.FirstName, Is.EqualTo(newFistName));
         }
 
         [Test]
         public async Task Test_UpdateUserData_ChangesLastNameSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: set new last name for user
             string newLastName = "Doe";
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
-                guestUser.Id,
-                guestUser.FirstName,
+                denisUser.Id,
+                denisUser.FirstName,
                 newLastName,
-                guestUser.UserName,
+                denisUser.UserName,
                 new FormFileCollection());
 
             // Assert: the guest user last name has changed
-            Assert.That(guestUser.LastName, Is.EqualTo(newLastName));
+            Assert.That(denisUser.LastName, Is.EqualTo(newLastName));
         }
 
         [Test]
         public void Test_UpdateUserData_UserNameTaken_ThrowsUsernameTakenException()
         {
-            // Arrange: get guest user and liked user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user and liked user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
             EasyRankUser likedUser = this.testDb.LikedUser;
 
             // Act:
@@ -194,9 +196,9 @@ namespace EasyRank.Services.UnitTests
             // Assert: UsernameTakenException is thrown when trying to change to a taken username
             Assert.That(
                 async() => await this.manageService.UpdateUserDataAsync(
-                    guestUser.Id,
-                    guestUser.FirstName,
-                    guestUser.LastName,
+                    denisUser.Id,
+                    denisUser.FirstName,
+                    denisUser.LastName,
                     likedUser.UserName,
                     new FormFileCollection()),
                 Throws.Exception.TypeOf<UsernameTakenException>());
@@ -205,8 +207,8 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public void Test_UpdateUserData_UserForgotten_ThrowsUsernameTakenException()
         {
-            // Arrange: get guest user and forgotten user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user and forgotten user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
             EasyRankUser forgottenUser = this.testDb.ForgottenUser;
 
             // Act:
@@ -214,9 +216,9 @@ namespace EasyRank.Services.UnitTests
             // Assert: UsernameTakenException is thrown when trying to change to a taken username
             Assert.That(
                 async () => await this.manageService.UpdateUserDataAsync(
-                    guestUser.Id,
-                    guestUser.FirstName,
-                    guestUser.LastName,
+                    denisUser.Id,
+                    denisUser.FirstName,
+                    denisUser.LastName,
                     forgottenUser.UserName,
                     new FormFileCollection()),
                 Throws.Exception.TypeOf<UsernameTakenException>());
@@ -225,29 +227,29 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_UpdateUserData_ChangesUserNameSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: set new last name for user
             string newUserName = "NewGuest";
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
-                guestUser.Id,
-                guestUser.FirstName,
-                guestUser.LastName,
+                denisUser.Id,
+                denisUser.FirstName,
+                denisUser.LastName,
                 newUserName,
                 new FormFileCollection());
 
             // Assert: the guest user user name has changed
-            Assert.That(guestUser.UserName, Is.EqualTo(newUserName));
+            Assert.That(denisUser.UserName, Is.EqualTo(newUserName));
         }
 
         [Test]
         public void Test_UpdateUserData_InvalidFileExtension_ThrowsFileFormatException()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: create a fake file with invalid file name / extension
             byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
@@ -263,10 +265,10 @@ namespace EasyRank.Services.UnitTests
             // Assert: FileFormatException is thrown when trying to upload an invalid file
             Assert.That(
                 async() => await this.manageService.UpdateUserDataAsync(
-                    guestUser.Id,
-                    guestUser.FirstName,
-                    guestUser.LastName,
-                    guestUser.UserName,
+                    denisUser.Id,
+                    denisUser.FirstName,
+                    denisUser.LastName,
+                    denisUser.UserName,
                     new FormFileCollection
                     {
                         file,
@@ -277,8 +279,8 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_UpdateUserData_ChangesProfilePictureSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: create a file with valid file name / extension
             byte[] bytes = Encoding.UTF8.GetBytes("Dummy File");
@@ -291,28 +293,28 @@ namespace EasyRank.Services.UnitTests
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
-                guestUser.Id,
-                guestUser.FirstName,
-                guestUser.LastName,
-                guestUser.UserName,
+                denisUser.Id,
+                denisUser.FirstName,
+                denisUser.LastName,
+                denisUser.UserName,
                 new FormFileCollection
                 {
                     file,
                 });
 
-            // Assert: the guest user profile picture has changed
-            Assert.That(guestUser.ProfilePicture, Is.Not.Null);
+            // Assert: the denis user profile picture has changed
+            Assert.That(denisUser.ProfilePicture, Is.Not.Null);
             
             using MemoryStream memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
-            Assert.That(guestUser.ProfilePicture, Is.EquivalentTo(memoryStream.ToArray()));
+            Assert.That(denisUser.ProfilePicture, Is.EquivalentTo(memoryStream.ToArray()));
         }
 
         [Test]
         public async Task Test_UpdateUserData_ChangesAllDataSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: set new data for user
             string newFistName = "John2";
@@ -328,7 +330,7 @@ namespace EasyRank.Services.UnitTests
 
             // Act: call service method and pass in necessary data
             await this.manageService.UpdateUserDataAsync(
-                guestUser.Id,
+                denisUser.Id,
                 newFistName,
                 newLastName,
                 newUserName,
@@ -337,15 +339,15 @@ namespace EasyRank.Services.UnitTests
                     file,
                 });
 
-            // Assert: the guest user information has changed
-            Assert.That(guestUser.FirstName, Is.EqualTo(newFistName));
-            Assert.That(guestUser.LastName, Is.EqualTo(newLastName));
-            Assert.That(guestUser.UserName, Is.EqualTo(newUserName));
-            Assert.That(guestUser.ProfilePicture, Is.Not.Null);
+            // Assert: the denis user information has changed
+            Assert.That(denisUser.FirstName, Is.EqualTo(newFistName));
+            Assert.That(denisUser.LastName, Is.EqualTo(newLastName));
+            Assert.That(denisUser.UserName, Is.EqualTo(newUserName));
+            Assert.That(denisUser.ProfilePicture, Is.Not.Null);
 
             using MemoryStream memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
-            Assert.That(guestUser.ProfilePicture, Is.EquivalentTo(memoryStream.ToArray()));
+            Assert.That(denisUser.ProfilePicture, Is.EquivalentTo(memoryStream.ToArray()));
         }
 
         [Test]
@@ -444,14 +446,37 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_DeleteUser_ValidUserId_RemovesSuccessfully()
         {
-            // Arrange: get denis user from test db
-            EasyRankUser denisUser = this.testDb.DenisUser;
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
 
             // Act: call service method
-            await this.manageService.DeleteUserAsync(denisUser.Id);
+            await this.manageService.DeleteUserAsync(guestUser.Id);
+
+            // Assert: user ranks are deleted
+            List<RankPage> userPages = await this.repo.AllReadonly<RankPage>(
+                    rp => rp.CreatedByUserId == guestUser.Id && !rp.IsDeleted)
+                .Include(rp => rp.Entries)
+                .Include(rp => rp.Comments)
+                .ToListAsync();
+
+            Assert.That(userPages.Count, Is.Zero);
+
+            // Assert: user rank entries, comments are deleted
+            foreach (RankPage page in userPages)
+            {
+                Assert.That(page.Entries.Count, Is.Zero);
+                Assert.That(page.Comments.Count, Is.Zero);
+            }
+
+            // Assert: user comments are deleted
+            List<Comment> userComments = await this.repo.AllReadonly<Comment>(
+                    c => c.CreatedByUserId == guestUser.Id && !c.IsDeleted)
+                .ToListAsync();
+
+            Assert.That(userComments.Count, Is.Zero);
 
             // Assert: user is deleted
-            Assert.That(denisUser.IsForgotten, Is.True);
+            Assert.That(guestUser.IsForgotten, Is.True);
         }
 
         [Test]
@@ -497,11 +522,11 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_IsEmailConfirmed_IsConfirmed_ReturnsTrue()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Act: call service method and pass in necessary data
-            bool result = await this.manageService.IsEmailConfirmedAsync(guestUser.Id);
+            bool result = await this.manageService.IsEmailConfirmedAsync(denisUser.Id);
 
             // Assert: the email is confirmed
             Assert.That(result, Is.True);
@@ -537,15 +562,15 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GetUserEmail_ReturnsCorrectEmail()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Act: call service method and pass in necessary data
-            EmailServiceModel serviceResult = await this.manageService.GetUserEmailAsync(guestUser.Id);
+            EmailServiceModel serviceResult = await this.manageService.GetUserEmailAsync(denisUser.Id);
 
             // Assert: the email is correct
-            Assert.That(serviceResult.Email, Is.EqualTo(guestUser.Email));
-            Assert.That(serviceResult.NewEmail, Is.EqualTo(guestUser.Email));
+            Assert.That(serviceResult.Email, Is.EqualTo(denisUser.Email));
+            Assert.That(serviceResult.NewEmail, Is.EqualTo(denisUser.Email));
         }
 
         [Test]
@@ -604,14 +629,14 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GetUserId_ReturnsCorrectId()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Act: call service method and pass in necessary data
-            string id = await this.manageService.GetUserIdAsync(guestUser.Id);
+            string id = await this.manageService.GetUserIdAsync(denisUser.Id);
 
             // Assert: both ids are the same
-            Assert.That(id, Is.EqualTo(guestUser.Id.ToString()));
+            Assert.That(id, Is.EqualTo(denisUser.Id.ToString()));
         }
 
         [Test]
@@ -646,14 +671,14 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GenerateChangeEmailToken_GeneratesCorrectly()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: create sample code
             string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
 
             // Act: call service method and pass in necessary data
-            string actualCode = await this.manageService.GenerateChangeEmailTokenAsync(guestUser.Id, guestUser.Email);
+            string actualCode = await this.manageService.GenerateChangeEmailTokenAsync(denisUser.Id, denisUser.Email);
 
             // Assert: both codes are the same
             Assert.That(actualCode, Is.EqualTo(expectedCode));
@@ -689,14 +714,14 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GenerateEmailConfirmationToken_GeneratesCorrectly()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Arrange: create sample code
             string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
 
             // Act: call service method and pass in necessary data
-            string actualCode = await this.manageService.GenerateEmailConfirmationTokenAsync(guestUser.Id);
+            string actualCode = await this.manageService.GenerateEmailConfirmationTokenAsync(denisUser.Id);
 
             // Assert: both codes are the same
             Assert.That(actualCode, Is.EqualTo(expectedCode));

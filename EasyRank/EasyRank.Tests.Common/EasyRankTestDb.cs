@@ -91,11 +91,11 @@ namespace EasyRank.Tests.Common
                 Id = Guid.NewGuid(),
                 UserName = $"vass{DateTime.Now.Ticks.ToString().Substring(10)}",
                 NormalizedUserName = $"VASS{DateTime.Now.Ticks.ToString().Substring(10)}",
-                Email = "vassdeniss@mail.com",
+                Email = "vassdeniss@gmail.com",
                 NormalizedEmail = "VASSDENISS@MAIL.COM",
                 FirstName = string.Empty,
                 LastName = string.Empty,
-                EmailConfirmed = false,
+                EmailConfirmed = true,
             };
 
             userManager.CreateAsync(this.DenisUser, "myVeryCoolPassword")
