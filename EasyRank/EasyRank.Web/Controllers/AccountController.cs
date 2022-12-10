@@ -138,15 +138,13 @@ namespace EasyRank.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
-            // TODO: manual test
-
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user != null && !user.IsForgotten)
+            if (user != null)
             {
                 if (!await this.userManager.IsEmailConfirmedAsync(user))
                 {
@@ -215,10 +213,8 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            // TODO: manual test
-
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || user.IsForgotten)
+            if (user == null)
             {
                 return this.View(model);
             }
@@ -289,10 +285,8 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            // TODO: manual test
-
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || user.IsForgotten || !await this.userManager.IsEmailConfirmedAsync(user))
+            if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
             {
                 return this.RedirectToAction("ForgotPasswordConfirmation");
             }
@@ -361,7 +355,12 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
-        // TODO: document
+        /// <summary>
+        /// The 'ResetPassword' for the controller.
+        /// </summary>
+        /// <returns>The same page if invalid data otherwise a confirmation page that an email was sent.</returns>
+        /// <param name="model">The 'ResetPasswordViewModel' for validation.</param>
+        /// <remarks>Post method. Guest access allowed.</remarks>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
@@ -371,10 +370,8 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            // TODO: manual test
-
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || user.IsForgotten)
+            if (user == null)
             {
                 return this.RedirectToAction("ResetPassword", model);
             }

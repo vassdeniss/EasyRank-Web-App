@@ -21,6 +21,7 @@ using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -155,6 +156,15 @@ namespace EasyRank.Services
                 }
 
                 page.IsDeleted = true;
+            }
+
+            List<Comment> userComments = await this.repo.All<Comment>(
+                    c => !c.IsDeleted && c.CreatedByUserId == user.Id)
+                .ToListAsync();
+
+            foreach (Comment comment in userComments)
+            {
+                comment.IsDeleted = true;
             }
 
             await this.repo.SaveChangesAsync();
