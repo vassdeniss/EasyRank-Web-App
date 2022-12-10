@@ -55,6 +55,13 @@ namespace EasyRank.Infrastructure.Models.Accounts
         public byte[]? ProfilePicture { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a user has been forgotten (deleted).
+        /// </summary>
+        [Required]
+        [Comment("Gets or sets a value indicating whether a user has been forgotten (deleted).")]
+        public bool IsForgotten { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets every comment which the user has made.
         /// </summary>
         /// <remarks>Navigational property.</remarks>

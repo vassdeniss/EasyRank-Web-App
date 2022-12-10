@@ -88,15 +88,16 @@ namespace EasyRank.Infrastructure.Models
         /// Gets or sets the guid of the user who created the rank page.
         /// </summary>
         /// <remarks>Foreign key to the 'EasyRankUser' table.</remarks>
+        [Required]
         [ForeignKey(nameof(CreatedByUser))]
         [Comment("Gets or sets the guid of the user who created the rank page.")]
-        public Guid? CreatedByUserId { get; set; }
+        public Guid CreatedByUserId { get; set; }
 
         /// <summary>
         /// Gets or sets the user who created the ranking page.
         /// </summary>
         /// <remarks>Navigational property.</remarks>
-        public virtual EasyRankUser? CreatedByUser { get; set; }
+        public virtual EasyRankUser CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or sets every comment on the given rank page.

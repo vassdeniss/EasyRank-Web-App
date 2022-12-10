@@ -157,9 +157,9 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public void Test_UpdateUserData_UserNameTaken_ThrowsUsernameTakenException()
         {
-            // Arrange: get guest user and denis user from test db
+            // Arrange: get guest user and liked user from test db
             EasyRankUser guestUser = this.testDb.GuestUser;
-            EasyRankUser denisUser = this.testDb.DenisUser;
+            EasyRankUser likedUser = this.testDb.LikedUser;
 
             // Act:
 
@@ -169,7 +169,7 @@ namespace EasyRank.Services.UnitTests
                     guestUser.Id,
                     guestUser.FirstName,
                     guestUser.LastName,
-                    denisUser.UserName,
+                    likedUser.UserName,
                     new FormFileCollection()),
                 Throws.Exception.TypeOf<UsernameTakenException>());
         }
@@ -366,15 +366,14 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_DeleteUser_ValidUserId_RemovesSuccessfully()
         {
-            // Arrange: get guest user from test db
-            EasyRankUser guestUser = this.testDb.GuestUser;
-            string guestUserName = guestUser.UserName;
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
 
             // Act: call service method
-            await this.manageService.DeleteUserAsync(guestUser.Id);
+            await this.manageService.DeleteUserAsync(denisUser.Id);
 
             // Assert: user is deleted
-            Assert.That(guestUser.UserName, Is.EqualTo($"DELETED{guestUserName}"));
+            Assert.That(denisUser.IsForgotten, Is.True);
         }
 
         [Test]
@@ -393,11 +392,11 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_IsEmailConfirmed_NotConfirmed_ReturnsFalse()
         {
-            // Arrange: get denis user from test db
-            EasyRankUser denisUser = this.testDb.DenisUser;
+            // Arrange: get liked user from test db
+            EasyRankUser likedUser = this.testDb.LikedUser;
 
             // Act: call service method and pass in necessary data
-            bool result = await this.manageService.IsEmailConfirmedAsync(denisUser.Id);
+            bool result = await this.manageService.IsEmailConfirmedAsync(likedUser.Id);
 
             // Assert: the email is not confirmed
             Assert.That(result, Is.False);

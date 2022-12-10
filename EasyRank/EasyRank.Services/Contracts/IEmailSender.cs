@@ -8,6 +8,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using EasyRank.Services.Models.Email;
+
 namespace EasyRank.Services.Contracts
 {
     /// <summary>

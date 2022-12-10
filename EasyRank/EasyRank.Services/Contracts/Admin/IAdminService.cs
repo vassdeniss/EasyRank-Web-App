@@ -48,6 +48,7 @@ namespace EasyRank.Services.Contracts.Admin
         /// </summary>
         /// <param name="userId">The ID user to be deleted.</param>
         /// <returns>Task (void).</returns>
+        /// <remarks>IsForgotten flag, doesn't actually delete.</remarks>
         Task DeleteUserAsync(Guid userId);
 
         /// <summary>

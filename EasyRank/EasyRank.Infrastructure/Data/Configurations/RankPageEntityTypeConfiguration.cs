@@ -23,7 +23,7 @@ namespace EasyRank.Infrastructure.Data.Configurations
             builder.HasOne(p => p.CreatedByUser)
                 .WithMany(u => u.UserRankings)
                 .HasForeignKey(c => c.CreatedByUserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

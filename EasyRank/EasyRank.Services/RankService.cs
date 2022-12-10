@@ -109,6 +109,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
+            // TODO: check user id
+
             return this.mapper.Map<ICollection<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(
                         rp => rp.CreatedByUserId == userId && !rp.IsDeleted)
@@ -141,6 +143,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId, bool isAdmin)
         {
+            // TODO: check user
+
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)
@@ -198,6 +202,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task LikeCommentAsync(Guid userId, Guid rankId)
         {
+            // TODO: check user
+
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
                 .Include(rp => rp.LikedBy)
@@ -227,6 +233,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId)
         {
+            // TODO: check user
+
             List<Guid> likedPageIds = await this.repo.AllReadonly<EasyRankUserRankPage>()
                 .Where(erurp => erurp.EasyRankUserId == userId)
                 .Where(erurp => erurp.IsLiked)

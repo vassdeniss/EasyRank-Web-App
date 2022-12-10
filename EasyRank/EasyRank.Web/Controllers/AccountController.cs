@@ -138,13 +138,15 @@ namespace EasyRank.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
+            // TODO: manual test
+
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            if (user != null && !user.IsForgotten)
             {
                 if (!await this.userManager.IsEmailConfirmedAsync(user))
                 {
@@ -213,8 +215,10 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
+            // TODO: manual test
+
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user == null || user.IsForgotten)
             {
                 return this.View(model);
             }
@@ -285,8 +289,10 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
+            // TODO: manual test
+
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
+            if (user == null || user.IsForgotten || !await this.userManager.IsEmailConfirmedAsync(user))
             {
                 return this.RedirectToAction("ForgotPasswordConfirmation");
             }
@@ -355,6 +361,7 @@ namespace EasyRank.Web.Controllers
             return this.View(model);
         }
 
+        // TODO: document
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
@@ -364,8 +371,10 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
+            // TODO: manual test
+
             EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user == null || user.IsForgotten)
             {
                 return this.RedirectToAction("ResetPassword", model);
             }

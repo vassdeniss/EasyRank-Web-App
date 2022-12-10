@@ -31,6 +31,8 @@ namespace EasyRank.Services
     /// <remarks>Implementation of <see cref="IAdminService"/>.</remarks>
     public class AdminService : IAdminService
     {
+        // TODO: write tests for new methods, write test for forgotten user
+
         private readonly IRepository repo;
         private readonly IMapper mapper;
         private readonly UserManager<EasyRankUser> userManager;
@@ -87,7 +89,9 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task<IEnumerable<EasyRankUserServiceModel>> GetAllUsersAsync()
         {
-            IEnumerable<EasyRankUser> users = await this.repo.AllReadonly<EasyRankUser>().ToListAsync();
+            IEnumerable<EasyRankUser> users = await this.repo.AllReadonly<EasyRankUser>()
+                .Where(u => !u.IsForgotten)
+                .ToListAsync();
 
             return users.Select(u => new EasyRankUserServiceModel
             {
@@ -106,11 +110,31 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task DeleteUserAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
+            if (user == null || user.IsForgotten)
             {
                 throw new NotFoundException();
             }
+
+            user.FirstName = null;
+            user.LastName = null;
+            user.UserName = null;
+            user.NormalizedUserName = null;
+            user.Email = null;
+            user.NormalizedEmail = null;
+            user.EmailConfirmed = false;
+            user.PasswordHash = null;
+            user.SecurityStamp = null;
+            user.ConcurrencyStamp = null;
+            user.PhoneNumber = null;
+            user.PhoneNumberConfirmed = false;
+            user.TwoFactorEnabled = false;
+            user.LockoutEnd = null;
+            user.LockoutEnabled = false;
+            user.AccessFailedCount = 0;
+            user.ProfilePicture = null;
+
+            user.IsForgotten = true;
 
             List<RankPage> userRanks = await this.repo.All<RankPage>(
                     rp => !rp.IsDeleted && rp.CreatedByUserId == user.Id)
@@ -134,14 +158,13 @@ namespace EasyRank.Services
             }
 
             await this.repo.SaveChangesAsync();
-            await this.userManager.DeleteAsync(user);
         }
 
         /// <inheritdoc />
         public async Task MakeUserAdminAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
+            if (user == null || user.IsForgotten)
             {
                 throw new NotFoundException();
             }
@@ -152,13 +175,15 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task RemoveAdminUserAsync(Guid userId)
         {
-            EasyRankUser user = await this.userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
+            if (user == null || user.IsForgotten)
             {
                 throw new NotFoundException();
             }
 
-            EasyRankUser adminUser = await this.userManager.FindByEmailAsync("vassdeniss@gmail.com");
+            EasyRankUser adminUser = (await this.repo.AllReadonly<EasyRankUser>(
+                    u => u.Email == "vassdeniss@gmail.com")
+                .FirstOrDefaultAsync())!;
             if (user.Id == adminUser.Id)
             {
                 throw new ForbiddenException();

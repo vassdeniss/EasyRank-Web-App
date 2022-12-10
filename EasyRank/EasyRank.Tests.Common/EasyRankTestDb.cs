@@ -108,7 +108,7 @@ namespace EasyRank.Tests.Common
                 NormalizedEmail = "LIKED@MAIL.COM",
                 FirstName = string.Empty,
                 LastName = string.Empty,
-                EmailConfirmed = true,
+                EmailConfirmed = false,
             };
 
             userManager.CreateAsync(this.LikedUser, "iLikePagesYay")

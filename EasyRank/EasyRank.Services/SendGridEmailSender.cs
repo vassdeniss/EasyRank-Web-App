@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Contracts;
+using EasyRank.Services.Models.Email;
 
 using SendGrid;
 using SendGrid.Helpers.Mail;

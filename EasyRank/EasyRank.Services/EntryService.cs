@@ -14,12 +14,10 @@ using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Services
@@ -50,6 +48,8 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId, bool isAdmin)
         {
+            // TODO: check if user is null
+
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)

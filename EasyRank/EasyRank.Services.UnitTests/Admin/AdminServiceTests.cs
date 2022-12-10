@@ -8,6 +8,7 @@
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts.Admin;
+using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
 
@@ -15,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 using NUnit.Framework;
 
-namespace EasyRank.Services.UnitTests
+namespace EasyRank.Services.UnitTests.Admin
 {
     [TestFixture]
     public class AdminServiceTests : UnitTestBase
@@ -77,8 +78,9 @@ namespace EasyRank.Services.UnitTests
         [Test]
         public async Task Test_GetAllUsers_ReturnsCorrectCount()
         {
-            // Arrange: get users count from database
+            // Arrange: get users count from database (not forgotten)
             int databaseCount = await this.repo.AllReadonly<EasyRankUser>()
+                .Where(u => !u.IsForgotten)
                 .CountAsync();
 
             // Act: call service method and get count
@@ -87,6 +89,32 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
+        }
+
+        [Test]
+        public void Test_DeleteUser_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange:
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.adminService.DeleteUserAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_DeleteUser_ReturnsCorrectCount()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+
+            // Act: call service method
+            await this.adminService.DeleteUserAsync(guestUser.Id);
+
+            // Assert: user is deleted
+            Assert.That(guestUser.IsForgotten, Is.True);
         }
     }
 }

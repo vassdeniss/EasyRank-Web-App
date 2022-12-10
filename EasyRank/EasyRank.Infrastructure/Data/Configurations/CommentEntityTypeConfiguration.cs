@@ -23,12 +23,12 @@ namespace EasyRank.Infrastructure.Data.Configurations
             builder.HasOne(c => c.RankPage)
                 .WithMany(r => r.Comments)
                 .HasForeignKey(c => c.RankPageId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(c => c.CreatedByUser)
                 .WithMany(u => u.UserComments)
                 .HasForeignKey(c => c.CreatedByUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

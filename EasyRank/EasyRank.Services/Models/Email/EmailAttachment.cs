@@ -5,10 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace EasyRank.Services
+namespace EasyRank.Services.Models.Email
 {
     /// <summary>
-    /// An email class for an attachment.
+    /// A service model for an email attachment.
     /// </summary>
     public class EmailAttachment
     {
