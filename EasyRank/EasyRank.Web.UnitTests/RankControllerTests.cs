@@ -26,6 +26,8 @@ using NUnit.Framework;
 
 namespace EasyRank.Web.UnitTests
 {
+    // TODO: check tempdata in redirects
+
     [TestFixture]
     public class RankControllerTests : UnitTestBase
     {

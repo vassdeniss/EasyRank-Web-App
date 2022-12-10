@@ -49,6 +49,20 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_GetUserInfo_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.manageService.GetUserInfoAsync(forgottenUser.Id),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public async Task Test_GetUserInfo_ReturnsCorrectInfo()
         {
             // Arrange: get guest user from test db
@@ -73,6 +87,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.manageService.DeleteProfilePictureAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_DeleteProfilePicture_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.manageService.DeleteProfilePictureAsync(forgottenUser.Id),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -170,6 +198,26 @@ namespace EasyRank.Services.UnitTests
                     guestUser.FirstName,
                     guestUser.LastName,
                     likedUser.UserName,
+                    new FormFileCollection()),
+                Throws.Exception.TypeOf<UsernameTakenException>());
+        }
+
+        [Test]
+        public void Test_UpdateUserData_UserForgotten_ThrowsUsernameTakenException()
+        {
+            // Arrange: get guest user and forgotten user from test db
+            EasyRankUser guestUser = this.testDb.GuestUser;
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: UsernameTakenException is thrown when trying to change to a taken username
+            Assert.That(
+                async () => await this.manageService.UpdateUserDataAsync(
+                    guestUser.Id,
+                    guestUser.FirstName,
+                    guestUser.LastName,
+                    forgottenUser.UserName,
                     new FormFileCollection()),
                 Throws.Exception.TypeOf<UsernameTakenException>());
         }
@@ -317,6 +365,22 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_CheckPassword_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.CheckPasswordAsync(
+                    forgottenUser.Id,
+                    "123"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public async Task Test_CheckPassword_WrongPassword_ReturnsFalse()
         {
             // Arrange: get guest user from test db
@@ -364,6 +428,20 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_DeleteUser_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async() => await this.manageService.DeleteUserAsync(forgottenUser.Id),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public async Task Test_DeleteUser_ValidUserId_RemovesSuccessfully()
         {
             // Arrange: get denis user from test db
@@ -386,6 +464,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.manageService.IsEmailConfirmedAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_IsEmailConfirmed_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.manageService.IsEmailConfirmedAsync(forgottenUser.Id),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -425,6 +517,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.manageService.GetUserEmailAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GetUserEmail_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.manageService.GetUserEmailAsync(forgottenUser.Id),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -482,6 +588,20 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_GetUserId_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.manageService.GetUserIdAsync(forgottenUser.Id),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public async Task Test_GetUserId_ReturnsCorrectId()
         {
             // Arrange: get guest user from test db
@@ -506,6 +626,20 @@ namespace EasyRank.Services.UnitTests
                 async() => await this.manageService.GenerateChangeEmailTokenAsync(
                     Guid.NewGuid(),
                     "RandomEmail"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GenerateChangeEmailToken_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.GenerateChangeEmailTokenAsync(forgottenUser.Id, "RandomEmail"),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -535,6 +669,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.manageService.GenerateEmailConfirmationTokenAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GenerateEmailConfirmationToken_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.GenerateEmailConfirmationTokenAsync(forgottenUser.Id),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -571,6 +719,23 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_ChangeEmail_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.ChangeEmailAsync(
+                    forgottenUser.Id,
+                    "email-test@mailcom",
+                    "some-code"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public async Task Test_ChangeEmail_ChangesSuccessfully()
         {
             // Arrange: get guest user from test db
@@ -598,6 +763,20 @@ namespace EasyRank.Services.UnitTests
             // Assert: NotFoundException is thrown with invalid id
             Assert.That(
                 async() => await this.manageService.ConfirmEmailAsync(Guid.NewGuid(), "some-code"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_ConfirmEmail_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.ConfirmEmailAsync(forgottenUser.Id, "some-code"),
                 Throws.Exception.TypeOf<NotFoundException>());
         }
 
@@ -630,6 +809,23 @@ namespace EasyRank.Services.UnitTests
                 async() => await this.manageService.ChangePasswordAsync(
                     Guid.NewGuid(),
                     "123", 
+                    "321"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_ChangePassword_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.manageService.ChangePasswordAsync(
+                    forgottenUser.Id,
+                    "123",
                     "321"),
                 Throws.Exception.TypeOf<NotFoundException>());
         }

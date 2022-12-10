@@ -31,6 +31,8 @@ namespace EasyRank.Tests.Common
 
         public EasyRankUser UnconfirmedUser { get; set; }
 
+        public EasyRankUser ForgottenUser { get; set; }
+
         public RankPage GuestPage { get; set; }
 
         public RankPage DeletedPage { get; set; }
@@ -142,6 +144,22 @@ namespace EasyRank.Tests.Common
             };
 
             userManager.CreateAsync(this.UnconfirmedUser, "unconfirmed")
+                .Wait();
+
+            this.ForgottenUser = new EasyRankUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = null,
+                NormalizedUserName = null,
+                Email = null,
+                NormalizedEmail = null,
+                FirstName = null,
+                LastName = null,
+                EmailConfirmed = false,
+                IsForgotten = true,
+            };
+
+            userManager.CreateAsync(this.ForgottenUser, "forgotten")
                 .Wait();
 
             this.GuestPage = new RankPage
