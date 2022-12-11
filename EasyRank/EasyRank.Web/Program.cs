@@ -5,6 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Linq;
+
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models;
@@ -25,11 +28,15 @@ using Microsoft.Extensions.Hosting;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // For development
-string connectionString = builder.Configuration.GetConnectionString("DockerConnection");
+//string connectionString = builder.Configuration.GetConnectionString("DockerConnection");
 // For production
 // string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// For docker orchestrator
+//string connectionString = builder.Configuration.GetConnectionString("ProductionConnection");
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer("Server=db;Database=EasyRank;User Id=sa;Password=VerySecure!DbPassword123;Integrated Security=true;TrustServerCertificate=Yes;Trusted_Connection=false"));
+
+//builder.Configuration.AddJsonFile("secrets.json");
 
 builder.Services.AddAutoMapper(typeof(IRankService).Assembly, typeof(RankController).Assembly);
 
@@ -80,6 +87,8 @@ else
     app.UseHsts();
 }
 
+if ()
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -108,5 +117,16 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapRazorPages();
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<EasyRankDbContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 
 app.Run();

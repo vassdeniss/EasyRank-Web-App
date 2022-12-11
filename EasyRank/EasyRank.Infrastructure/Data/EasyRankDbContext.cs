@@ -81,43 +81,7 @@ namespace EasyRank.Infrastructure.Data
             // Apply the 'EasyRankUserRankPage' entity model configuration.
             builder.ApplyConfigurationsFromAssembly(typeof(EasyRankUserRankPageEntityTypeConfiguration).Assembly);
 
-            // Database seed
-            if (!this.isSeed)
-            {
-                return;
-            }
-
             PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
-
-            this.GuestUser = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                UserName = "guest",
-                NormalizedUserName = "GUEST",
-                Email = "guest@mail.com",
-                NormalizedEmail = "GUEST@MAIL.COM",
-                FirstName = "Guest",
-                LastName = "User",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString("D"),
-            };
-
-            this.GuestUser.PasswordHash = hasher.HashPassword(this.GuestUser, "guestPassword");
-
-            this.GuestUserTwo = new EasyRankUser
-            {
-                Id = Guid.NewGuid(),
-                UserName = "guestTwo",
-                NormalizedUserName = "GUESTTWO",
-                Email = "guestTwo@mail.com",
-                NormalizedEmail = "GUESTTWO@MAIL.COM",
-                FirstName = "GuestTwo",
-                LastName = "UserTwo",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString("D"),
-            };
-
-            this.GuestUserTwo.PasswordHash = hasher.HashPassword(this.GuestUserTwo, "guestPasswordTwo");
 
             this.AdminUser = new EasyRankUser
             {
@@ -135,218 +99,258 @@ namespace EasyRank.Infrastructure.Data
             this.AdminUser.PasswordHash = hasher.HashPassword(this.AdminUser, "admin-pass");
 
             builder.Entity<EasyRankUser>()
-                .HasData(this.GuestUser, this.GuestUserTwo, this.AdminUser);
+                .HasData(this.AdminUser);
 
-            this.RankPage = new RankPage
+            // Database seed
+            if (!this.isSeed)
             {
-                Id = Guid.NewGuid(),
-                Image = null,
-                ImageAlt = "Yoda",
-                RankingTitle = "Top 10 Best Movies of 2022",
-                CreatedOn = DateTime.Today,
-                CreatedByUserId = this.GuestUser.Id,
-                IsDeleted = false,
-            };
+                return;
+            }
 
-            builder.Entity<RankEntry>()
-                .HasData(
-                    new RankEntry
-                    {
-                        Id = Guid.NewGuid(),
-                        Placement = 10,
-                        Title = "Star Wars",
-                        ImageAlt = "Picture of star wars",
-                        Description = "Good stuff",
-                        RankPageId = this.RankPage.Id,
-                    },
-                    new RankEntry
-                    {
-                        Id = Guid.NewGuid(),
-                        Placement = 9,
-                        Title = "Star Wars2",
-                        //Image = null,
-                        ImageAlt = "Picture of star wars2",
-                        Description =
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
-                        RankPageId = this.RankPage.Id,
-                    });
 
-            builder.Entity<RankPage>()
-                .HasData(
-                    this.RankPage,
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUser.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUser.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUser.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    },
-                    new RankPage
-                    {
-                        Id = Guid.NewGuid(),
-                        Image = null,
-                        ImageAlt = "Yoda",
-                        RankingTitle = "Top 5 Favorite Characters",
-                        CreatedOn = DateTime.Today,
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        IsDeleted = false,
-                    });
+            //this.GuestUser = new EasyRankUser
+            //{
+            //    Id = Guid.NewGuid(),
+            //    UserName = "guest",
+            //    NormalizedUserName = "GUEST",
+            //    Email = "guest@mail.com",
+            //    NormalizedEmail = "GUEST@MAIL.COM",
+            //    FirstName = "Guest",
+            //    LastName = "User",
+            //    EmailConfirmed = true,
+            //    SecurityStamp = Guid.NewGuid().ToString("D"),
+            //};
 
-            builder.Entity<Comment>()
-                .HasData(
-                    new Comment
-                    {
-                        Id = Guid.NewGuid(),
-                        Content =
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        CreatedOn = DateTime.Now.AddDays(-3),
-                        CreatedByUserId = this.GuestUser.Id,
-                        RankPageId = this.RankPage.Id,
-                        IsDeleted = false,
-                    },
-                    new Comment
-                    {
-                        Id = Guid.NewGuid(),
-                        Content =
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        CreatedOn = DateTime.Now.AddDays(2),
-                        CreatedByUserId = this.GuestUser.Id,
-                        RankPageId = this.RankPage.Id,
-                        IsDeleted = false,
-                    },
-                    new Comment
-                    {
-                        Id = Guid.NewGuid(),
-                        Content =
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        CreatedOn = DateTime.Now.AddDays(-10),
-                        CreatedByUserId = this.GuestUserTwo.Id,
-                        RankPageId = this.RankPage.Id,
-                        IsDeleted = false,
-                    });
+            //this.GuestUser.PasswordHash = hasher.HashPassword(this.GuestUser, "guestPassword");
+
+            //this.GuestUserTwo = new EasyRankUser
+            //{
+            //    Id = Guid.NewGuid(),
+            //    UserName = "guestTwo",
+            //    NormalizedUserName = "GUESTTWO",
+            //    Email = "guestTwo@mail.com",
+            //    NormalizedEmail = "GUESTTWO@MAIL.COM",
+            //    FirstName = "GuestTwo",
+            //    LastName = "UserTwo",
+            //    EmailConfirmed = true,
+            //    SecurityStamp = Guid.NewGuid().ToString("D"),
+            //};
+
+            //this.GuestUserTwo.PasswordHash = hasher.HashPassword(this.GuestUserTwo, "guestPasswordTwo");
+
+            //builder.Entity<EasyRankUser>()
+            //    .HasData(this.GuestUser, this.GuestUserTwo, this.AdminUser);
+
+            //this.RankPage = new RankPage
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Image = null,
+            //    ImageAlt = "Yoda",
+            //    RankingTitle = "Top 10 Best Movies of 2022",
+            //    CreatedOn = DateTime.Today,
+            //    CreatedByUserId = this.GuestUser.Id,
+            //    IsDeleted = false,
+            //};
+
+            //builder.Entity<RankEntry>()
+            //    .HasData(
+            //        new RankEntry
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Placement = 10,
+            //            Title = "Star Wars",
+            //            ImageAlt = "Picture of star wars",
+            //            Description = "Good stuff",
+            //            RankPageId = this.RankPage.Id,
+            //        },
+            //        new RankEntry
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Placement = 9,
+            //            Title = "Star Wars2",
+            //            //Image = null,
+            //            ImageAlt = "Picture of star wars2",
+            //            Description =
+            //                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum iaculis arcu et pellentesque. Aliquam at venenatis libero. Suspendisse non suscipit mi, in ullamcorper magna. Donec imperdiet urna et aliquet placerat. Donec faucibus dolor id velit sagittis congue. In hac habitasse platea dictumst. Suspendisse vitae sodales diam. Mauris in erat magna. Cras molestie lectus felis, eget convallis lectus mollis ac. Proin posuere nec magna at accumsan. Etiam quis magna pulvinar, eleifend purus a, fringilla eros.",
+            //            RankPageId = this.RankPage.Id,
+            //        });
+
+            //builder.Entity<RankPage>()
+            //    .HasData(
+            //        this.RankPage,
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUser.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUser.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUser.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new RankPage
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Image = null,
+            //            ImageAlt = "Yoda",
+            //            RankingTitle = "Top 5 Favorite Characters",
+            //            CreatedOn = DateTime.Today,
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            IsDeleted = false,
+            //        });
+
+            //builder.Entity<Comment>()
+            //    .HasData(
+            //        new Comment
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Content =
+            //                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            //            CreatedOn = DateTime.Now.AddDays(-3),
+            //            CreatedByUserId = this.GuestUser.Id,
+            //            RankPageId = this.RankPage.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new Comment
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Content =
+            //                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            //            CreatedOn = DateTime.Now.AddDays(2),
+            //            CreatedByUserId = this.GuestUser.Id,
+            //            RankPageId = this.RankPage.Id,
+            //            IsDeleted = false,
+            //        },
+            //        new Comment
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Content =
+            //                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            //            CreatedOn = DateTime.Now.AddDays(-10),
+            //            CreatedByUserId = this.GuestUserTwo.Id,
+            //            RankPageId = this.RankPage.Id,
+            //            IsDeleted = false,
+            //        });
         }
     }
 }

@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Services.UnitTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Tests.Common", "EasyRank.Tests.Common\EasyRank.Tests.Common.csproj", "{6B297E10-A403-4F0F-9BAA-BF353F1DE2DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRank.Web.UnitTests", "EasyRank.Web.UnitTests\EasyRank.Web.UnitTests.csproj", "{F7D9E6DD-02B5-4C49-8980-55504789B681}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyRank.Web.UnitTests", "EasyRank.Web.UnitTests\EasyRank.Web.UnitTests.csproj", "{F7D9E6DD-02B5-4C49-8980-55504789B681}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7A66E404-4B10-42CF-BBC7-48A732341B0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7D9E6DD-02B5-4C49-8980-55504789B681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A66E404-4B10-42CF-BBC7-48A732341B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A66E404-4B10-42CF-BBC7-48A732341B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A66E404-4B10-42CF-BBC7-48A732341B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A66E404-4B10-42CF-BBC7-48A732341B0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
