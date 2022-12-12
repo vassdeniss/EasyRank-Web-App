@@ -5,7 +5,7 @@ on:
     - main
 env:
   AZURE_WEBAPP_NAME: EasyRank
-  AZURE_WEBAPP_PACKAGE_PATH: EasyRank.Web/published
+  AZURE_WEBAPP_PACKAGE_PATH: .
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: EasyRank
