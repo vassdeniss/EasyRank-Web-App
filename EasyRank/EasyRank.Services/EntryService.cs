@@ -48,8 +48,6 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId, bool isAdmin)
         {
-            // TODO: check if user is null
-
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
                     .Include(rp => rp.CreatedByUser)

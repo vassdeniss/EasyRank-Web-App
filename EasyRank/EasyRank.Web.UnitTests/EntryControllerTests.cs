@@ -311,6 +311,9 @@ namespace EasyRank.Web.UnitTests
             Assert.That(redirectResult.ActionName, Is.EqualTo("All"));
             Assert.That(redirectResult.RouteValues!.ContainsKey("area"), Is.True);
             Assert.That(redirectResult.RouteValues["area"], Is.EqualTo("Admin"));
+
+            // Assert: TempData is removed
+            Assert.That(this.entryController.TempData.ContainsKey("EntryEditReturnId"), Is.False);
         }
 
         [Test]
@@ -405,6 +408,9 @@ namespace EasyRank.Web.UnitTests
             Assert.That(redirectResult.ActionName, Is.EqualTo("All"));
             Assert.That(redirectResult.RouteValues!.ContainsKey("area"), Is.True);
             Assert.That(redirectResult.RouteValues["area"], Is.EqualTo("Admin"));
+
+            // Assert: TempData is removed
+            Assert.That(this.entryController.TempData.ContainsKey("EntryEditReturnId"), Is.False);
         }
 
         [Test]

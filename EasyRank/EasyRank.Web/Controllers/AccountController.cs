@@ -28,6 +28,7 @@ namespace EasyRank.Web.Controllers
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
+        private readonly IAccountService accountService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -39,11 +40,13 @@ namespace EasyRank.Web.Controllers
         public AccountController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IAccountService accountService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
+            this.accountService = accountService;
         }
 
         /// <summary>
@@ -80,20 +83,15 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            EasyRankUser user = new EasyRankUser
-            {
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                UserName = model.Username,
-            };
-
-            IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
+            IdentityResult result = await this.accountService.CreateUserAsync(
+                model.Email,
+                model.FirstName,
+                model.LastName,
+                model.Username,
+                model.Password);
 
             if (result.Succeeded)
             {
-                await this.signInManager.SignInAsync(user, isPersistent: false);
-
                 return this.RedirectToAction("Index", "Home");
             }
 
@@ -113,7 +111,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult LoginAsync(string? returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
             if (this.User.Identity!.IsAuthenticated)
             {
@@ -191,7 +189,7 @@ namespace EasyRank.Web.Controllers
         /// <remarks>Get method. Guest access allowed.</remarks>
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult VerifyEmailAsync()
+        public IActionResult VerifyEmail()
         {
             VerifyEmailViewModel model = new VerifyEmailViewModel();
 

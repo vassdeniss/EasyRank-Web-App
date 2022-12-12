@@ -396,7 +396,7 @@ namespace EasyRank.Web.Controllers
         public async Task<IActionResult> MyLikesAsync()
         {
             ICollection<RankPageServiceModel> serviceModel =
-                await this.rankService.GetAllLikesByUserAsync(this.User.Id());
+                await this.rankService. GetAllLikesByUserAsync(this.User.Id());
 
             ICollection<RankPageViewModel> model =
                 this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
