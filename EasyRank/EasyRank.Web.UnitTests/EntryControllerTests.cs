@@ -53,7 +53,7 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
             RankPage page = this.testDb.GuestPage;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
+            // Arrange: create controller HTTP context with valid user
             this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user);
 
             // Act: invoke the controller method

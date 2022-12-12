@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EasyRank.Services.UnitTests\EasyRank.Services.UnitTests.csproj" />
     <ProjectReference Include="..\EasyRank.Tests.Common\EasyRank.Tests.Common.csproj" />
     <ProjectReference Include="..\EasyRank.Web\EasyRank.Web.csproj" />
   </ItemGroup>

@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace EasyRank.Services
 {
+    // TODO: header
     // TODO: document
 
     public class AccountService : IAccountService
     {
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
-
 
         public AccountService(
             UserManager<EasyRankUser> userManager,

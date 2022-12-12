@@ -67,6 +67,7 @@ builder.Services.AddScoped<IEmailSender>(_ =>
     new SendGridEmailSender(builder.Configuration.GetValue<string>("SendGrid:ApiKey")));
 builder.Services.AddScoped<IManageService, ManageService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 WebApplication app = builder.Build();
 

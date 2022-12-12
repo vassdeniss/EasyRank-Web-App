@@ -5,14 +5,20 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Web.Controllers;
+using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using Moq;
 
 using NUnit.Framework;
 
@@ -30,18 +36,19 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
-        public void Test_Index_Admin_RedirectsToAdminIndex()
+        public async Task Test_Index_Admin_RedirectsToAdminIndex()
         {
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user
-            this.homeController.ControllerContext = TestingUtils.CreateControllerContext(
-                user,
-                shouldBeAdmin: true);
+            // Arrange: create controller HTTP context with admin
+            this.homeController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AndMakeAdmin();
 
             // Act: invoke the controller method
-            IActionResult result = this.homeController.Index();
+            IActionResult result = await this.homeController.IndexAsync();
 
             // Assert: returned result is not null, it is a redirect
             Assert.That(result, Is.Not.Null);
@@ -56,20 +63,13 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
-        public void Test_Index_UserNotLoggedIn_ReturnsCorrectView()
+        public async Task Test_Index_UserNotLoggedIn_ReturnsCorrectView()
         {
             // Arrange: create controller HTTP context with not logged in user
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>()));
-            this.homeController.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = claimsPrincipal,
-                }
-            };
+            this.homeController.WithAnonymousUser();
 
             // Act: invoke the controller method
-            IActionResult result = this.homeController.Index();
+            IActionResult result = await this.homeController.IndexAsync();
 
             // Assert: returned result is not null, it is a view
             Assert.That(result, Is.Not.Null);
@@ -77,16 +77,18 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
-        public void Test_Index_UserLoggedIn_ReturnsCorrectView()
+        public async Task Test_Index_UserLoggedIn_ReturnsCorrectView()
         {
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with not logged in user
-            this.homeController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with logged in user
+            this.homeController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
-            IActionResult result = this.homeController.Index();
+            IActionResult result = await this.homeController.IndexAsync();
 
             // Assert: returned result is not null, it is a view
             Assert.That(result, Is.Not.Null);

@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Exceptions;
@@ -36,7 +37,7 @@ namespace EasyRank.Web.Controllers
         /// The 'Index' action for the controller.
         /// </summary>
         /// <returns>The home page view.</returns>
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
             if (this.User.IsInRole("Administrator"))
             {
@@ -48,7 +49,7 @@ namespace EasyRank.Web.Controllers
                 return this.View();
             }
 
-            EasyRankUser user = this.userManager.GetUserAsync(this.User).Result;
+            EasyRankUser user = await this.userManager.GetUserAsync(this.User);
             string username = user.UserName;
             string? firstName = user.FirstName;
             string? lastName = user.LastName;

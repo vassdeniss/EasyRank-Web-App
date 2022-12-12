@@ -5,12 +5,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +21,51 @@ using Microsoft.Extensions.Primitives;
 
 namespace EasyRank.Web.UnitTests
 {
-    public class TestingUtils
+    public static class TestingUtils
     {
+        public static T AndMakeAdmin<T>(this T controller) 
+            where T : Controller
+        {
+            string nameId = controller.ControllerContext.HttpContext.User.Id().ToString();
+            string name = controller.ControllerContext.HttpContext.User.Identity!.Name!;
+            ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, nameId),
+                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Role, "Administrator"),
+            }, "TestAuthentication"));
+
+            controller.ControllerContext.HttpContext.User = principal;
+
+            return controller;
+        }
+
+        public static T ButThenAuthenticateUsing<T>(this T controller, Guid nameIdentifier, string name) 
+            where T : Controller
+        {
+            ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, nameIdentifier.ToString()),
+                new Claim(ClaimTypes.Name, name)
+            }, "TestAuthentication"));
+
+            controller.ControllerContext.HttpContext.User = principal;
+
+            return controller;
+        }
+
+        public static T WithAnonymousUser<T>(this T controller) 
+            where T : Controller
+        {
+            controller.EnsureHttpContext();
+
+            ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity());
+
+            controller.ControllerContext.HttpContext.User = principal;
+
+            return controller;
+        }
+
         public static ControllerContext CreateControllerContext(
             EasyRankUser user,
             string fileName = "",
@@ -85,6 +131,22 @@ namespace EasyRank.Web.UnitTests
                     }
                 }
             };
+        }
+
+        private static T EnsureHttpContext<T>(this T controller) 
+            where T : Controller
+        {
+            if (controller.ControllerContext == null)
+            {
+                controller.ControllerContext = new ControllerContext();
+            }
+
+            if (controller.ControllerContext.HttpContext == null)
+            {
+                controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            }
+
+            return controller;
         }
     }
 }

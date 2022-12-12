@@ -146,6 +146,23 @@ namespace EasyRank.Services.UnitTests.Mocks
                     return IdentityResult.Success;
                 });
 
+            userManager.Setup(um => um.CreateAsync(
+                    It.IsAny<EasyRankUser>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((EasyRankUser user, string password) =>
+                {
+                    PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
+                    string hash = hasher.HashPassword(user, password);
+
+                    user.PasswordHash = hash;
+                    userList.Add(user);
+
+                    return IdentityResult.Success;
+                });
+
+            userManager.SetupGet(um => um.Users)
+                .Returns(userList.AsQueryable());
+
             return userManager;
         }
     }

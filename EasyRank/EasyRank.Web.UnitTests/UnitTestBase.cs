@@ -5,20 +5,25 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Collections.Generic;
+
 using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.UnitTests.Mocks;
 using EasyRank.Tests.Common;
 using EasyRank.Tests.Common.Mocks;
-using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Identity;
 
 using Moq;
 
 using NUnit.Framework;
+
+using MapperMock = EasyRank.Web.UnitTests.Mocks.MapperMock;
+using UserManagerMock = EasyRank.Web.UnitTests.Mocks.UserManagerMock;
 
 namespace EasyRank.Web.UnitTests
 {
@@ -37,9 +42,10 @@ namespace EasyRank.Web.UnitTests
             this.testDb = new EasyRankTestDb(this.dbContext);
             this.mapper = MapperMock.Instance;
             this.repo = new RepoMock(this.dbContext);
-            this.userManager = new Mock<UserManager<EasyRankUser>>(
-                Mock.Of<IUserStore<EasyRankUser>>(),
-                null, null, null, null, null, null, null, null);
+            this.userManager = UserManagerMock.MockUserManager(new List<EasyRankUser>
+            {
+                this.testDb.GuestUser,
+            });
         }
 
         [OneTimeTearDown]

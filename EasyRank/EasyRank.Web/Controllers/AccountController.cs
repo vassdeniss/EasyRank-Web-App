@@ -37,6 +37,7 @@ namespace EasyRank.Web.Controllers
         /// <param name="userManager">The user manager for the controller.</param>
         /// <param name="signInManager">The sign in manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
+        /// <param name="accountService">The account service for the controller.</param>
         public AccountController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
