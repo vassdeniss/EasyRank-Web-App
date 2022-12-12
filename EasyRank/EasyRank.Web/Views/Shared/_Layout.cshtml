@@ -64,14 +64,17 @@
             @this.RenderBody()
         </main>
     </div>
-
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; @DateTime.Now.Year - EasyRank
-		</div>
+	
+	<footer class="border-top footer">
+		<ul class="nav justify-content-center border-bottom">
+			<li>
+				<a href="https://github.com/vassdeniss/EasyRank-Web-App">View the project on GitHub!</a>
+			</li>
+		</ul>
+		<p style="margin: 0;" class="text-center text-muted">&copy; @DateTime.Now.Year - EasyRank</p>
 	</footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
     @await this.RenderSectionAsync("Scripts", required: false)
