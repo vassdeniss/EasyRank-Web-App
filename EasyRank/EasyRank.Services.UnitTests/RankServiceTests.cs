@@ -148,6 +148,41 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
+        public void Test_IsCurrentUserPageOwner_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange: get guest rank page id from test db
+            Guid guestRankPageId = this.testDb.GuestPage.Id;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(
+                    Guid.NewGuid(),
+                    guestRankPageId,
+                    false),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_IsCurrentUserPageOwner_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user id, get guest rank page id from test db
+            Guid forgottenUserId = this.testDb.ForgottenUser.Id;
+            Guid guestRankPageId = this.testDb.GuestPage.Id;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async() => await this.rankService.IsCurrentUserPageOwnerAsync(
+                    forgottenUserId,
+                    guestRankPageId,
+                    false),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
         public void Test_IsCurrentUserPageOwner_InvalidRankPageId_ThrowsNotFoundException()
         {
             // Arrange: get guest user id, initialise invalid id

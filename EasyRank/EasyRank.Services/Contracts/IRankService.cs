@@ -71,7 +71,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">GUID used for retrieving the needed user.</param>
         /// <param name="rankId">GUID used for retrieving the needed page.</param>
         /// <param name="isAdmin">Flag indicating if the user is an admin.</param>
-        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the page was not found.</exception>
+        /// <exception cref="NotFoundException">Throws 'NotFoundException' if the user / page was not found.</exception>
         /// <exception cref="ForbiddenException">
         /// Throws 'ForbiddenException' if the user is not the owner of the page.
         /// </exception>

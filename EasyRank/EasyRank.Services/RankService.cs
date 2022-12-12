@@ -14,6 +14,7 @@ using AutoMapper;
 
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 using EasyRank.Services.Models;
@@ -143,7 +144,11 @@ namespace EasyRank.Services
         /// <inheritdoc />
         public async Task IsCurrentUserPageOwnerAsync(Guid userId, Guid rankId, bool isAdmin)
         {
-            // TODO: check user
+            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
+            if (user == null || user.IsForgotten)
+            {
+                throw new NotFoundException();
+            }
 
             RankPage page = await this.repo.All<RankPage>(
                     rp => rp.Id == rankId && !rp.IsDeleted)
