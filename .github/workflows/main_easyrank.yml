@@ -10,7 +10,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: .
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: EasyRank/EasyRank.Web
+  WORKING_DIRECTORY: EasyRank
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
           include-prerelease: true
 
       - name: Restore
-        run: dotnet restore "${{ env.WORKING_DIRECTOR }}"
+        run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
       - name: Build
         run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
