@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App-01 - WebApplication920221114163713
+name: Build and deploy EasyRank to Azure
 
 on:
   push:
