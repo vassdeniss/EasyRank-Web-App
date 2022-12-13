@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models;
@@ -24,7 +26,7 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-string connectionString = builder.Configuration.GetConnectionString("AzureConnection");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<EasyRankDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -61,7 +63,7 @@ builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IEntryService, EntryService>();
 builder.Services.AddScoped<IEmailSender>(_ =>
-    new SendGridEmailSender(builder.Configuration.GetValue<string>("SendGrid:ApiKey")));
+    new SendGridEmailSender(builder.Configuration["SendGrid:ApiKey"])); // Local: builder.Configuration.GetValue<string>("SendGrid:ApiKey");
 builder.Services.AddScoped<IManageService, ManageService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAccountService, AccountService>();

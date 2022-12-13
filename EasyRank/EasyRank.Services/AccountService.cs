@@ -49,4 +49,3 @@ namespace EasyRank.Services
         }
     }
 }
-

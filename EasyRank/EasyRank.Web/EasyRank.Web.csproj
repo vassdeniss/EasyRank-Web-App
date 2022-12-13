@@ -6,16 +6,12 @@
     <UserSecretsId>aspnet-EasyRank.Web-852F2B35-3708-40C6-9B87-9F718F6C438A</UserSecretsId>
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
+	
+	<ItemGroup>
+		<ApplicationDefinition Include="..\stylecop.json" Link="stylecop.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Views\Shared\_LoginPartial.cshtml~RFb891b29b.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.601" />

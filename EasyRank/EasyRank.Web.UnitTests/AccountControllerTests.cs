@@ -131,5 +131,69 @@ namespace EasyRank.Web.UnitTests
             Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
         }
+
+        [Test]
+        public void Test_VerifyEmail_Get_ReturnsCorrectView()
+        {
+            // Arrange: create controller HTTP context with not logged in user
+            this.accountController.WithAnonymousUser();
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.VerifyEmail();
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+        }
+
+        [Test]
+        public void Test_ForgotPassword_Get_ReturnsCorrectView()
+        {
+            // Arrange: create controller HTTP context with not logged in user
+            this.accountController.WithAnonymousUser();
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.ForgotPassword();
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+        }
+
+        [Test]
+        public void Test_ForgotPasswordConfirmation_Get_ReturnsCorrectView()
+        {
+            // Arrange: create controller HTTP context with not logged in user
+            this.accountController.WithAnonymousUser();
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.ForgotPasswordConfirmation();
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+        }
+
+        [Test]
+        public void Test_ResetPasswordConfirmation_Get_ReturnsCorrectView()
+        {
+            // Arrange: create controller HTTP context with not logged in user
+            this.accountController.WithAnonymousUser();
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.ResetPasswordConfirmation();
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+        }
     }
 }
