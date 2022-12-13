@@ -24,12 +24,9 @@ jobs:
         with:
           dotnet-version: '6.0.x'
           include-prerelease: true
-
-      - name: Restore
-        run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-
+          
       - name: Build
-        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }}
 
       - name: Test
         run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
