@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models;

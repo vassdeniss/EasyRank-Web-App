@@ -8,7 +8,7 @@
   </PropertyGroup>
 	
 	<ItemGroup>
-		<ApplicationDefinition Include="..\stylecop.json" Link="stylecop.json" />
+		<AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
 	</ItemGroup>
 
 	<ItemGroup>

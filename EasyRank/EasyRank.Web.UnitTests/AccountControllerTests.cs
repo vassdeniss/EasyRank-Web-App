@@ -1,7 +1,11 @@
-﻿using EasyRank.Infrastructure.Models.Accounts;
+﻿using System.Threading.Tasks;
+using System;
+
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
+using EasyRank.Web.Models.Comment;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +22,7 @@ namespace EasyRank.Web.UnitTests
 
     public class AccountControllerTests : UnitTestBase
     {
+        private IAccountService accountService;
         private AccountController accountController;
 
         [OneTimeSetUp]
@@ -37,12 +42,34 @@ namespace EasyRank.Web.UnitTests
                 Mock.Of<IUserClaimsPrincipalFactory<EasyRankUser>>(),
                 null, null, null, null);
 
+            Mock<IAccountService> accountServiceMock = new Mock<IAccountService>();
+            accountServiceMock.Setup(@as => @as.CreateUserAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string email, string firstName, string lastName, string userName, string password) =>
+                {
+                    if (password == "ReturnInvalidResult")
+                    {
+                        return IdentityResult.Failed(
+                            new Microsoft.AspNetCore.Identity.IdentityError
+                            {
+                                Description = "Error",
+                            });
+                    }
+
+                    return IdentityResult.Success;
+                });
+
+            this.accountService = accountServiceMock.Object;
             //this.commentService = CommentServiceMock.MockCommentService().Object;
             this.accountController = new AccountController(
                 userManagerMock.Object,
                 signInManager.Object,
                 Mock.Of<IEmailSender>(),
-                Mock.Of<IAccountService>())
+                this.accountService)
             {
                 TempData = tempData,
             };
@@ -88,6 +115,70 @@ namespace EasyRank.Web.UnitTests
             RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
             Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        }
+
+        [Test]
+        public async Task Test_Register_Post_InvalidModelState_ReturnsSameView()
+        {
+            // Arrange: add model error to the model state
+            this.accountController.ModelState.AddModelError(string.Empty, "Some error");
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.Register(new RegisterViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'RegisterViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<RegisterViewModel>());
+        }
+
+        [Test]
+        public async Task Test_Register_Post_ValidModelState_SucceededIdentityResult_RedirectsToHomeIndex()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.Register(new RegisterViewModel
+            {
+                Password = "RandomPassword",
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Home', action name is 'Index'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        }
+
+        [Test]
+        public async Task Test_Register_Post_ValidModelState_FailedIdentityResult_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.Register(new RegisterViewModel
+            {
+                Password = "ReturnInvalidResult",
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'RegisterViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<RegisterViewModel>());
+
+            // Assert: model state has errors
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
         }
 
         [Test]
@@ -195,5 +286,35 @@ namespace EasyRank.Web.UnitTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<ViewResult>());
         }
+
+        //[Test]
+        //public async Task Test_Create_Post_ValidModelState_RedirectsToViewRank()
+        //{
+        //    // Arrange: get guest user from test db
+        //    EasyRankUser user = this.testDb.GuestUser;
+
+        //    // Arrange: create controller HTTP context with valid user and valid form
+        //    this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+
+        //    // Arrange: clear the model state
+        //    this.commentController.ModelState.Clear();
+
+        //    // Act: invoke the controller method
+        //    IActionResult result = await this.commentController.CreateAsync(Guid.NewGuid(),
+        //        new CommentFormModel
+        //        {
+        //            Content = "No js",
+        //        });
+
+        //    // Assert: returned result is not null, it is a redirect
+        //    Assert.That(result, Is.Not.Null);
+        //    Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+        //    // Assert: controller name is 'Rank', action name is 'ViewRanking'
+        //    RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+        //    Assert.That(redirectResult.ControllerName, Is.EqualTo("Rank"));
+        //    Assert.That(redirectResult.ActionName, Is.EqualTo("ViewRanking"));
+        //    Assert.That(redirectResult.RouteValues, Is.Not.Null);
+        //}
     }
 }
