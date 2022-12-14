@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -100,11 +101,8 @@ namespace EasyRank.Web.Controllers
 
             if (result.Succeeded)
             {
-                //var a = await this.userManager.FindByEmailAsync(model.Email);
-                //string userId = await this.manageService.GetUserIdAsync(a.Id);
-                string userId = this.User.Id().ToString();
-                //string code = await this.manageService.GenerateEmailConfirmationTokenAsync(a.Id);
-                string code = "a";
+                Guid userId = await this.manageService.GetUserIdByEmail(model.Email);
+                string code = await this.manageService.GenerateEmailConfirmationTokenAsync(userId);
                 string callbackUrl = this.Url.Action(
                     "ConfirmEmail",
                     "Manage",
@@ -256,7 +254,7 @@ namespace EasyRank.Web.Controllers
             string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
 
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            string callbackUrl = this.Url.ActionLink(
+            string callbackUrl = this.Url.Action(
                 "ConfirmEmail",
                 "Manage",
                 new { userId, code },
@@ -321,7 +319,7 @@ namespace EasyRank.Web.Controllers
             string code = await this.userManager.GeneratePasswordResetTokenAsync(user);
 
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            string callbackUrl = this.Url.ActionLink(
+            string callbackUrl = this.Url.Action(
                 "ResetPassword",
                 "Account",
                 new { code },

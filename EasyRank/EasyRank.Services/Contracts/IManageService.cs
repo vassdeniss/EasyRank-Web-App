@@ -154,5 +154,13 @@ namespace EasyRank.Services.Contracts
             Guid userId,
             string oldPass,
             string newPass);
+
+        /// <summary>
+        /// Used for retrieving the ID of an user by their email.
+        /// </summary>
+        /// <param name="email">The email of the user.</param>
+        /// <returns>The ID of the user.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        public Task<Guid> GetUserIdByEmail(string email);
     }
 }
