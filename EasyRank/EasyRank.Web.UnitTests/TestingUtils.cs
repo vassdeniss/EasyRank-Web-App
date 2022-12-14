@@ -11,23 +11,55 @@ using System.IO;
 using System.Security.Claims;
 using System.Text;
 
+using AngleSharp.Io;
+
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Primitives;
 
 using Moq;
 
+using SendGrid;
+
 namespace EasyRank.Web.UnitTests
 {
     public static class TestingUtils
     {
+        public static T AddRequestScheme<T>(this T controller)
+            where T : Controller
+        {
+            controller.EnsureHttpContext();
+
+            controller.HttpContext.Request.Scheme = "https";
+
+            return controller;
+        }
+
+        public static T AddUrlHelper<T>(this T controller)
+            where T : Controller
+        {
+            controller.EnsureHttpContext();
+
+            Mock<IUrlHelper> urlHelperMock = new Mock<IUrlHelper>();
+            urlHelperMock.Setup(helper => helper.Action(
+                    It.IsAny<UrlActionContext>()))
+                .Returns("callbackUrl");
+
+            controller.Url = urlHelperMock.Object;
+
+            return controller;
+        }
+
         public static T AddTempData<T>(this T controller)
             where T : Controller
         {
+            controller.EnsureHttpContext();
+
             ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
             TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
             ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());

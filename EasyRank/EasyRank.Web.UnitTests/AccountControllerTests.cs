@@ -5,17 +5,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
+using EasyRank.Services.Models;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -33,10 +38,6 @@ namespace EasyRank.Web.UnitTests
         [OneTimeSetUp]
         public void SetUp()
         {
-            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
-            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
-            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
-
             Mock<UserManager<EasyRankUser>> userManagerMock = new Mock<UserManager<EasyRankUser>>(
                 Mock.Of<IUserStore<EasyRankUser>>(),
                 null, null, null, null, null, null, null, null);
@@ -68,16 +69,23 @@ namespace EasyRank.Web.UnitTests
                     return IdentityResult.Success;
                 });
 
+            Mock<IManageService> manageServiceMock = new Mock<IManageService>();
+
+            manageServiceMock.Setup(ms => ms.GenerateEmailConfirmationTokenAsync(
+                    It.IsAny<Guid>()))!
+                .ReturnsAsync("random-token");
+
             this.accountService = accountServiceMock.Object;
-            //this.commentService = CommentServiceMock.MockCommentService().Object;
             this.accountController = new AccountController(
                 userManagerMock.Object,
                 signInManager.Object,
                 Mock.Of<IEmailSender>(),
-                this.accountService)
-            {
-                TempData = tempData,
-            };
+                this.accountService,
+                manageServiceMock.Object);
+
+            this.accountController.AddUrlHelper();
+            this.accountController.AddRequestScheme();
+            this.accountController.AddTempData();
         }
 
         [Test]
@@ -145,6 +153,14 @@ namespace EasyRank.Web.UnitTests
         {
             // Arrange: clear the model state
             this.accountController.ModelState.Clear();
+
+            // Arrange: get guest user from test db
+            EasyRankUser user = this.testDb.GuestUser;
+
+            // Arrange: create controller HTTP context with valid user
+            this.accountController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.accountController.Register(new RegisterViewModel

@@ -185,7 +185,7 @@ namespace EasyRank.Web.Controllers
                     return this.RedirectToAction("Email");
                 }
 
-                string userId = await this.manageService.GetUserIdAsync(this.User.Id());
+                string userId = this.User.Id().ToString();
                 string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
 
                 string callbackUrl = this.Url.ActionLink(
@@ -261,7 +261,7 @@ namespace EasyRank.Web.Controllers
                 return this.View("Email", model);
             }
 
-            string userId = await this.manageService.GetUserIdAsync(this.User.Id());
+            string userId = this.User.Id().ToString();
             string code = await this.manageService.GenerateEmailConfirmationTokenAsync(this.User.Id());
             string callbackUrl = this.Url.ActionLink(
                 "ConfirmEmail",

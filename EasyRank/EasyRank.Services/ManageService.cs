@@ -279,17 +279,19 @@ namespace EasyRank.Services
             return await this.userManager.FindByEmailAsync(email) != null;
         }
 
-        /// <inheritdoc />
-        public async Task<string> GetUserIdAsync(Guid userId)
-        {
-            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
-            if (user == null || user.IsForgotten)
-            {
-                throw new NotFoundException();
-            }
+        // KEEP FOR MEMORY SAKE
+        // 10x developer
 
-            return await this.userManager.GetUserIdAsync(user);
-        }
+        //public async Task<string> GetUserIdAsync(Guid userId)
+        //{
+        //    EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
+        //    if (user == null || user.IsForgotten)
+        //    {
+        //        throw new NotFoundException();
+        //    }
+
+        //    return await this.userManager.GetUserIdAsync(user);
+        //}
 
         /// <inheritdoc />
         public async Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail)

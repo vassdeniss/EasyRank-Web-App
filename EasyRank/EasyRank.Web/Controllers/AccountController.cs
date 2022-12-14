@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
+using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,7 @@ namespace EasyRank.Web.Controllers
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
         private readonly IAccountService accountService;
+        private readonly IManageService manageService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -40,16 +42,19 @@ namespace EasyRank.Web.Controllers
         /// <param name="signInManager">The sign in manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
         /// <param name="accountService">The account service for the controller.</param>
+        /// <param name="manageService">The manage service for the controller</param>
         public AccountController(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
             IEmailSender emailSender,
-            IAccountService accountService)
+            IAccountService accountService,
+            IManageService manageService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
             this.accountService = accountService;
+            this.manageService = manageService;
         }
 
         /// <summary>
@@ -95,6 +100,34 @@ namespace EasyRank.Web.Controllers
 
             if (result.Succeeded)
             {
+                //var a = await this.userManager.FindByEmailAsync(model.Email);
+                //string userId = await this.manageService.GetUserIdAsync(a.Id);
+                string userId = this.User.Id().ToString();
+                //string code = await this.manageService.GenerateEmailConfirmationTokenAsync(a.Id);
+                string code = "a";
+                string callbackUrl = this.Url.Action(
+                    "ConfirmEmail",
+                    "Manage",
+                    new { userId, code },
+                    this.Request.Scheme)!;
+
+                StringBuilder builder = new StringBuilder();
+
+                builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
+                builder.AppendLine("<h3>You receive this email because you requested a link to confirm your email for EasyRank.</h3>");
+                builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
+                builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+                builder.AppendLine("<p>Have a wonderful rest of your day and welcome to <strong>EasyRank!</strong></p>");
+                builder.AppendLine("<br>");
+                builder.AppendLine("- Denis from EasyRank");
+
+                await this.emailSender.SendEmailAsync(
+                    "vassdeniss@gmail.com",
+                    "Denis Vasilev from EasyRank",
+                    model.Email,
+                    "[DO NOT REPLY] Confirm your email for EasyRank!",
+                    builder.ToString());
+
                 return this.RedirectToAction("Index", "Home");
             }
 

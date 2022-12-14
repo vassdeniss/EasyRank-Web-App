@@ -600,46 +600,6 @@ namespace EasyRank.Services.UnitTests
         }
 
         [Test]
-        public void Test_GetUserId_InvalidUserId_ThrowsNotFoundException()
-        {
-            // Arrange:
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with invalid id
-            Assert.That(
-                async() => await this.manageService.GetUserIdAsync(Guid.NewGuid()),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_GetUserId_ForgottenUser_ThrowsNotFoundException()
-        {
-            // Arrange: get forgotten user from test db
-            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with invalid id
-            Assert.That(
-                async () => await this.manageService.GetUserIdAsync(forgottenUser.Id),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public async Task Test_GetUserId_ReturnsCorrectId()
-        {
-            // Arrange: get denis user from test db
-            EasyRankUser denisUser = this.testDb.DenisUser;
-
-            // Act: call service method and pass in necessary data
-            string id = await this.manageService.GetUserIdAsync(denisUser.Id);
-
-            // Assert: both ids are the same
-            Assert.That(id, Is.EqualTo(denisUser.Id.ToString()));
-        }
-
-        [Test]
         public void Test_GenerateChangeEmailToken_InvalidUserId_ThrowsNotFoundException()
         {
             // Arrange:
