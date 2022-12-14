@@ -22,14 +22,17 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Restore
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
       - name: Build
-        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration Release
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration Release --no-build
       
       - name: Test
-        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+        run: dotnet test ${{ env.WORKING_DIRECTORY }} --no-build
 
       - name: Publish
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ${{ env.WORKING_DIRECTORY }} -c Release --no-build -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
