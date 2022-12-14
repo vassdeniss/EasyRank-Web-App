@@ -1,15 +1,12 @@
-name: Build and deploy EasyRank to Azure
+name: Build and deploy EasyRank to Azure App Service
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: EasyRank
-  AZURE_WEBAPP_PACKAGE_PATH: .
-  CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: EasyRank
 
 jobs:
@@ -24,21 +21,24 @@ jobs:
         with:
           dotnet-version: '6.0.x'
           include-prerelease: true
-          
-      - name: Build
-        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }}
 
+      - name: Restore
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration Release --no-restore
+      
       - name: Test
-        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+        run: dotnet test ${{ env.WORKING_DIRECTORY }} --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ${{ env.WORKING_DIRECTORY }} -c Release --no-build -o ${{env.DOTNET_ROOT}}
 
-      - name: Upload artifact
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,16 +48,16 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'EasyRank'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A77598C993CA410280581872518C9D08 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60A875A89AFF46F19B9F5FA03B2793BD }}
           package: .
