@@ -1,12 +1,17 @@
-﻿using System.Threading.Tasks;
-using System;
+﻿// -----------------------------------------------------------------------
+// <copyright file="AccountControllerTests.cs" company="Denis Vasilev">
+// Copyright (c) Denis Vasilev. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// -----------------------------------------------------------------------
+
 using System.Text;
+using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
-using EasyRank.Web.Models.Comment;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,8 +25,6 @@ using NUnit.Framework;
 
 namespace EasyRank.Web.UnitTests
 {
-    // TODO: header
-
     public class AccountControllerTests : UnitTestBase
     {
         private IAccountService accountService;

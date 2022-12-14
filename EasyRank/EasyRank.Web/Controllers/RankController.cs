@@ -233,11 +233,11 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EditMenuAsync()
         {
-            ICollection<RankPageServiceModel> serviceModel =
+            IEnumerable<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
 
-            ICollection<RankPageViewModel> model =
-                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+            IEnumerable<RankPageViewModel> model =
+                this.mapper.Map<IEnumerable<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
         }
@@ -300,11 +300,11 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteMenuAsync()
         {
-            ICollection<RankPageServiceModel> serviceModel =
+            IEnumerable<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
 
-            ICollection<RankPageViewModel> model =
-                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+            IEnumerable<RankPageViewModel> model =
+                this.mapper.Map<IEnumerable<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
         }

@@ -107,7 +107,7 @@ namespace EasyRank.Web.Controllers
 
             this.TempData["StatusMessage"] = "Your profile picture has been updated";
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction("Index", "Manage");
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view for deleting the users account.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult DeleteAccountAsync()
+        public IActionResult DeleteAccount()
         {
             DeleteAccountViewModel model = new DeleteAccountViewModel();
 
@@ -319,7 +319,7 @@ namespace EasyRank.Web.Controllers
         /// <returns>A view for changing the users password.</returns>
         /// <remarks>Get method.</remarks>
         [HttpGet]
-        public IActionResult ChangePasswordAsync()
+        public IActionResult ChangePassword()
         {
             ChangePasswordViewModel model = new ChangePasswordViewModel();
 
@@ -378,11 +378,11 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> MyRanksAsync()
         {
-            ICollection<RankPageServiceModel> serviceModel =
+            IEnumerable<RankPageServiceModel> serviceModel =
                 await this.rankService.GetAllRankingsByUserAsync(this.User.Id());
 
-            ICollection<RankPageViewModel> model =
-                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+            IEnumerable<RankPageViewModel> model =
+                this.mapper.Map<IEnumerable<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
         }
@@ -395,11 +395,11 @@ namespace EasyRank.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> MyLikesAsync()
         {
-            ICollection<RankPageServiceModel> serviceModel =
-                await this.rankService. GetAllLikesByUserAsync(this.User.Id());
+            IEnumerable<RankPageServiceModel> serviceModel =
+                await this.rankService.GetAllLikesByUserAsync(this.User.Id());
 
-            ICollection<RankPageViewModel> model =
-                this.mapper.Map<ICollection<RankPageViewModel>>(serviceModel);
+            IEnumerable<RankPageViewModel> model =
+                this.mapper.Map<IEnumerable<RankPageViewModel>>(serviceModel);
 
             return this.View(model);
         }

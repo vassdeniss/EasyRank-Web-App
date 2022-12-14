@@ -48,7 +48,7 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>A collection of rank page service models.</returns>
         /// <param name="userId">GUID used to search for the users rankings.</param>
-        Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId);
+        Task<IEnumerable<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId);
 
         /// <summary>
         /// Retrieves the form the user inputted, creates a page and saves it to the database.
@@ -119,6 +119,6 @@ namespace EasyRank.Services.Contracts
         /// </summary>
         /// <returns>A collection of rank page service models.</returns>
         /// <param name="userId">GUID used to search for the users rankings.</param>
-        Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId);
+        Task<IEnumerable<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId);
     }
 }

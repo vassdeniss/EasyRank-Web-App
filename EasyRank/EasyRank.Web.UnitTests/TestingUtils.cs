@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -17,12 +16,27 @@ using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Primitives;
+
+using Moq;
 
 namespace EasyRank.Web.UnitTests
 {
     public static class TestingUtils
     {
+        public static T AddTempData<T>(this T controller)
+            where T : Controller
+        {
+            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
+            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
+
+            controller.TempData = tempData;
+
+            return controller;
+        }
+
         public static T AndMakeAdmin<T>(this T controller) 
             where T : Controller
         {
@@ -40,13 +54,13 @@ namespace EasyRank.Web.UnitTests
             return controller;
         }
 
-        public static T ButThenAuthenticateUsing<T>(this T controller, Guid nameIdentifier, string name) 
+        public static T ButThenAuthenticateUsing<T>(this T controller, Guid nameIdentifier, string username) 
             where T : Controller
         {
             ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, nameIdentifier.ToString()),
-                new Claim(ClaimTypes.Name, name)
+                new Claim(ClaimTypes.Name, username)
             }, "TestAuthentication"));
 
             controller.ControllerContext.HttpContext.User = principal;

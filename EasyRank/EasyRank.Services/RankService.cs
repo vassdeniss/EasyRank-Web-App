@@ -107,9 +107,9 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
+        public async Task<IEnumerable<RankPageServiceModel>> GetAllRankingsByUserAsync(Guid userId)
         {
-            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+            return this.mapper.Map<IEnumerable<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(
                         rp => rp.CreatedByUserId == userId && !rp.IsDeleted)
                     .Include(rp => rp.Comments)
@@ -226,16 +226,15 @@ namespace EasyRank.Services
         }
 
         /// <inheritdoc />
-        public async Task<ICollection<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId)
+        public async Task<IEnumerable<RankPageServiceModel>> GetAllLikesByUserAsync(Guid userId)
         {
-
             List<Guid> likedPageIds = await this.repo.AllReadonly<EasyRankUserRankPage>()
                 .Where(erurp => erurp.EasyRankUserId == userId)
                 .Where(erurp => erurp.IsLiked)
                 .Select(erurp => erurp.RankPageId)
                 .ToListAsync();
 
-            return this.mapper.Map<ICollection<RankPageServiceModel>>(
+            return this.mapper.Map<IEnumerable<RankPageServiceModel>>(
                 await this.repo.AllReadonly<RankPage>(rp => likedPageIds.Contains(rp.Id))
                     .Where(rp => !rp.IsDeleted)
                     .Include(rp => rp.Comments)

@@ -139,9 +139,9 @@ namespace EasyRank.Services.UnitTests
                 .CountAsync();
 
             // Act: call service method and get ranks count
-            ICollection<RankPageServiceModel> serviceModel = 
+            IEnumerable<RankPageServiceModel> serviceModel = 
                 await this.rankService.GetAllRankingsByUserAsync(guestUserId);
-            int serviceCount = serviceModel.Count;
+            int serviceCount = serviceModel.Count();
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
@@ -722,8 +722,8 @@ namespace EasyRank.Services.UnitTests
                 .CountAsync();
 
             // Act: call service method and get liked ranks count
-            ICollection<RankPageServiceModel> serviceModel = await this.rankService.GetAllLikesByUserAsync(likedUserId);
-            int serviceCount = serviceModel.Count;
+            IEnumerable<RankPageServiceModel> serviceModel = await this.rankService.GetAllLikesByUserAsync(likedUserId);
+            int serviceCount = serviceModel.Count();
 
             // Assert: service count equals database count
             Assert.That(serviceCount, Is.EqualTo(databaseCount));
