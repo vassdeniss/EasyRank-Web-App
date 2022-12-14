@@ -86,7 +86,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.SeedAdmin();
+//app.SeedAdmin();
 
 app.UseStatusCodePagesWithRedirects("/Home/Error{0}");
 
