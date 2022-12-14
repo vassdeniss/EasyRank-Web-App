@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+
 namespace EasyRank.Web.Controllers
 {
     /// <summary>
@@ -142,28 +144,21 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            if (!await this.accountService.IsEmailConfirmedAsync(model.Email))
             {
-                if (!await this.userManager.IsEmailConfirmedAsync(user))
+                return this.View("EmailNotConfirmed");
+            }
+
+            SignInResult result = await this.accountService.SignInUserAsync(model.Email, model.Password);
+
+            if (result.Succeeded)
+            {
+                if (model.ReturnUrl != null)
                 {
-                    return this.View("EmailNotConfirmed");
+                    return this.Redirect(model.ReturnUrl);
                 }
 
-                Microsoft.AspNetCore.Identity.SignInResult result = await this.signInManager.PasswordSignInAsync(
-                    user,
-                    model.Password,
-                    false,
-                    false);
-                if (result.Succeeded)
-                {
-                    if (model.ReturnUrl != null)
-                    {
-                        return this.Redirect(model.ReturnUrl);
-                    }
-
-                    return this.RedirectToAction("Index", "Home");
-                }
+                return this.RedirectToAction("Index", "Home");
             }
 
             this.ModelState.AddModelError(string.Empty, "Invalid login!");

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System;
+using System.Text;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.WebUtilities;
 
 using Moq;
 
@@ -177,7 +179,7 @@ namespace EasyRank.Web.UnitTests
             ViewResult viewResult = (result as ViewResult)!;
             Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<RegisterViewModel>());
 
-            // Assert: model state has errors
+            // Assert: model state has errors   
             Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
         }
 
@@ -224,10 +226,33 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
+        public async Task Test_Logout_Post_LoggedInUser_RedirectsToHomeIndex()
+        {
+            // Arrange: get guest user from test db
+            EasyRankUser user = this.testDb.GuestUser;
+
+            // Arrange: create controller HTTP context with valid user
+            this.accountController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.LogoutAsync();
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Home', action name is 'Index'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        }
+
+        [Test]
         public void Test_VerifyEmail_Get_ReturnsCorrectView()
         {
-            // Arrange: create controller HTTP context with not logged in user
-            this.accountController.WithAnonymousUser();
+            // Arrange:
 
             // Act: invoke the controller method
             IActionResult result = this.accountController.VerifyEmail();
@@ -244,8 +269,7 @@ namespace EasyRank.Web.UnitTests
         [Test]
         public void Test_ForgotPassword_Get_ReturnsCorrectView()
         {
-            // Arrange: create controller HTTP context with not logged in user
-            this.accountController.WithAnonymousUser();
+            // Arrange:
 
             // Act: invoke the controller method
             IActionResult result = this.accountController.ForgotPassword();
@@ -262,8 +286,7 @@ namespace EasyRank.Web.UnitTests
         [Test]
         public void Test_ForgotPasswordConfirmation_Get_ReturnsCorrectView()
         {
-            // Arrange: create controller HTTP context with not logged in user
-            this.accountController.WithAnonymousUser();
+            // Arrange:
 
             // Act: invoke the controller method
             IActionResult result = this.accountController.ForgotPasswordConfirmation();
@@ -274,10 +297,46 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
+        public void Test_ResetPassword_Get_NullCode_RedirectsToHomeIndex()
+        {
+            // Arrange:
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.ResetPassword();
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Home', action name is 'Index'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        }
+
+        [Test]
+        public void Test_ResetPassword_Get_Code_ReturnsCorrectView()
+        {
+            // Arrange: create valid code
+            string codeString = "test-string";
+            string code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(codeString));
+
+            // Act: invoke the controller method
+            IActionResult result = this.accountController.ResetPassword(code);
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'ResetPasswordViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<ResetPasswordViewModel>());
+        }
+
+        [Test]
         public void Test_ResetPasswordConfirmation_Get_ReturnsCorrectView()
         {
-            // Arrange: create controller HTTP context with not logged in user
-            this.accountController.WithAnonymousUser();
+            // Arrange:
 
             // Act: invoke the controller method
             IActionResult result = this.accountController.ResetPasswordConfirmation();
