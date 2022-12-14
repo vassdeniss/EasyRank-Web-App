@@ -197,7 +197,7 @@ else
 	<form asp-action="LikeRank" asp-route-rankId="@this.Model.Id">
 		@if (this.Model.LikedBy.Contains(this.User.Id()))
 		{
-			<button type="submit" class="like-button btn btn-primary p-2">❤️ I Like!</button>
+			<button type="submit" class="like-button btn btn-primary p-2">❤ Unlike :(</button>
 		}
 		else
 		{
