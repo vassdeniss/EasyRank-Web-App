@@ -20,13 +20,13 @@ jobs:
           include-prerelease: true
 
       - name: Build
-        run: dotnet build Easyrank --configuration Release
+        run: dotnet build EasyRank --configuration Release
       
       - name: Test
-        run: dotnet test Easyrank --no-build
+        run: dotnet test EasyRank --no-build
 
       - name: Publish
-        run: dotnet publish Easyrank -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish EasyRank -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
