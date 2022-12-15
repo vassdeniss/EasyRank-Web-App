@@ -12,53 +12,50 @@ Users can **view / create / edit / delete** 'Rank Pages' which contain N number 
 
 Users can also comment on these pages and leave a like on them if desired.
 
-- All users can browse the site freely.
-- All authorized users can leave comments, like the page or create their own ranking.
+- All users can browse the site freely
+- All authorized users can leave comments, like the page or create their own ranking
+- Authorized users can change their password, email, names, username and avatars (includes emails with **SendGrid**)
 - Liked pages, created pages, and comments are saved for authorized users
-- Pages / entries / comments may be edited or deleted only by their creator or by the administrator.
+- Pages / entries / comments may be edited or deleted only by their creator or by the administrator
+- Administrators have full access to the site. Editing deleting pages or entries or comments or even users. Admins can make other users admins
 
 ## :performing_arts: User Types
 
-**Administrator** - created from site owner – username: “admin@mail.com”, password: “pass123#”
+**Administrator** - user with privileges
 
-- Create, read, edit, delete and finish all goals on the site (the administrator is a creator).
-- Work on all unfinished goals and see their own goal works.
-- Comment on goals.
-- See all goal works.
-- See all users.
-- See all comments.
+- Create, read, edit, delete all pages, entries, comments or users on the site
+- See all ranks
+- See all entries
+- See all comments
+- See all users
 
-**Creator** - logged-in user, who has become a creator through the “Become a Creator” functionality and has a “creator name”
+**User** - logged-in user
 
-- Read all goals on the site.
-- Create goals and edit, delete and finish them. Creators can manage only goals they created!
-- Comment on goals.
-- See their own goal works from the time before they became a creator.
-- Creators cannot work on any goals!
+- Create pages, entries or comments and edit or delete them.
+- Users can manage only content they created!
+- Exception with comments on their page - those can be deleted if innappropriate content is posted
 
-**User** - logged-in user, who is not a creator
+**Anonymous** - users without an account
 
-- Read all goals on the site.
-- Work on all goals and see their own goal works.
-- Comment on goals.
-- Can become a creator.
+- Read all pages on the site.
 
 ## :hammer: Built With
 
 - ASP.NET Core 6
-  - 5 controllers + 5 more in the “Admin” area
-  - 6 entity models
-  - Service layer
-  - Test layer
-  - 11 views + 4 more in the “Admin” area + partial views
-  - View and form models
-  - etc.
+  - Database layer wtih 4 entity models
+  - UI layer with 7 controllers + 6 more in the “Admin” area
+  - Service layer with 7 services
+  - Test layer for services and controllers with 200+ tests
+  - 40 views + 9 partial views
 - Entity Framework Core
 - Microsoft SQL Server
 - AutoMapper
 - TempData messages
-- jQuery
 - NUnit
+- SendGrid for emails
+- Working deploy to [Azure](https://easyrank.azurewebsites.net)
+
+## Screenshots
 
 ## :clipboard: Test Coverage
 
