@@ -172,7 +172,7 @@ namespace EasyRank.Web.Models
             /// <summary>
             /// The lower bound constant number for the entry's image alt text.
             /// </summary>
-            public const int MinImageAltLength = 10;
+            public const int MinImageAltLength = 5;
 
             /// <summary>
             /// The error message when the image alt length does not satisfy the given length.
