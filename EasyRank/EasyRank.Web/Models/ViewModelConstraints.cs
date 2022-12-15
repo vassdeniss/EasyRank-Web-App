@@ -110,7 +110,7 @@ namespace EasyRank.Web.Models
             /// <summary>
             /// The lower bound constant number for the entry title.
             /// </summary>
-            public const int MinEntryTitleLength = 10;
+            public const int MinEntryTitleLength = 5;
 
             /// <summary>
             /// The error message when the entry title length does not satisfy the given length.
