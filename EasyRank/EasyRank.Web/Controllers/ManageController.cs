@@ -34,6 +34,7 @@ namespace EasyRank.Web.Controllers
         private readonly IMapper mapper;
         private readonly IRankService rankService;
         private readonly IManageService manageService;
+        private readonly IAccountService accountService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageController"/> class.
@@ -42,16 +43,19 @@ namespace EasyRank.Web.Controllers
         /// <param name="mapper">Instance of an AutoMapper.</param>
         /// <param name="rankService">Instance of the rank service.</param>
         /// <param name="manageService">Instance of the manage service.</param>
+        /// <param name="accountService">Instance of the account service.</param>
         public ManageController(
             IEmailSender emailSender,
             IMapper mapper,
             IRankService rankService,
-            IManageService manageService)
+            IManageService manageService,
+            IAccountService accountService)
         {
             this.emailSender = emailSender;
             this.mapper = mapper;
             this.rankService = rankService;
             this.manageService = manageService;
+            this.accountService = accountService;
         }
 
         /// <summary>
@@ -185,10 +189,10 @@ namespace EasyRank.Web.Controllers
                     return this.RedirectToAction("Email");
                 }
 
-                string userId = await this.manageService.GetUserIdAsync(this.User.Id());
-                string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
+                string userId = this.User.Id().ToString();
+                string code = await this.accountService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
 
-                string callbackUrl = this.Url.ActionLink(
+                string callbackUrl = this.Url.Action(
                     "ConfirmEmailChange",
                     "Manage",
                     new { userId, email = model.NewEmail, code },
@@ -261,9 +265,9 @@ namespace EasyRank.Web.Controllers
                 return this.View("Email", model);
             }
 
-            string userId = await this.manageService.GetUserIdAsync(this.User.Id());
-            string code = await this.manageService.GenerateEmailConfirmationTokenAsync(this.User.Id());
-            string callbackUrl = this.Url.ActionLink(
+            string userId = this.User.Id().ToString();
+            string code = await this.accountService.GenerateEmailConfirmationTokenAsync(this.User.Id());
+            string callbackUrl = this.Url.Action(
                 "ConfirmEmail",
                 "Manage",
                 new { userId, code },

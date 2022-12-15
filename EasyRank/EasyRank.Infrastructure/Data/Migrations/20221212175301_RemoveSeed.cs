@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+
 namespace EasyRank.Infrastructure.Data.Migrations
 {
     public partial class RemoveSeed : Migration

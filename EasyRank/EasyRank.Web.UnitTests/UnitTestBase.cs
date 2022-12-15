@@ -12,7 +12,6 @@ using AutoMapper;
 using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Data;
 using EasyRank.Infrastructure.Models.Accounts;
-using EasyRank.Services.UnitTests.Mocks;
 using EasyRank.Tests.Common;
 using EasyRank.Tests.Common.Mocks;
 

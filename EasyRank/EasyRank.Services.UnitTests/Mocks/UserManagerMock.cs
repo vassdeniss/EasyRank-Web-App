@@ -93,6 +93,10 @@ namespace EasyRank.Services.UnitTests.Mocks
                     It.IsAny<EasyRankUser>()))
                 .ReturnsAsync("random-string");
 
+            userManager.Setup(um => um.GeneratePasswordResetTokenAsync(
+                    It.IsAny<EasyRankUser>()))
+                .ReturnsAsync("random-string");
+
             userManager.Setup(um => um.FindByIdAsync(
                     It.IsAny<string>()))!
                 .ReturnsAsync((string id) =>

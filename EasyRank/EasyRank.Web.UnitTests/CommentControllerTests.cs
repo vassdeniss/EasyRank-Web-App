@@ -14,11 +14,7 @@ using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Comment;
 using EasyRank.Web.UnitTests.Mocks;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using Moq;
 
 using NUnit.Framework;
 
@@ -32,15 +28,9 @@ namespace EasyRank.Web.UnitTests
         [OneTimeSetUp]
         public void SetUp()
         {
-            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
-            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
-            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
-
             this.commentService = CommentServiceMock.MockCommentService().Object;
-            this.commentController = new CommentController(this.commentService, this.mapper)
-            {
-                TempData = tempData,
-            };
+            this.commentController = new CommentController(this.commentService, this.mapper);
+            this.commentController.AddTempData();
         }
 
         [Test]
@@ -92,8 +82,10 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Arrange: clear the model state
             this.commentController.ModelState.Clear();
@@ -122,8 +114,10 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.commentController.EditAsync(Guid.NewGuid());
@@ -185,10 +179,11 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(
-                user,
-                shouldBeAdmin: true);
+            // Arrange: create controller HTTP context with admin
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AndMakeAdmin();
 
             // Arrange: clear the model state
             this.commentController.ModelState.Clear();
@@ -218,8 +213,10 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user, guest page from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Arrange: clear the model state
             this.commentController.ModelState.Clear();
@@ -249,8 +246,10 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.commentController.DeleteAsync(Guid.NewGuid());
@@ -270,10 +269,11 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(
-                user,
-                shouldBeAdmin: true);
+            // Arrange: create controller HTTP context with admin
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AndMakeAdmin();
 
             // Act: invoke the controller method
             IActionResult result = await this.commentController.DeleteAsync(
@@ -297,8 +297,10 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.commentController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.commentController.DeleteAsync(
