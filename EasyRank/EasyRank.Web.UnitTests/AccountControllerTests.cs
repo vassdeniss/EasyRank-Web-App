@@ -28,6 +28,8 @@ using Moq;
 
 using NUnit.Framework;
 
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+
 namespace EasyRank.Web.UnitTests
 {
     public class AccountControllerTests : UnitTestBase
@@ -68,6 +70,18 @@ namespace EasyRank.Web.UnitTests
 
                     return IdentityResult.Success;
                 });
+
+            accountServiceMock.Setup(@as => @as.IsEmailConfirmedAsync(
+                    It.IsAny<string>()))!
+                .ReturnsAsync(true);
+
+            accountServiceMock.Setup(@as => @as.SignInUserAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string email, string password) 
+                    => password == "ReturnInvalidResult" 
+                        ? SignInResult.Failed 
+                        : SignInResult.Success);
 
             Mock<IManageService> manageServiceMock = new Mock<IManageService>();
 
@@ -242,6 +256,78 @@ namespace EasyRank.Web.UnitTests
             RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
             Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
             Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        }
+
+        [Test]
+        public async Task Test_Login_Post_InvalidModelState_ReturnsSameView()
+        {
+            // Arrange: add model error to the model state
+            this.accountController.ModelState.AddModelError(string.Empty, "Some error");
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.LoginAsync(new LoginViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'LoginViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<LoginViewModel>());
+        }
+
+        //[Test]
+        //public async Task Test_Register_Post_ValidModelState_SucceededIdentityResult_RedirectsToHomeIndex()
+        //{
+        //    // Arrange: clear the model state
+        //    this.accountController.ModelState.Clear();
+
+        //    // Arrange: get guest user from test db
+        //    EasyRankUser user = this.testDb.GuestUser;
+
+        //    // Arrange: create controller HTTP context with valid user
+        //    this.accountController
+        //        .WithAnonymousUser()
+        //        .ButThenAuthenticateUsing(user.Id, user.UserName);
+
+        //    // Act: invoke the controller method
+        //    IActionResult result = await this.accountController.Register(new RegisterViewModel
+        //    {
+        //        Password = "RandomPassword",
+        //    });
+
+        //    // Assert: returned result is not null, it is a redirect
+        //    Assert.That(result, Is.Not.Null);
+        //    Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+        //    // Assert: controller name is 'Home', action name is 'Index'
+        //    RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+        //    Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
+        //    Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        //}
+
+        [Test]
+        public async Task Test_Login_Post_ValidModelState_FailedSignInResult_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.LoginAsync(new LoginViewModel
+            {
+                Password = "ReturnInvalidResult",
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'LoginViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<LoginViewModel>());
+
+            // Assert: model state has errors   
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
         }
 
         [Test]

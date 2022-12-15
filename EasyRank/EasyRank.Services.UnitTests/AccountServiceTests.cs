@@ -160,5 +160,70 @@ namespace EasyRank.Services.UnitTests
                 async() => await this.accountService.SignInUserAsync(guestEmail, guestPass),
                 Throws.Nothing);
         }
+
+        [Test]
+        public void Test_GetUserIdByEmail_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange:
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid email
+            Assert.That(
+                async() => await this.accountService.GetUserIdByEmail(string.Empty),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GetUserIdByEmail_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid email
+            Assert.That(
+                async() => await this.accountService.GetUserIdByEmail(forgottenUser.Email),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GetUserIdByEmail_ReturnsCorrectId()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Act: call service method and pass in necessary data
+            Guid id = await this.accountService.GetUserIdByEmail(denisUser.Email);
+
+            // Assert: both ids are the same
+            Assert.That(id, Is.EqualTo(denisUser.Id));
+        }
+
+        [Test]
+        public async Task Test_DoesUserExist_ReturnsFalse()
+        {
+            // Arrange:
+
+            // Act: call service method and pass in necessary data
+            bool result = await this.accountService.DoesUserExist(string.Empty);
+
+            // Assert: result is false
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task Test_DoesUserExist_ReturnsTrue()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Act: call service method and pass in necessary data
+            bool result = await this.accountService.DoesUserExist(denisUser.Email);
+
+            // Assert: result is false
+            Assert.That(result, Is.True);
+        }
     }
 }

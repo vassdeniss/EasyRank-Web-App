@@ -101,7 +101,7 @@ namespace EasyRank.Web.Controllers
 
             if (result.Succeeded)
             {
-                Guid userId = await this.manageService.GetUserIdByEmail(model.Email);
+                Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
                 string code = await this.manageService.GenerateEmailConfirmationTokenAsync(userId);
                 string callbackUrl = this.Url.Action(
                     "ConfirmEmail",
@@ -181,7 +181,6 @@ namespace EasyRank.Web.Controllers
             }
 
             SignInResult result = await this.accountService.SignInUserAsync(model.Email, model.Password);
-
             if (result.Succeeded)
             {
                 if (model.ReturnUrl != null)
@@ -238,21 +237,20 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (!await this.accountService.DoesUserExist(model.Email))
             {
+                this.ModelState.AddModelError(string.Empty, "User with this email doesn't exist!");
                 return this.View(model);
             }
 
-            if (await this.userManager.IsEmailConfirmedAsync(user))
+            Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
+            if (await this.manageService.IsEmailConfirmedAsync(userId))
             {
                 this.ModelState.AddModelError(string.Empty, "Email already verified!");
                 return this.View(model);
             }
 
-            string userId = await this.userManager.GetUserIdAsync(user);
-            string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-
+            string code = await this.manageService.GenerateEmailConfirmationTokenAsync(userId);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             string callbackUrl = this.Url.Action(
                 "ConfirmEmail",
@@ -310,26 +308,27 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
+            if (!await this.accountService.DoesUserExist(model.Email)
+                || !await this.accountService.IsEmailConfirmedAsync(model.Email))
             {
-                return this.RedirectToAction("ForgotPasswordConfirmation");
+                this.ModelState.AddModelError(string.Empty, "User with this email doesn't exist!");
+                return this.View(model);
             }
 
-            string code = await this.userManager.GeneratePasswordResetTokenAsync(user);
-
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            string callbackUrl = this.Url.Action(
-                "ResetPassword",
-                "Account",
-                new { code },
-                this.Request.Scheme)!;
+            Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
+            //string code = await this.manageService.GeneratePasswordResetTokenAsync(userId);
+            //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            //string callbackUrl = this.Url.Action(
+            //    "ResetPassword",
+            //    "Account",
+            //    new { code },
+            //    this.Request.Scheme)!;
 
             StringBuilder builder = new StringBuilder();
 
             builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
             builder.AppendLine("<h3>You receive this email because you requested a link to reset your password on EasyRank.</h3>");
-            builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
+            //builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
             builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
             builder.AppendLine("<p>Have a wonderful rest of your day happy ranking!</p>");
             builder.AppendLine("<br>");
@@ -395,22 +394,21 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            EasyRankUser user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (!await this.accountService.DoesUserExist(model.Email))
             {
                 return this.RedirectToAction("ResetPassword", model);
             }
 
-            IdentityResult result = await this.userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            if (result.Succeeded)
-            {
-                return this.RedirectToAction("ResetPasswordConfirmation");
-            }
+            //IdentityResult result = await this.userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            //if (result.Succeeded)
+            //{
+            //    return this.RedirectToAction("ResetPasswordConfirmation");
+            //}
 
-            foreach (IdentityError error in result.Errors)
-            {
-                this.ModelState.AddModelError(string.Empty, error.Description);
-            }
+            //foreach (IdentityError error in result.Errors)
+            //{
+            //    this.ModelState.AddModelError(string.Empty, error.Description);
+            //}
 
             return this.View(model);
         }

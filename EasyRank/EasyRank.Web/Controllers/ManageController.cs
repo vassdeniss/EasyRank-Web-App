@@ -188,7 +188,7 @@ namespace EasyRank.Web.Controllers
                 string userId = this.User.Id().ToString();
                 string code = await this.manageService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
 
-                string callbackUrl = this.Url.ActionLink(
+                string callbackUrl = this.Url.Action(
                     "ConfirmEmailChange",
                     "Manage",
                     new { userId, email = model.NewEmail, code },
@@ -263,7 +263,7 @@ namespace EasyRank.Web.Controllers
 
             string userId = this.User.Id().ToString();
             string code = await this.manageService.GenerateEmailConfirmationTokenAsync(this.User.Id());
-            string callbackUrl = this.Url.ActionLink(
+            string callbackUrl = this.Url.Action(
                 "ConfirmEmail",
                 "Manage",
                 new { userId, code },

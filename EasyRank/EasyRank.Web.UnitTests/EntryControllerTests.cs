@@ -35,15 +35,9 @@ namespace EasyRank.Web.UnitTests
         [OneTimeSetUp]
         public void SetUp()
         {
-            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
-            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
-            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
-
             this.entryService = EntryServiceMock.MockEntryService().Object;
-            this.entryController = new EntryController(this.entryService, this.mapper)
-            {
-                TempData = tempData,
-            };
+            this.entryController = new EntryController(this.entryService, this.mapper);
+            this.entryController.AddTempData();
         }
 
         [Test]
@@ -54,7 +48,9 @@ namespace EasyRank.Web.UnitTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.entryController.CreateAsync(page.Id);
@@ -120,7 +116,10 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and invalid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user, "appsettings.json");
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AddFormWithFile("appsettings.json");
 
             // Arrange: clear the model state
             this.entryController.ModelState.Clear();
@@ -152,7 +151,10 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user, "image.jpg");
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AddFormWithFile("image.jpg");
 
             // Arrange: clear the model state
             this.entryController.ModelState.Clear();
@@ -185,8 +187,10 @@ namespace EasyRank.Web.UnitTests
             RankPage page = this.testDb.GuestPage;
             RankEntry entry = this.testDb.GuestEntry;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.entryController.EditAsync(page.Id, entry.Id);
@@ -252,7 +256,10 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
 
             // Arrange: create controller HTTP context with valid user and invalid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user, "appsettings.json");
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AddFormWithFile("appsettings.json");
 
             // Arrange: clear the model state
             this.entryController.ModelState.Clear();
@@ -283,11 +290,12 @@ namespace EasyRank.Web.UnitTests
             // Arrange: get guest user from test db
             EasyRankUser user = this.testDb.GuestUser;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(
-                user,
-                "image.jpg",
-                true);
+            // Arrange: create controller HTTP context with admin and valid form
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AndMakeAdmin()
+                .AddFormWithFile("image.jpg");
 
             // Arrange: clear the model state
             this.entryController.ModelState.Clear();
@@ -324,7 +332,10 @@ namespace EasyRank.Web.UnitTests
             RankPage page = this.testDb.GuestPage;
 
             // Arrange: create controller HTTP context with valid user and valid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user, "avatar.jpg");
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AddFormWithFile("image.jpg");
 
             // Arrange: clear the model state
             this.entryController.ModelState.Clear();
@@ -361,8 +372,10 @@ namespace EasyRank.Web.UnitTests
             RankPage page = this.testDb.GuestPage;
             RankEntry entry = this.testDb.GuestEntry;
 
-            // Arrange: create controller HTTP context with valid user and invalid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user);
+            // Arrange: create controller HTTP context with valid user
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.entryController.DeleteAsync(page.Id, entry.Id);
@@ -386,11 +399,12 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
             RankPage page = this.testDb.GuestPage;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(
-                user,
-                "image.jpg",
-                true);
+            // Arrange: create controller HTTP context with admin and valid form
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName)
+                .AndMakeAdmin()
+                .AddFormWithFile("image.jpg");
 
             // Act: invoke the controller method
             IActionResult result = await this.entryController.DeleteAsync(new RankEntryFormModel
@@ -420,8 +434,10 @@ namespace EasyRank.Web.UnitTests
             EasyRankUser user = this.testDb.GuestUser;
             RankPage page = this.testDb.GuestPage;
 
-            // Arrange: create controller HTTP context with valid user and valid form
-            this.entryController.ControllerContext = TestingUtils.CreateControllerContext(user, "image.jpg");
+            // Arrange: create controller HTTP context with valid user
+            this.entryController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
 
             // Act: invoke the controller method
             IActionResult result = await this.entryController.DeleteAsync(new RankEntryFormModel

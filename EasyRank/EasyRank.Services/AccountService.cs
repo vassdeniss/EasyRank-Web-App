@@ -84,5 +84,26 @@ namespace EasyRank.Services
                 false,
                 false);
         }
+
+        /// <inheritdoc />
+        public async Task<bool> DoesUserExist(string email)
+        {
+            return await this.repo.AllReadonly<EasyRankUser>(u => u.Email == email)
+                .FirstOrDefaultAsync() != null;
+        }
+
+        /// <inheritdoc />
+        public async Task<Guid> GetUserIdByEmail(string email)
+        {
+            EasyRankUser? user = await this.repo.AllReadonly<EasyRankUser>(
+                    u => u.Email == email)
+                .FirstOrDefaultAsync();
+            if (user == null || user.IsForgotten)
+            {
+                throw new NotFoundException();
+            }
+
+            return user.Id;
+        }
     }
 }

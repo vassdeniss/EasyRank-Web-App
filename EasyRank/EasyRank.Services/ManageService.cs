@@ -372,19 +372,5 @@ namespace EasyRank.Services
             //this.logger.LogInformation("User changed their password successfully.");
             return result;
         }
-
-        /// <inheritdoc />
-        public async Task<Guid> GetUserIdByEmail(string email)
-        {
-            EasyRankUser? user = await this.repo.AllReadonly<EasyRankUser>(
-                u => u.Email == email)
-                .FirstOrDefaultAsync();
-            if (user == null || user.IsForgotten)
-            {
-                throw new NotFoundException();
-            }
-
-            return user.Id;
-        }
     }
 }

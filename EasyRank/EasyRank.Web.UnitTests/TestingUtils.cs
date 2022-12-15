@@ -9,11 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
-using AngleSharp.Io;
-
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Http;
@@ -23,8 +21,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Primitives;
 
 using Moq;
-
-using SendGrid;
 
 namespace EasyRank.Web.UnitTests
 {
@@ -98,16 +94,11 @@ namespace EasyRank.Web.UnitTests
         public static T AndMakeAdmin<T>(this T controller) 
             where T : Controller
         {
-            string nameId = controller.ControllerContext.HttpContext.User.Id().ToString();
-            string name = controller.ControllerContext.HttpContext.User.Identity!.Name!;
-            ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, nameId),
-                new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Role, "Administrator"),
-            }, "TestAuthentication"));
+            controller.EnsureHttpContext();
 
-            controller.ControllerContext.HttpContext.User = principal;
+            ClaimsIdentity identity = (ClaimsIdentity)controller.Request.HttpContext.User.Identity!;
+
+            identity.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
 
             return controller;
         }
@@ -115,6 +106,8 @@ namespace EasyRank.Web.UnitTests
         public static T ButThenAuthenticateUsing<T>(this T controller, Guid nameIdentifier, string username) 
             where T : Controller
         {
+            controller.EnsureHttpContext();
+
             ClaimsPrincipal principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, nameIdentifier.ToString()),
@@ -136,28 +129,6 @@ namespace EasyRank.Web.UnitTests
             controller.ControllerContext.HttpContext.User = principal;
 
             return controller;
-        }
-
-        public static ControllerContext CreateControllerContext(
-            EasyRankUser user,
-            string fileName = "",
-            bool shouldBeAdmin = false)
-        {
-
-            // Create test file
-            IFormCollection? form = null;
-
-            // Create HTTP context
-            return new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    Request =
-                    {
-                        Form = form,
-                    }
-                }
-            };
         }
 
         private static T EnsureHttpContext<T>(this T controller) 

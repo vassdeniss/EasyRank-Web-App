@@ -833,45 +833,5 @@ namespace EasyRank.Services.UnitTests
             Assert.That(result, Is.EqualTo(IdentityResult.Success));
             Assert.That(guestUser.PasswordHash, Is.Not.EqualTo(oldHash));
         }
-
-        [Test]
-        public void Test_GetUserIdByEmail_InvalidUserId_ThrowsNotFoundException()
-        {
-            // Arrange:
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with invalid email
-            Assert.That(
-                async() => await this.manageService.GetUserIdByEmail(string.Empty),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public void Test_GetUserIdByEmail_ForgottenUser_ThrowsNotFoundException()
-        {
-            // Arrange: get forgotten user from test db
-            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
-
-            // Act:
-
-            // Assert: NotFoundException is thrown with invalid email
-            Assert.That(
-                async() => await this.manageService.GetUserIdByEmail(forgottenUser.Email),
-                Throws.Exception.TypeOf<NotFoundException>());
-        }
-
-        [Test]
-        public async Task Test_GetUserIdByEmail_ReturnsCorrectId()
-        {
-            // Arrange: get denis user from test db
-            EasyRankUser denisUser = this.testDb.DenisUser;
-
-            // Act: call service method and pass in necessary data
-            Guid id = await this.manageService.GetUserIdByEmail(denisUser.Email);
-
-            // Assert: both ids are the same
-            Assert.That(id, Is.EqualTo(denisUser.Id));
-        }
     }
 }
