@@ -1,10 +1,13 @@
 ﻿// TODO: header
 
+using System.Text;
+
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 using NUnit.Framework;
 
@@ -224,6 +227,137 @@ namespace EasyRank.Services.UnitTests
 
             // Assert: result is false
             Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void Test_GenerateChangeEmailToken_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange:
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.accountService.GenerateChangeEmailTokenAsync(
+                    Guid.NewGuid(),
+                    "RandomEmail"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GenerateChangeEmailToken_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.accountService.GenerateChangeEmailTokenAsync(forgottenUser.Id, "RandomEmail"),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GenerateChangeEmailToken_GeneratesCorrectly()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Arrange: create sample code
+            string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            string actualCode = await this.accountService.GenerateChangeEmailTokenAsync(denisUser.Id, denisUser.Email);
+
+            // Assert: both codes are the same
+            Assert.That(actualCode, Is.EqualTo(expectedCode));
+        }
+
+        [Test]
+        public void Test_GenerateEmailConfirmationToken_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange:
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async () => await this.accountService.GenerateEmailConfirmationTokenAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GenerateEmailConfirmationToken_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.accountService.GenerateEmailConfirmationTokenAsync(forgottenUser.Id),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GenerateEmailConfirmationToken_GeneratesCorrectly()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Arrange: create sample code
+            string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            string actualCode = await this.accountService.GenerateEmailConfirmationTokenAsync(denisUser.Id);
+
+            // Assert: both codes are the same
+            Assert.That(actualCode, Is.EqualTo(expectedCode));
+        }
+
+        [Test]
+        public void Test_GeneratePasswordResetToken_InvalidUserId_ThrowsNotFoundException()
+        {
+            // Arrange:
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid id
+            Assert.That(
+                async() => await this.accountService.GeneratePasswordResetTokenAsync(Guid.NewGuid()),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_GeneratePasswordResetToken_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user from test db
+            EasyRankUser forgottenUser = this.testDb.ForgottenUser;
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async () => await this.accountService.GeneratePasswordResetTokenAsync(forgottenUser.Id),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public async Task Test_GeneratePasswordResetToken_GeneratesCorrectly()
+        {
+            // Arrange: get denis user from test db
+            EasyRankUser denisUser = this.testDb.DenisUser;
+
+            // Arrange: create sample code
+            string expectedCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("random-string"));
+
+            // Act: call service method and pass in necessary data
+            string actualCode = await this.accountService.GeneratePasswordResetTokenAsync(denisUser.Id);
+
+            // Assert: both codes are the same
+            Assert.That(actualCode, Is.EqualTo(expectedCode));
         }
     }
 }

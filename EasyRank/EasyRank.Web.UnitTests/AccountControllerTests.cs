@@ -6,29 +6,24 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Security.Claims;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
-using EasyRank.Services.Models;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
+using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
 
 using Moq;
 
 using NUnit.Framework;
-
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace EasyRank.Web.UnitTests
 {
@@ -50,46 +45,14 @@ namespace EasyRank.Web.UnitTests
                 Mock.Of<IUserClaimsPrincipalFactory<EasyRankUser>>(),
                 null, null, null, null);
 
-            Mock<IAccountService> accountServiceMock = new Mock<IAccountService>();
-            accountServiceMock.Setup(@as => @as.CreateUserAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))!
-                .ReturnsAsync((string email, string firstName, string lastName, string userName, string password) =>
-                {
-                    if (password == "ReturnInvalidResult")
-                    {
-                        return IdentityResult.Failed(
-                            new Microsoft.AspNetCore.Identity.IdentityError
-                            {
-                                Description = "Error",
-                            });
-                    }
-
-                    return IdentityResult.Success;
-                });
-
-            accountServiceMock.Setup(@as => @as.IsEmailConfirmedAsync(
-                    It.IsAny<string>()))!
-                .ReturnsAsync(true);
-
-            accountServiceMock.Setup(@as => @as.SignInUserAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))!
-                .ReturnsAsync((string email, string password) 
-                    => password == "ReturnInvalidResult" 
-                        ? SignInResult.Failed 
-                        : SignInResult.Success);
-
             Mock<IManageService> manageServiceMock = new Mock<IManageService>();
 
-            manageServiceMock.Setup(ms => ms.GenerateEmailConfirmationTokenAsync(
-                    It.IsAny<Guid>()))!
-                .ReturnsAsync("random-token");
+            this.accountService = AccountServiceMock.MockAccountService(new List<EasyRankUser>
+            {
+                this.testDb.GuestUser,
+                this.testDb.UnconfirmedUser,
+            }).Object;
 
-            this.accountService = accountServiceMock.Object;
             this.accountController = new AccountController(
                 userManagerMock.Object,
                 signInManager.Object,
@@ -276,45 +239,43 @@ namespace EasyRank.Web.UnitTests
             Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<LoginViewModel>());
         }
 
-        //[Test]
-        //public async Task Test_Register_Post_ValidModelState_SucceededIdentityResult_RedirectsToHomeIndex()
-        //{
-        //    // Arrange: clear the model state
-        //    this.accountController.ModelState.Clear();
-
-        //    // Arrange: get guest user from test db
-        //    EasyRankUser user = this.testDb.GuestUser;
-
-        //    // Arrange: create controller HTTP context with valid user
-        //    this.accountController
-        //        .WithAnonymousUser()
-        //        .ButThenAuthenticateUsing(user.Id, user.UserName);
-
-        //    // Act: invoke the controller method
-        //    IActionResult result = await this.accountController.Register(new RegisterViewModel
-        //    {
-        //        Password = "RandomPassword",
-        //    });
-
-        //    // Assert: returned result is not null, it is a redirect
-        //    Assert.That(result, Is.Not.Null);
-        //    Assert.That(result, Is.TypeOf<RedirectToActionResult>());
-
-        //    // Assert: controller name is 'Home', action name is 'Index'
-        //    RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
-        //    Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
-        //    Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
-        //}
-
         [Test]
-        public async Task Test_Login_Post_ValidModelState_FailedSignInResult_ReturnsSameView_WithModelErrors()
+        public async Task Test_Login_Post_ValidModelState_NotConfirmedEmail_ReturnsEmailNotConfirmedView()
         {
+            // Arrange: get unconfirmed user email from test db
+            string unconfirmedEmail = this.testDb.UnconfirmedUser.Email;
+
             // Arrange: clear the model state
             this.accountController.ModelState.Clear();
 
             // Act: invoke the controller method
             IActionResult result = await this.accountController.LoginAsync(new LoginViewModel
             {
+                Email = unconfirmedEmail,
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view name is 'EmailNotConfirmed'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewName, Is.EqualTo("EmailNotConfirmed"));
+        }
+
+        [Test]
+        public async Task Test_Login_Post_ValidModelState_FailedSignInResult_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.LoginAsync(new LoginViewModel
+            {
+                Email = guestEmail,
                 Password = "ReturnInvalidResult",
             });
 
@@ -328,6 +289,59 @@ namespace EasyRank.Web.UnitTests
 
             // Assert: model state has errors   
             Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task Test_Login_Post_ValidModelState_SuccessfulSignInResult_RedirectsToReturnUrl_WithReturnUrl()
+        {
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            string exampleUrl = "https://www.exampleUrl.com";
+            IActionResult result = await this.accountController.LoginAsync(new LoginViewModel
+            {
+                Email = guestEmail,
+                Password = "123456",
+                ReturnUrl = exampleUrl,
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectResult>());
+
+            // Assert: URL redirect matches
+            RedirectResult redirectResult = (result as RedirectResult)!;
+            Assert.That(redirectResult.Url, Is.EqualTo(exampleUrl));
+        }
+
+        [Test]
+        public async Task Test_Login_Post_ValidModelState_SuccessfulSignInResult_RedirectsToIndexHome_WithoutReturnUrl()
+        {
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.LoginAsync(new LoginViewModel
+            {
+                Email = guestEmail,
+                Password = "123456",
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Home', action name is 'Index'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Home"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
         }
 
         [Test]

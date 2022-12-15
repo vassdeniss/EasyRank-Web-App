@@ -15,6 +15,7 @@ using EasyRank.Services.Models;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
+using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +46,12 @@ namespace EasyRank.Web.UnitTests
                 Mock.Of<IEmailSender>(),
                 this.mapper,
                 Mock.Of<IRankService>(),
-                manageServiceMock.Object);
+                manageServiceMock.Object,
+                AccountServiceMock.MockAccountService(new List<EasyRankUser>
+                {
+                    this.testDb.GuestUser,
+                    this.testDb.UnconfirmedUser,
+                }).Object);
 
             this.manageController.AddTempData();
         }

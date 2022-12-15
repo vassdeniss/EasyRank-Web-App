@@ -102,23 +102,6 @@ namespace EasyRank.Services.Contracts
         public Task<bool> IsEmailTakenAsync(string email);
 
         /// <summary>
-        /// Used for generating a change email token for the current user.
-        /// </summary>
-        /// <param name="userId">The ID of the current user.</param>
-        /// <param name="newEmail">The new email for the user.</param>
-        /// <returns>The token as a string.</returns>
-        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail);
-
-        /// <summary>
-        /// Used for generating an email confirmation token for the current user.
-        /// </summary>
-        /// <param name="userId">The ID of the current user.</param>
-        /// <returns>The token as a string.</returns>
-        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateEmailConfirmationTokenAsync(Guid userId);
-
-        /// <summary>
         /// Used for changing the current user's email.
         /// </summary>
         /// <param name="userId">The ID of the current user.</param>

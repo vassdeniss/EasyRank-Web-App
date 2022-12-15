@@ -14,11 +14,7 @@ using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Comment;
 using EasyRank.Web.UnitTests.Mocks;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using Moq;
 
 using NUnit.Framework;
 

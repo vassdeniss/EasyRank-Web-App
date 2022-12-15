@@ -294,32 +294,6 @@ namespace EasyRank.Services
         //}
 
         /// <inheritdoc />
-        public async Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail)
-        {
-            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
-            if (user == null || user.IsForgotten)
-            {
-                throw new NotFoundException();
-            }
-
-            string code = await this.userManager.GenerateChangeEmailTokenAsync(user, newEmail);
-            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        }
-
-        /// <inheritdoc />
-        public async Task<string> GenerateEmailConfirmationTokenAsync(Guid userId)
-        {
-            EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);
-            if (user == null || user.IsForgotten)
-            {
-                throw new NotFoundException();
-            }
-
-            string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        }
-
-        /// <inheritdoc />
         public async Task<IdentityResult> ChangeEmailAsync(Guid userId, string newEmail, string code)
         {
             EasyRankUser user = await this.repo.GetByIdAsync<EasyRankUser>(userId);

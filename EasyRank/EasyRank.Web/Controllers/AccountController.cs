@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
-using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
@@ -102,7 +101,7 @@ namespace EasyRank.Web.Controllers
             if (result.Succeeded)
             {
                 Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
-                string code = await this.manageService.GenerateEmailConfirmationTokenAsync(userId);
+                string code = await this.accountService.GenerateEmailConfirmationTokenAsync(userId);
                 string callbackUrl = this.Url.Action(
                     "ConfirmEmail",
                     "Manage",
@@ -203,7 +202,7 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LogoutAsync()
         {
-            await this.signInManager.SignOutAsync();
+            await this.accountService.SignOutAsync();
 
             return this.RedirectToAction("Index", "Home");
         }
@@ -250,7 +249,7 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            string code = await this.manageService.GenerateEmailConfirmationTokenAsync(userId);
+            string code = await this.accountService.GenerateEmailConfirmationTokenAsync(userId);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             string callbackUrl = this.Url.Action(
                 "ConfirmEmail",
@@ -316,19 +315,19 @@ namespace EasyRank.Web.Controllers
             }
 
             Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
-            //string code = await this.manageService.GeneratePasswordResetTokenAsync(userId);
-            //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            //string callbackUrl = this.Url.Action(
-            //    "ResetPassword",
-            //    "Account",
-            //    new { code },
-            //    this.Request.Scheme)!;
+            string code = await this.accountService.GeneratePasswordResetTokenAsync(userId);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            string callbackUrl = this.Url.Action(
+                "ResetPassword",
+                "Account",
+                new { code },
+                this.Request.Scheme)!;
 
             StringBuilder builder = new StringBuilder();
 
             builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
             builder.AppendLine("<h3>You receive this email because you requested a link to reset your password on EasyRank.</h3>");
-            //builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
+            builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
             builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
             builder.AppendLine("<p>Have a wonderful rest of your day happy ranking!</p>");
             builder.AppendLine("<br>");
