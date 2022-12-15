@@ -55,8 +55,18 @@ Users can also comment on these pages and leave a like on them if desired.
 - SendGrid for emails
 - Working deploy to [Azure](https://easyrank.azurewebsites.net)
 
-## Screenshots
+## :camera_flash: Screenshots
+![main-page-not-logged-in](https://user-images.githubusercontent.com/72888249/207841839-3c9ac9bd-0156-473d-b6ac-dc0deb18a52d.png)
+![main-page-admin](https://user-images.githubusercontent.com/72888249/207842314-9f94db64-4c95-4290-8cad-d8530d30c17a.png)
+![login-page](https://user-images.githubusercontent.com/72888249/207841909-1c9b29d3-2fe8-4db9-a1d7-7844227c9a81.png)
+![register-page](https://user-images.githubusercontent.com/72888249/207842008-87cc088a-a262-479c-bf5e-8c5dc08b43b3.png)
+![account-confirm-page](https://user-images.githubusercontent.com/72888249/207842105-10f5c203-a2ac-479b-abea-740a8308021b.png)
+![forgot-password-page](https://user-images.githubusercontent.com/72888249/207842127-c4c20f76-742d-4224-8a9e-53a3d6d72dcc.png)
+![image](https://user-images.githubusercontent.com/72888249/207842477-8c3fbb1e-1b58-4e68-9ee4-c628fd0df17a.png)
+![change-email](https://user-images.githubusercontent.com/72888249/207842503-85ac5029-57e8-456f-ac4d-2dfcde58f602.png)
+![change-password](https://user-images.githubusercontent.com/72888249/207842548-a2555847-9f98-4126-82e4-ab748d7c4983.png)
 
 ## :clipboard: Test Coverage
 
 ## :wrench: DB Diagram
+![db-diagram](https://user-images.githubusercontent.com/72888249/207841550-71d596fa-59df-4b00-9ad0-b6e97f8e7696.png)
