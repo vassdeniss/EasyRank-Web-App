@@ -377,6 +377,101 @@ namespace EasyRank.Web.UnitTests
         }
 
         [Test]
+        public async Task Test_VerifyEmail_Post_InvalidModelState_ReturnsSameView()
+        {
+            // Arrange: add model error to the model state
+            this.accountController.ModelState.AddModelError(string.Empty, "Some error");
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.VerifyEmailAsync(new VerifyEmailViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+        }
+
+        [Test]
+        public async Task Test_VerifyEmail_Post_ValidModelState_UserDoesNotExist_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.VerifyEmailAsync(
+                new VerifyEmailViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+
+            // Assert: model state has errors   
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task Test_VerifyEmail_Post_ValidModelState_UserConfirmedEmail_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.VerifyEmailAsync(new VerifyEmailViewModel
+            {
+                Email = guestEmail,
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+
+            // Assert: model state has errors   
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task Test_VerifyEmail_Post_ValidModelState_ValidUser_RedirectsToAccountVerifyEmail_WIthTempData()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Arrange: get unconfirmed user mail from test db
+            string unconfirmedEmail = this.testDb.UnconfirmedUser.Email;
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.VerifyEmailAsync(new VerifyEmailViewModel
+            {
+                Email = unconfirmedEmail,
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Account', action name is 'VerifyEmail'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Account"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("VerifyEmail"));
+
+            // Assert: TempData exists
+            Assert.That(this.accountController.TempData.ContainsKey("StatusMessage"), Is.True);
+        }
+
+        [Test]
         public void Test_ForgotPassword_Get_ReturnsCorrectView()
         {
             // Arrange:

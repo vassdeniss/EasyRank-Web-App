@@ -66,7 +66,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="newEmail">The new email for the user.</param>
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail);
+        Task<string> GenerateChangeEmailTokenAsync(Guid userId, string newEmail);
 
         /// <summary>
         /// Used for generating an email confirmation token for the current user.
@@ -74,7 +74,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GenerateEmailConfirmationTokenAsync(Guid userId);
+        Task<string> GenerateEmailConfirmationTokenAsync(Guid userId);
 
         /// <summary>
         /// Used for generating a password reset token for the current user.
@@ -82,6 +82,16 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>The token as a string.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<string> GeneratePasswordResetTokenAsync(Guid userId);
+        Task<string> GeneratePasswordResetTokenAsync(Guid userId);
+
+        /// <summary>
+        /// Used for resetting the password for the current user.
+        /// </summary>
+        /// <param name="email">The email of the current user.</param>
+        /// <param name="code">The token generated earlier for the user.</param>
+        /// <param name="password">The password of the current user.</param>
+        /// <returns>Identity Result from the operation.</returns>
+        /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
+        Task<IdentityResult> ResetPasswordAsync(string email, string code, string password);
     }
 }

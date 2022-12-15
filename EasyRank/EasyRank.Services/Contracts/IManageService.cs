@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Exceptions;
@@ -28,7 +27,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>A ManageServiceModel with user info.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<ManageServiceModel> GetUserInfoAsync(Guid userId);
+        Task<ManageServiceModel> GetUserInfoAsync(Guid userId);
 
         /// <summary>
         /// Used for deleting the current users profile picture.
@@ -36,7 +35,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>Task (void).</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task DeleteProfilePictureAsync(Guid userId);
+        Task DeleteProfilePictureAsync(Guid userId);
 
         /// <summary>
         /// Used for updating the current users profile settings.
@@ -52,7 +51,7 @@ namespace EasyRank.Services.Contracts
         /// <exception cref="FileFormatException">
         /// Thrown when the user's uploaded profile picture is in invalid format.
         /// </exception>
-        public Task UpdateUserDataAsync(
+        Task UpdateUserDataAsync(
             Guid userId,
             string? inputFirstName,
             string? inputLastName,
@@ -66,7 +65,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="currentPassword">The password of the current user.</param>
         /// <returns>Flag indicating if the passwords match.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<bool> CheckPasswordAsync(
+        Task<bool> CheckPasswordAsync(
             Guid userId,
             string currentPassword);
 
@@ -76,7 +75,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>Task (void).</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task DeleteUserAsync(Guid userId);
+        Task DeleteUserAsync(Guid userId);
 
         /// <summary>
         /// Used for checking if the current user's email is confirmed.
@@ -84,7 +83,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>Flag indicating if the email is confirmed.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<bool> IsEmailConfirmedAsync(Guid userId);
+        Task<bool> IsEmailConfirmedAsync(Guid userId);
 
         /// <summary>
         /// Used for retrieving the current user's email.
@@ -92,14 +91,14 @@ namespace EasyRank.Services.Contracts
         /// <param name="userId">The ID of the current user.</param>
         /// <returns>An EmailServiceModel with the users email.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<EmailServiceModel> GetUserEmailAsync(Guid userId);
+        Task<EmailServiceModel> GetUserEmailAsync(Guid userId);
 
         /// <summary>
         /// Used for checking if a given email is taken by some user.
         /// </summary>
         /// <param name="email">The email to be checked.</param>
         /// <returns>A flag indicating if a user with this email exists.</returns>
-        public Task<bool> IsEmailTakenAsync(string email);
+        Task<bool> IsEmailTakenAsync(string email);
 
         /// <summary>
         /// Used for changing the current user's email.
@@ -109,7 +108,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="code">The change email verification token for the user.</param>
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<IdentityResult> ChangeEmailAsync(
+        Task<IdentityResult> ChangeEmailAsync(
             Guid userId,
             string newEmail,
             string code);
@@ -121,7 +120,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="code">The change email verification token for the user.</param>
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<IdentityResult> ConfirmEmailAsync(
+        Task<IdentityResult> ConfirmEmailAsync(
             Guid userId,
             string code);
 
@@ -133,7 +132,7 @@ namespace EasyRank.Services.Contracts
         /// <param name="newPass">The new password of the current user.</param>
         /// <returns>Result indicating success or failure.</returns>
         /// <exception cref="NotFoundException">Thrown when the user was not found.</exception>
-        public Task<IdentityResult> ChangePasswordAsync(
+        Task<IdentityResult> ChangePasswordAsync(
             Guid userId,
             string oldPass,
             string newPass);
