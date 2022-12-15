@@ -50,6 +50,15 @@ namespace EasyRank.Web.UnitTests.Mocks
                     It.IsAny<Guid>()))!
                 .ReturnsAsync("random-token");
 
+            accountServiceMock.Setup(@as => @as.GeneratePasswordResetTokenAsync(
+                    It.IsAny<Guid>()))!
+                .ReturnsAsync("random-token");
+
+            accountServiceMock.Setup(@as => @as.DoesUserExist(
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string email)
+                    => userList.FirstOrDefault(u => u.Email == email) != null);
+
             return accountServiceMock;
         }
     }

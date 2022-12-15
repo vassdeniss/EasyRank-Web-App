@@ -29,7 +29,6 @@ namespace EasyRank.Web.Controllers
     public class AccountController : BaseController
     {
         private readonly UserManager<EasyRankUser> userManager;
-        private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IEmailSender emailSender;
         private readonly IAccountService accountService;
         private readonly IManageService manageService;
@@ -39,19 +38,16 @@ namespace EasyRank.Web.Controllers
         /// Constructor for the account controller.
         /// </summary>
         /// <param name="userManager">The user manager for the controller.</param>
-        /// <param name="signInManager">The sign in manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
         /// <param name="accountService">The account service for the controller.</param>
         /// <param name="manageService">The manage service for the controller</param>
         public AccountController(
             UserManager<EasyRankUser> userManager,
-            SignInManager<EasyRankUser> signInManager,
             IEmailSender emailSender,
             IAccountService accountService,
             IManageService manageService)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
             this.emailSender = emailSender;
             this.accountService = accountService;
             this.manageService = manageService;
@@ -340,7 +336,7 @@ namespace EasyRank.Web.Controllers
                 "[DO NOT REPLY] Reset your password for EasyRank!",
                 builder.ToString());
 
-            return this.RedirectToAction("ForgotPasswordConfirmation");
+            return this.RedirectToAction("ForgotPasswordConfirmation", "Account");
         }
 
         /// <summary>

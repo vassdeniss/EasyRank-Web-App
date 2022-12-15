@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
 using EasyRank.Web.UnitTests.Mocks;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -39,12 +37,6 @@ namespace EasyRank.Web.UnitTests
                 Mock.Of<IUserStore<EasyRankUser>>(),
                 null, null, null, null, null, null, null, null);
 
-            Mock<SignInManager<EasyRankUser>> signInManager = new Mock<SignInManager<EasyRankUser>>(
-                userManagerMock.Object,
-                Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<IUserClaimsPrincipalFactory<EasyRankUser>>(),
-                null, null, null, null);
-
             Mock<IManageService> manageServiceMock = new Mock<IManageService>();
 
             this.accountService = AccountServiceMock.MockAccountService(new List<EasyRankUser>
@@ -55,7 +47,6 @@ namespace EasyRank.Web.UnitTests
 
             this.accountController = new AccountController(
                 userManagerMock.Object,
-                signInManager.Object,
                 Mock.Of<IEmailSender>(),
                 this.accountService,
                 manageServiceMock.Object);
@@ -400,6 +391,103 @@ namespace EasyRank.Web.UnitTests
             // Assert: view model is of type 'VerifyEmailViewModel'
             ViewResult viewResult = (result as ViewResult)!;
             Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+        }
+
+        [Test]
+        public async Task Test_ForgotPassword_Post_InvalidModelState_ReturnsSameView()
+        {
+            // Arrange: add model error to the model state
+            this.accountController.ModelState.AddModelError(string.Empty, "Some error");
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ForgotPasswordAsync(new VerifyEmailViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+        }
+
+        [Test]
+        public async Task Test_ForgotPassword_Post_ValidModelState_ValidUser_RedirectsToForgotPasswordConfirmation()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Arrange: get guest user from test db
+            EasyRankUser user = this.testDb.GuestUser;
+
+            // Arrange: create controller HTTP context with valid user
+            this.accountController
+                .WithAnonymousUser()
+                .ButThenAuthenticateUsing(user.Id, user.UserName);
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ForgotPasswordAsync(new VerifyEmailViewModel
+            {
+                Email = user.Email,
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Account', action name is 'ForgotPasswordConfirmation'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Account"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("ForgotPasswordConfirmation"));
+        }
+
+        [Test]
+        public async Task Test_ForgotPassword_Post_ValidModelState_UserDoesNotExist_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ForgotPasswordAsync(
+                new VerifyEmailViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+
+            // Assert: model state has errors   
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task Test_ForgotPassword_Post_ValidModelState_UserNotConfirmedEmail_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Arrange: get unconfirmed user email from test db
+            string unconfirmedEmail = this.testDb.UnconfirmedUser.Email;
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ForgotPasswordAsync(new VerifyEmailViewModel
+            {
+                Email = unconfirmedEmail,
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'VerifyEmailViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<VerifyEmailViewModel>());
+
+            // Assert: model state has errors   
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
         }
 
         [Test]
