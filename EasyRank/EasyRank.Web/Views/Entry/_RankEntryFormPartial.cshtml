@@ -23,9 +23,20 @@
 			<div class="form-group mb-3">
 				<label asp-for="Placement" class="form-label">Placement</label>
 				<select asp-for="Placement" class="form-select">
-					@foreach (int placement in this.Model.AvailablePlacements)
-					{
-						<option>@placement</option>
+					@{
+						if ((string)this.ViewData["ButtonType"]! == "Save")
+						{
+							int currentEntryPlacement = this.Model.Placement;
+							this.Model.AvailablePlacements.Add(currentEntryPlacement);
+							this.Model.AvailablePlacements = this.Model.AvailablePlacements
+								.OrderByDescending(p => p)
+								.ToList();
+						}
+
+						foreach (int placement in this.Model.AvailablePlacements)
+						{
+							<option>@placement</option>
+						}
 					}
 				</select>
 			</div>
