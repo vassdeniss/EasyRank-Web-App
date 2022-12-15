@@ -109,7 +109,7 @@ namespace EasyRank.Web.Controllers
                 builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
                 builder.AppendLine("<h3>You receive this email because you requested a link to confirm your email for EasyRank.</h3>");
                 builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
-                builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+                builder.AppendLine("<p><strong>If this request was not made by you please contact customer support immediately!</strong></p>");
                 builder.AppendLine("<p>Have a wonderful rest of your day and welcome to <strong>EasyRank!</strong></p>");
                 builder.AppendLine("<br>");
                 builder.AppendLine("- Denis from EasyRank");
@@ -258,7 +258,7 @@ namespace EasyRank.Web.Controllers
             builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
             builder.AppendLine("<h3>You receive this email because you requested a link to confirm your email for EasyRank.</h3>");
             builder.AppendLine($"<p>In order to do so please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.</a></p>");
-            builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+            builder.AppendLine("<p><strong>If this request was not made by you please contact customer support immediately!</strong></p>");
             builder.AppendLine("<p>Have a wonderful rest of your day and welcome to <strong>EasyRank!</strong></p>");
             builder.AppendLine("<br>");
             builder.AppendLine("- Denis from EasyRank");
