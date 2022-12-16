@@ -161,5 +161,19 @@ namespace EasyRank.Services
             string code = await this.userManager.GeneratePasswordResetTokenAsync(user);
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         }
+
+        /// <inheritdoc />
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string password)
+        {
+            EasyRankUser? user = await this.repo.AllReadonly<EasyRankUser>(
+                    u => u.Email == email)
+                .FirstOrDefaultAsync();
+            if (user == null || user.IsForgotten)
+            {
+                throw new NotFoundException();
+            }
+
+            return await this.userManager.ResetPasswordAsync(user, code, password);
+        }
     }
 }

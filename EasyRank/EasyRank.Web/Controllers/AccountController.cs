@@ -10,7 +10,6 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Models.Account;
 
@@ -28,7 +27,6 @@ namespace EasyRank.Web.Controllers
     /// </summary>
     public class AccountController : BaseController
     {
-        private readonly UserManager<EasyRankUser> userManager;
         private readonly IEmailSender emailSender;
         private readonly IAccountService accountService;
         private readonly IManageService manageService;
@@ -37,17 +35,14 @@ namespace EasyRank.Web.Controllers
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// Constructor for the account controller.
         /// </summary>
-        /// <param name="userManager">The user manager for the controller.</param>
         /// <param name="emailSender">The email sender for the controller.</param>
         /// <param name="accountService">The account service for the controller.</param>
         /// <param name="manageService">The manage service for the controller</param>
         public AccountController(
-            UserManager<EasyRankUser> userManager,
             IEmailSender emailSender,
             IAccountService accountService,
             IManageService manageService)
         {
-            this.userManager = userManager;
             this.emailSender = emailSender;
             this.accountService = accountService;
             this.manageService = manageService;
@@ -238,13 +233,13 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
-            if (await this.manageService.IsEmailConfirmedAsync(userId))
+            if (await this.accountService.IsEmailConfirmedAsync(model.Email))
             {
                 this.ModelState.AddModelError(string.Empty, "Email already verified!");
                 return this.View(model);
             }
 
+            Guid userId = await this.accountService.GetUserIdByEmail(model.Email);
             string code = await this.accountService.GenerateEmailConfirmationTokenAsync(userId);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             string callbackUrl = this.Url.Action(
@@ -271,7 +266,7 @@ namespace EasyRank.Web.Controllers
                 builder.ToString());
 
             this.TempData["StatusMessage"] = "Verification email sent. Please check your email.";
-            return this.RedirectToAction("VerifyEmail");
+            return this.RedirectToAction("VerifyEmail", "Account");
         }
 
         /// <summary>
@@ -394,16 +389,19 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("ResetPassword", model);
             }
 
-            //IdentityResult result = await this.userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            //if (result.Succeeded)
-            //{
-            //    return this.RedirectToAction("ResetPasswordConfirmation");
-            //}
+            IdentityResult result = await this.accountService.ResetPasswordAsync(
+                model.Email,
+                model.Code,
+                model.Password);
+            if (result.Succeeded)
+            {
+                return this.RedirectToAction("ResetPasswordConfirmation");
+            }
 
-            //foreach (IdentityError error in result.Errors)
-            //{
-            //    this.ModelState.AddModelError(string.Empty, error.Description);
-            //}
+            foreach (IdentityError error in result.Errors)
+            {
+                this.ModelState.AddModelError(string.Empty, error.Description);
+            }
 
             return this.View(model);
         }
