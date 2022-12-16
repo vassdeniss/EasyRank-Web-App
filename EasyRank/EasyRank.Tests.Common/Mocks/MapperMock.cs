@@ -8,23 +8,21 @@
 using AutoMapper;
 
 using EasyRank.Services.Profiles;
+using EasyRank.Web.Profiles;
 
-namespace EasyRank.Services.UnitTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
     public static class MapperMock
     {
-        public static IMapper Instance
+        public static IMapper MockMapper()
         {
-            get
+            MapperConfiguration mapperConfiguration = new MapperConfiguration(config =>
             {
-                MapperConfiguration mapperConfiguration = 
-                    new MapperConfiguration(config =>
-                    {
-                        config.AddProfile<ServiceModelMappingProfile>();
-                    });
+                config.AddProfile<ServiceModelMappingProfile>();
+                config.AddProfile<ViewModelMappingProfile>();
+            });
 
-                return new Mapper(mapperConfiguration);
-            }
+            return new Mapper(mapperConfiguration);
         }
     }
 }

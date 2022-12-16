@@ -10,9 +10,10 @@ using System.Security.Claims;
 using EasyRank.Infrastructure.Models.Accounts;
 
 using Microsoft.AspNetCore.Identity;
+
 using Moq;
 
-namespace EasyRank.Services.UnitTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
     public class UserManagerMock
     {

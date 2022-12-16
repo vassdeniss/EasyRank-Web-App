@@ -9,8 +9,10 @@ using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts.Admin;
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
+using EasyRank.Services.Models.Comment;
+using EasyRank.Services.Models.Entry;
+using EasyRank.Services.Models.Rank;
 
 using Microsoft.EntityFrameworkCore;
 

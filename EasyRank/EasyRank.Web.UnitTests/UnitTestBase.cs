@@ -21,15 +21,12 @@ using Moq;
 
 using NUnit.Framework;
 
-using MapperMock = EasyRank.Web.UnitTests.Mocks.MapperMock;
-using UserManagerMock = EasyRank.Web.UnitTests.Mocks.UserManagerMock;
-
 namespace EasyRank.Web.UnitTests
 {
     public class UnitTestBase
     {
-        protected EasyRankTestDb testDb;
         private EasyRankDbContext dbContext;
+        protected EasyRankTestDb testDb;
         protected IMapper mapper;
         protected IRepository repo;
         protected Mock<UserManager<EasyRankUser>> userManager;
@@ -37,9 +34,9 @@ namespace EasyRank.Web.UnitTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            this.dbContext = DatabaseMock.Instance;
+            this.dbContext = DatabaseMock.MockDatabase();
             this.testDb = new EasyRankTestDb(this.dbContext);
-            this.mapper = MapperMock.Instance;
+            this.mapper = MapperMock.MockMapper();
             this.repo = new RepoMock(this.dbContext);
             this.userManager = UserManagerMock.MockUserManager(new List<EasyRankUser>
             {

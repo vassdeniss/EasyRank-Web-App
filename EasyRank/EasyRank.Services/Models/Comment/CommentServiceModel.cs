@@ -7,7 +7,7 @@
 
 using System;
 
-namespace EasyRank.Services.Models
+namespace EasyRank.Services.Models.Comment
 {
     /// <summary>
     /// The service side model for the user comment.

@@ -9,8 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
+using EasyRank.Services.Models.Comment;
+using EasyRank.Services.Models.Entry;
+using EasyRank.Services.Models.Rank;
 
 namespace EasyRank.Services.Contracts.Admin
 {

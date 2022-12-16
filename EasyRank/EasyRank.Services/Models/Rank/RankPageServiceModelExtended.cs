@@ -9,8 +9,10 @@ using System;
 using System.Collections.Generic;
 
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Services.Models.Comment;
+using EasyRank.Services.Models.Entry;
 
-namespace EasyRank.Services.Models
+namespace EasyRank.Services.Models.Rank
 {
     /// <summary>
     /// Extended model of the service rank page holding more needed properties.

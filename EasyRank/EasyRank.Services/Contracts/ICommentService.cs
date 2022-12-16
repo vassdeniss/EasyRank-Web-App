@@ -9,7 +9,7 @@ using System;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Comment;
 
 namespace EasyRank.Services.Contracts
 {

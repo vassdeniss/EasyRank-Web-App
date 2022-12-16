@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace EasyRank.Services.Models
+namespace EasyRank.Services.Models.User
 {
     /// <summary>
     /// The service model for the main account management view.

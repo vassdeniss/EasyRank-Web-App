@@ -11,7 +11,10 @@ using AutoMapper;
 
 using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Comment;
+using EasyRank.Services.Models.Entry;
+using EasyRank.Services.Models.Rank;
+using EasyRank.Services.Models.User;
 
 namespace EasyRank.Services.Profiles
 {

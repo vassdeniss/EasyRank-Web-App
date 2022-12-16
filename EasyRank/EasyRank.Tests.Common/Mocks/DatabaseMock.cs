@@ -11,19 +11,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Tests.Common.Mocks
 {
-    public static class DatabaseMock
+    public class DatabaseMock
     {
-        public static EasyRankDbContext Instance
+        public static EasyRankDbContext MockDatabase()
         {
-            get
-            {
-                DbContextOptionsBuilder<EasyRankDbContext> optionsBuilder = 
-                        new DbContextOptionsBuilder<EasyRankDbContext>();
+            DbContextOptionsBuilder<EasyRankDbContext> optionsBuilder 
+                = new DbContextOptionsBuilder<EasyRankDbContext>();
 
-                optionsBuilder.UseInMemoryDatabase($"EasyRank-TestDb-{DateTime.Now.Ticks}");
+            optionsBuilder.UseInMemoryDatabase($"EasyRank-TestDb-{DateTime.Now.Ticks}");
 
-                return new EasyRankDbContext(optionsBuilder.Options, false);
-            }
+            return new EasyRankDbContext(optionsBuilder.Options, false);
         }
     }
 }

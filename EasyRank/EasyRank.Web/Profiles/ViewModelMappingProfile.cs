@@ -7,8 +7,12 @@
 
 using AutoMapper;
 
-using EasyRank.Services.Models;
 using EasyRank.Services.Models.Admin;
+using EasyRank.Services.Models.Comment;
+using EasyRank.Services.Models.Email;
+using EasyRank.Services.Models.Entry;
+using EasyRank.Services.Models.Rank;
+using EasyRank.Services.Models.User;
 using EasyRank.Web.Areas.Admin.Models.Comment;
 using EasyRank.Web.Areas.Admin.Models.Entry;
 using EasyRank.Web.Areas.Admin.Models.User;

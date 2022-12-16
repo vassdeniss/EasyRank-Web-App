@@ -16,7 +16,7 @@ using EasyRank.Infrastructure.Common;
 using EasyRank.Infrastructure.Models;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Rank;
 
 using Microsoft.EntityFrameworkCore;
 

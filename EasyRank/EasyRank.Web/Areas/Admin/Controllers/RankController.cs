@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using EasyRank.Services.Contracts.Admin;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Rank;
 using EasyRank.Web.Models.Rank;
 
 using Microsoft.AspNetCore.Mvc;

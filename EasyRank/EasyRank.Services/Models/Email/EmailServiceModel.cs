@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace EasyRank.Services.Models
+namespace EasyRank.Services.Models.Email
 {
     /// <summary>
     /// The service model for when the user is changing their email.

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Entry;
 
 namespace EasyRank.Services.Contracts
 {
