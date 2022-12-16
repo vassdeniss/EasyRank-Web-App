@@ -359,5 +359,53 @@ namespace EasyRank.Services.UnitTests
             // Assert: both codes are the same
             Assert.That(actualCode, Is.EqualTo(expectedCode));
         }
+
+        [Test]
+        public void Test_ResetPasswordAsync_InvalidUserEmail_ThrowsNotFoundException()
+        {
+            // Arrange: create invalid email, code, random password
+            string email = "randomEmail@mail.com";
+            string code = "some-code";
+            string password = "some-password123";
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with invalid user
+            Assert.That(
+                async() => await this.accountService.ResetPasswordAsync(email, code, password),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_ResetPasswordAsync_ForgottenUser_ThrowsNotFoundException()
+        {
+            // Arrange: get forgotten user email from test db, create code, create random password
+            string forgottenEmail = this.testDb.ForgottenUser.Email;
+            string code = "some-code";
+            string password = "some-password123";
+
+            // Act:
+
+            // Assert: NotFoundException is thrown with forgotten user
+            Assert.That(
+                async() => await this.accountService.ResetPasswordAsync(forgottenEmail, code, password),
+                Throws.Exception.TypeOf<NotFoundException>());
+        }
+
+        [Test]
+        public void Test_ResetPasswordAsync_ValidUser_DoesNotThrow()
+        {
+            // Arrange: get guest user email from test db, create code, create random password
+            string guestEmail = this.testDb.GuestUser.Email;
+            string code = "some-code";
+            string password = "some-password123";
+
+            // Act:
+
+            // Assert: no exception is thrown with valid user
+            Assert.That(
+                async() => await this.accountService.ResetPasswordAsync(guestEmail, code, password),
+                Throws.Nothing);
+        }
     }
 }

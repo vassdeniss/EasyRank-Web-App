@@ -12,9 +12,12 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 
+using EasyRank.Services.Exceptions;
 using EasyRank.Web.Extensions;
 
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -26,6 +29,22 @@ namespace EasyRank.Web.UnitTests
 {
     public static class TestingUtils
     {
+        public static T AddExceptionFeatureWithExceptionType<TException, T>(this T controller)
+            where T : Controller 
+            where TException : Exception, new()
+        {
+            controller.EnsureHttpContext();
+
+            controller.ControllerContext.HttpContext.Features.Set<IExceptionHandlerFeature>(
+                new ExceptionHandlerFeature
+                {
+                    Path = "/error/path",
+                    Error = new TException(),
+                });
+
+            return controller;
+        }
+
         public static T AddFormWithFile<T>(this T controller, string fileName)
             where T : Controller
         {

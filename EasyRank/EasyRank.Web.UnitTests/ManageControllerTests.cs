@@ -5,13 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
-using EasyRank.Services.Models;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
@@ -32,21 +30,14 @@ namespace EasyRank.Web.UnitTests
         [SetUp]
         public void SetUp()
         {
-            Mock<IManageService> manageServiceMock = new Mock<IManageService>();
-
-            manageServiceMock.Setup(ms => ms.GetUserInfoAsync(
-                    It.IsAny<Guid>()))!
-                .ReturnsAsync(new ManageServiceModel());
-
-            manageServiceMock.Setup(ms => ms.GetUserEmailAsync(
-                    It.IsAny<Guid>()))!
-                .ReturnsAsync(new EmailServiceModel());
-
             this.manageController = new ManageController(
                 Mock.Of<IEmailSender>(),
                 this.mapper,
                 Mock.Of<IRankService>(),
-                manageServiceMock.Object,
+                ManageServiceMock.MockManageService(new List<EasyRankUser>
+                {
+                    this.testDb.GuestUser,
+                }).Object,
                 AccountServiceMock.MockAccountService(new List<EasyRankUser>
                 {
                     this.testDb.GuestUser,

@@ -33,10 +33,6 @@ namespace EasyRank.Web.UnitTests
         [OneTimeSetUp]
         public void SetUp()
         {
-            Mock<UserManager<EasyRankUser>> userManagerMock = new Mock<UserManager<EasyRankUser>>(
-                Mock.Of<IUserStore<EasyRankUser>>(),
-                null, null, null, null, null, null, null, null);
-
             Mock<IManageService> manageServiceMock = new Mock<IManageService>();
 
             this.accountService = AccountServiceMock.MockAccountService(new List<EasyRankUser>
@@ -46,7 +42,6 @@ namespace EasyRank.Web.UnitTests
             }).Object;
 
             this.accountController = new AccountController(
-                userManagerMock.Object,
                 Mock.Of<IEmailSender>(),
                 this.accountService,
                 manageServiceMock.Object);
@@ -552,35 +547,5 @@ namespace EasyRank.Web.UnitTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<ViewResult>());
         }
-
-        //[Test]
-        //public async Task Test_Create_Post_ValidModelState_RedirectsToViewRank()
-        //{
-        //    // Arrange: get guest user from test db
-        //    EasyRankUser user = this.testDb.GuestUser;
-
-        //    // Arrange: create controller HTTP context with valid user and valid form
-        //    this.commentController.ControllerContext = TestingUtils.CreateControllerContext(user);
-
-        //    // Arrange: clear the model state
-        //    this.commentController.ModelState.Clear();
-
-        //    // Act: invoke the controller method
-        //    IActionResult result = await this.commentController.CreateAsync(Guid.NewGuid(),
-        //        new CommentFormModel
-        //        {
-        //            Content = "No js",
-        //        });
-
-        //    // Assert: returned result is not null, it is a redirect
-        //    Assert.That(result, Is.Not.Null);
-        //    Assert.That(result, Is.TypeOf<RedirectToActionResult>());
-
-        //    // Assert: controller name is 'Rank', action name is 'ViewRanking'
-        //    RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
-        //    Assert.That(redirectResult.ControllerName, Is.EqualTo("Rank"));
-        //    Assert.That(redirectResult.ActionName, Is.EqualTo("ViewRanking"));
-        //    Assert.That(redirectResult.RouteValues, Is.Not.Null);
-        //}
     }
 }
