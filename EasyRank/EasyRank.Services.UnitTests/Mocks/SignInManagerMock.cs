@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Web.UnitTests;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +15,13 @@ using Moq;
 
 namespace EasyRank.Services.UnitTests.Mocks
 {
-    public class SignInManagerMock
+    public class SignInManagerMock : IMockThis<SignInManager<EasyRankUser>>
     {
-        public static Mock<SignInManager<EasyRankUser>> MockSignInManager()
+        public SignInManager<EasyRankUser> CreateMock(params EasyRankUser[] userList)
         {
             Mock<UserManager<EasyRankUser>> userManagerMock = new Mock<UserManager<EasyRankUser>>(
                 Mock.Of<IUserStore<EasyRankUser>>(),
-                null, null, null, null, null, null,null, null);
+                null, null, null, null, null, null, null, null);
 
             Mock<SignInManager<EasyRankUser>> signInManager = new Mock<SignInManager<EasyRankUser>>(
                 userManagerMock.Object,
@@ -35,7 +36,7 @@ namespace EasyRank.Services.UnitTests.Mocks
             signInManager.Setup(sim => sim.SignOutAsync())
                 .Returns(Task.CompletedTask);
 
-            return signInManager;
+            return signInManager.Object;
         }
     }
 }

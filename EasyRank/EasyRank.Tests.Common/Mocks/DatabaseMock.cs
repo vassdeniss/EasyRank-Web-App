@@ -6,24 +6,23 @@
 // -----------------------------------------------------------------------
 
 using EasyRank.Infrastructure.Data;
+using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Web.UnitTests;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyRank.Tests.Common.Mocks
 {
-    public static class DatabaseMock
+    public class DatabaseMock : IMockThis<EasyRankDbContext>
     {
-        public static EasyRankDbContext Instance
+        public EasyRankDbContext CreateMock(params EasyRankUser[] userList)
         {
-            get
-            {
-                DbContextOptionsBuilder<EasyRankDbContext> optionsBuilder = 
-                        new DbContextOptionsBuilder<EasyRankDbContext>();
+            DbContextOptionsBuilder<EasyRankDbContext> optionsBuilder
+                = new DbContextOptionsBuilder<EasyRankDbContext>();
 
-                optionsBuilder.UseInMemoryDatabase($"EasyRank-TestDb-{DateTime.Now.Ticks}");
+            optionsBuilder.UseInMemoryDatabase($"EasyRank-TestDb-{DateTime.Now.Ticks}");
 
-                return new EasyRankDbContext(optionsBuilder.Options, false);
-            }
+            return new EasyRankDbContext(optionsBuilder.Options, false);
         }
     }
 }

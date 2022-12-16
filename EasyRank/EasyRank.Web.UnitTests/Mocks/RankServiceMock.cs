@@ -7,6 +7,7 @@
 
 using System;
 
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Models;
 
@@ -14,14 +15,14 @@ using Moq;
 
 namespace EasyRank.Web.UnitTests.Mocks
 {
-    public class RankServiceMock
+    public class RankServiceMock : IMockThis<IRankService>
     {
-        public static Mock<IRankService> MockRankService()
+        public IRankService CreateMock(params EasyRankUser[] userList)
         {
             Mock<IRankService> rankService = new Mock<IRankService>();
 
             rankService.Setup(rs => rs.GetAllRankingsAsync(
-                It.IsAny<int>(), It.IsAny<int>()))
+                    It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new AllRanksServiceModel());
 
             rankService.Setup(rs => rs.GetRankPageByGuidAsync(
@@ -32,7 +33,7 @@ namespace EasyRank.Web.UnitTests.Mocks
                     It.IsAny<Guid>()))
                 .ReturnsAsync(new RankPageServiceModelExtended());
 
-            return rankService;
+            return rankService.Object;
         }
     }
 }

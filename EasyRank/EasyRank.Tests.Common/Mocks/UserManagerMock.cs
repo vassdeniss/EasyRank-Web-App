@@ -8,16 +8,20 @@
 using System.Security.Claims;
 
 using EasyRank.Infrastructure.Models.Accounts;
+using EasyRank.Web.UnitTests;
 
 using Microsoft.AspNetCore.Identity;
+
 using Moq;
 
-namespace EasyRank.Services.UnitTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
-    public class UserManagerMock
+    public class UserManagerMock : IMockThis<UserManager<EasyRankUser>>
     {
-        public static Mock<UserManager<EasyRankUser>> MockUserManager(List<EasyRankUser> userList)
+        public UserManager<EasyRankUser> CreateMock(params EasyRankUser[] userList)
         {
+            List<EasyRankUser> users = userList.ToList();
+
             Mock<UserManager<EasyRankUser>> userManager = new Mock<UserManager<EasyRankUser>>(
                 Mock.Of<IUserStore<EasyRankUser>>(),
                 null, null, null, null, null, null, null, null);
@@ -28,7 +32,7 @@ namespace EasyRank.Services.UnitTests.Mocks
             userManager.Setup(um => um.GetUserAsync(
                     It.IsAny<ClaimsPrincipal>()))!
                 .ReturnsAsync((ClaimsPrincipal principal) =>
-                    userList.FirstOrDefault(u => u.Id ==
+                    users.FirstOrDefault(u => u.Id ==
                             Guid.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier))));
 
             userManager.Setup(um => um.UpdateAsync(
@@ -38,7 +42,7 @@ namespace EasyRank.Services.UnitTests.Mocks
             userManager.Setup(um => um.FindByNameAsync(
                     It.IsAny<string>()))!
                 .ReturnsAsync((string username) =>
-                    userList.FirstOrDefault(u => u.UserName == username));
+                    users.FirstOrDefault(u => u.UserName == username));
 
             userManager.Setup(um => um.SetUserNameAsync(
                     It.IsAny<EasyRankUser>(), It.IsAny<string>()))!
@@ -54,7 +58,7 @@ namespace EasyRank.Services.UnitTests.Mocks
                 {
                     PasswordHasher<EasyRankUser> hasher = new PasswordHasher<EasyRankUser>();
 
-                    PasswordVerificationResult result = 
+                    PasswordVerificationResult result =
                         hasher.VerifyHashedPassword(user, user.PasswordHash, givenPassword);
 
                     return result == PasswordVerificationResult.Success;
@@ -79,7 +83,7 @@ namespace EasyRank.Services.UnitTests.Mocks
 
             userManager.Setup(um => um.FindByEmailAsync(
                     It.IsAny<string>()))!
-                .ReturnsAsync((string email) => userList.FirstOrDefault(u => u.Email == email));
+                .ReturnsAsync((string email) => users.FirstOrDefault(u => u.Email == email));
 
             userManager.Setup(um => um.GetUserIdAsync(
                     It.IsAny<EasyRankUser>()))
@@ -100,7 +104,7 @@ namespace EasyRank.Services.UnitTests.Mocks
             userManager.Setup(um => um.FindByIdAsync(
                     It.IsAny<string>()))!
                 .ReturnsAsync((string id) =>
-                    userList.FirstOrDefault(u => u.Id == Guid.Parse(id)));
+                    users.FirstOrDefault(u => u.Id == Guid.Parse(id)));
 
             userManager.Setup(um => um.ChangeEmailAsync(
                     It.IsAny<EasyRankUser>(),
@@ -159,15 +163,15 @@ namespace EasyRank.Services.UnitTests.Mocks
                     string hash = hasher.HashPassword(user, password);
 
                     user.PasswordHash = hash;
-                    userList.Add(user);
+                    users.Add(user);
 
                     return IdentityResult.Success;
                 });
 
             userManager.SetupGet(um => um.Users)
-                .Returns(userList.AsQueryable());
+                .Returns(users.AsQueryable());
 
-            return userManager;
+            return userManager.Object;
         }
     }
 }

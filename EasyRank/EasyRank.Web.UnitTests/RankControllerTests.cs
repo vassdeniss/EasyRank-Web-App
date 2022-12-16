@@ -35,7 +35,9 @@ namespace EasyRank.Web.UnitTests
         [SetUp]
         public void SetUp()
         {
-            this.rankService = RankServiceMock.MockRankService().Object;
+            IMockThis<IRankService> mockBuilder = new RankServiceMock();
+
+            this.rankService = mockBuilder.CreateMock();
             this.rankController = new RankController(this.mapper, this.rankService);
 
             this.rankController.AddTempData();

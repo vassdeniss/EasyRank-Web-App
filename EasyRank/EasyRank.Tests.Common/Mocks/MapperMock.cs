@@ -7,26 +7,24 @@
 
 using AutoMapper;
 
+using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Profiles;
 using EasyRank.Web.Profiles;
+using EasyRank.Web.UnitTests;
 
-namespace EasyRank.Web.UnitTests.Mocks
+namespace EasyRank.Tests.Common.Mocks
 {
-    public static class MapperMock
+    public class MapperMock : IMockThis<IMapper>
     {
-        public static IMapper Instance
+        public IMapper CreateMock(params EasyRankUser[] userList)
         {
-            get
+            MapperConfiguration config = new MapperConfiguration(conf =>
             {
-                MapperConfiguration mapperConfiguration = 
-                    new MapperConfiguration(config =>
-                    {
-                        config.AddProfile<ServiceModelMappingProfile>();
-                        config.AddProfile<ViewModelMappingProfile>();
-                    });
+                conf.AddProfile<ServiceModelMappingProfile>();
+                conf.AddProfile<ViewModelMappingProfile>();
+            });
 
-                return new Mapper(mapperConfiguration);
-            }
+            return new Mapper(config);
         }
     }
 }

@@ -18,9 +18,9 @@ using Moq;
 
 namespace EasyRank.Web.UnitTests.Mocks
 {
-    public class UserManagerMock
+    public class UserManagerMock : IMockThis<UserManager<EasyRankUser>>
     {
-        public static Mock<UserManager<EasyRankUser>> MockUserManager(List<EasyRankUser> userList)
+        public UserManager<EasyRankUser> CreateMock(params EasyRankUser[] userList)
         {
             Mock<UserManager<EasyRankUser>> userManager = new Mock<UserManager<EasyRankUser>>(
                 Mock.Of<IUserStore<EasyRankUser>>(),
@@ -35,7 +35,7 @@ namespace EasyRank.Web.UnitTests.Mocks
                     userList.FirstOrDefault(u => u.Id ==
                             Guid.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier))));
 
-            return userManager;
+            return userManager.Object;
         }
     }
 }
