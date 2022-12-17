@@ -201,8 +201,6 @@ namespace EasyRank.Web.Controllers
                 return this.RedirectToAction("Email", "Manage");
             }
 
-            // TODO: extract email as consts
-
             string userId = this.User.Id().ToString();
             string code = await this.accountService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
 

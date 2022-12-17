@@ -27,6 +27,6 @@ namespace EasyRank.Web.Models.Rank
         /// <summary>
         /// Gets or sets the total amount of pages.
         /// </summary>
-        public int RankCount { get; set; }
+        public int TotalRankCount { get; set; }
     }
 }

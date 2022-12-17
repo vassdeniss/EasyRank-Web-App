@@ -115,7 +115,7 @@
 			        }
 
 			        double maxPage = 
-				        Math.Ceiling((double)this.Model.RankCount / 12);
+				        Math.Ceiling((double)this.Model.TotalRankCount / 12);
 
 			        bool shouldButtonBeDisabled = 
 				        this.Model.CurrentPage == maxPage || !this.Model.Ranks.Any();

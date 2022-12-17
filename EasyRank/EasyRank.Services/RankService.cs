@@ -62,7 +62,9 @@ namespace EasyRank.Services
             {
                 CurrentPage = page,
                 Ranks = pages,
-                TotalRankCount = await this.repo.AllReadonly<RankPage>().CountAsync(),
+                TotalRankCount = await this.repo.AllReadonly<RankPage>()
+                    .Where(rp => !rp.IsDeleted)
+                    .CountAsync(),
             };
         }
 

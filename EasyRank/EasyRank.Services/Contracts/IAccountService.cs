@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using EasyRank.Services.Exceptions;
@@ -15,10 +14,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace EasyRank.Services.Contracts
 {
-    // TODO: document
-
+    /// <summary>
+    /// The interface for the AccountService.
+    /// </summary>
     public interface IAccountService
     {
+        /// <summary>
+        /// Creates a user in the database.
+        /// </summary>
+        /// <param name="email">The email of the user.</param>
+        /// <param name="firstName">The first name of the user.</param>
+        /// <param name="lastName">The last name of the user.</param>
+        /// <param name="userName">The username of the user.</param>
+        /// <param name="password">The password of the user.</param>
+        /// <returns>Identity result indicating success / failure.</returns>
         Task<IdentityResult> CreateUserAsync(
             string email,
             string? firstName,
@@ -26,6 +35,12 @@ namespace EasyRank.Services.Contracts
             string userName,
             string password);
 
+        /// <summary>
+        /// Used to check if a given email is confirmed.
+        /// </summary>
+        /// <param name="email">The email to be checked.</param>
+        /// <returns>A flag indicating whether the email is confirmed.</returns>
+        /// <exception cref="NotFoundException">Throws not found exception if the user is not found.</exception>
         Task<bool> IsEmailConfirmedAsync(string email);
 
         /// <summary>
