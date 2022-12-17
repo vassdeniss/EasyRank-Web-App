@@ -1,5 +1,12 @@
 ﻿@model IEnumerable<RankPageViewModel>
 
+<style>
+	td {
+		max-width: 300px;
+		word-break: break-all;
+	}
+</style>
+
 <h3 class="mb-3">@this.ViewData["Title"]</h3>
 <div class="row">
 	<div class="col-md">
@@ -19,9 +26,9 @@
 						<th scope="row">
 							<a asp-area="" asp-action="@this.ViewData["ActionType"]" asp-route-rankId="@rankPage.Id">@rankPage.RankingTitle</a>
 						</th>
-						<td>@rankPage.CreatedOn</td>
-						<td>@rankPage.LikeCount</td>
-						<td>@rankPage.CommentCount</td>
+						<td><span>@rankPage.CreatedOn</span></td>
+						<td><span>@rankPage.LikeCount</span></td>
+						<td><span>@rankPage.CommentCount</span></td>
 					</tr>
 				}
 			</tbody>
