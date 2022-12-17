@@ -386,7 +386,7 @@ namespace EasyRank.Web.Controllers
 
             if (!await this.accountService.DoesUserExist(model.Email))
             {
-                return this.RedirectToAction("ResetPassword", model);
+                return this.View(model);
             }
 
             IdentityResult result = await this.accountService.ResetPasswordAsync(
@@ -395,7 +395,7 @@ namespace EasyRank.Web.Controllers
                 model.Password);
             if (result.Succeeded)
             {
-                return this.RedirectToAction("ResetPasswordConfirmation");
+                return this.RedirectToAction("ResetPasswordConfirmation", "Account");
             }
 
             foreach (IdentityError error in result.Errors)

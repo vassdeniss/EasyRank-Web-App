@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.User;
 using EasyRank.Web.Extensions;
 
 using Microsoft.AspNetCore.Diagnostics;

@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using EasyRank.Services.Contracts;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Email;
+using EasyRank.Services.Models.Rank;
+using EasyRank.Services.Models.User;
 using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Manage;
 using EasyRank.Web.Models.Rank;
@@ -96,7 +98,7 @@ namespace EasyRank.Web.Controllers
 
             this.TempData["StatusMessage"] = "Your profile has been updated";
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction("Index", "Manage");
         }
 
         /// <summary>
@@ -138,6 +140,11 @@ namespace EasyRank.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountAsync(DeleteAccountViewModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
             if (!await this.manageService.CheckPasswordAsync(this.User.Id(), model.Password))
             {
                 this.ModelState.AddModelError(string.Empty, "Incorrect password.");
@@ -181,47 +188,49 @@ namespace EasyRank.Web.Controllers
                 return this.View(model);
             }
 
-            if (model.NewEmail != model.Email)
+            if (model.NewEmail == model.Email)
             {
-                if (await this.manageService.IsEmailTakenAsync(model.NewEmail))
-                {
-                    this.TempData["StatusMessage"] = "Error: Email taken!";
-                    return this.RedirectToAction("Email");
-                }
-
-                string userId = this.User.Id().ToString();
-                string code = await this.accountService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
-
-                string callbackUrl = this.Url.Action(
-                    "ConfirmEmailChange",
-                    "Manage",
-                    new { userId, email = model.NewEmail, code },
-                    this.Request.Scheme)!;
-
-                StringBuilder builder = new StringBuilder();
-
-                builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
-                builder.AppendLine("<h3>You receive this email because you wished to change your email address for your account.</h3>");
-                builder.AppendLine($"<p>In order to do so please confirm that this is the new email you wish to use by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here.</a></p>");
-                builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
-                builder.AppendLine("<p>Have a wonderful rest of your day and happy ranking!</p>");
-                builder.AppendLine("<br>");
-                builder.AppendLine("- Denis from EasyRank");
-
-                await this.emailSender.SendEmailAsync(
-                    "vassdeniss@gmail.com",
-                    "Denis Vasilev from EasyRank",
-                    model.NewEmail,
-                    "[DO NOT REPLY] Confirm your new email for EasyRank!",
-                    builder.ToString());
-
-                this.TempData["StatusMessage"] = "Confirmation link to change email sent. Please check your email!";
-                return this.RedirectToAction("Email");
+                this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
+                this.TempData["StatusMessage"] = "Error: Your email is unchanged.";
+                return this.RedirectToAction("Email", "Manage");
             }
 
-            this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
-            this.TempData["StatusMessage"] = "Error: Your email is unchanged.";
-            return this.RedirectToAction("Email");
+            if (await this.manageService.IsEmailTakenAsync(model.NewEmail))
+            {
+                this.TempData["StatusMessage"] = "Error: Email taken!";
+                return this.RedirectToAction("Email", "Manage");
+            }
+
+            // TODO: extract email as consts
+
+            string userId = this.User.Id().ToString();
+            string code = await this.accountService.GenerateChangeEmailTokenAsync(this.User.Id(), model.NewEmail);
+
+            string callbackUrl = this.Url.Action(
+                "ConfirmEmailChange",
+                "Manage",
+                new { userId, email = model.NewEmail, code },
+                this.Request.Scheme)!;
+
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("<h2>Hello, Denis here, founder of EasyRank!</h2>");
+            builder.AppendLine("<h3>You receive this email because you wished to change your email address for your account.</h3>");
+            builder.AppendLine($"<p>In order to do so please confirm that this is the new email you wish to use by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here.</a></p>");
+            builder.AppendLine("<p><strong>If this request was not made by you please ignore this email!!!</strong></p>");
+            builder.AppendLine("<p>Have a wonderful rest of your day and happy ranking!</p>");
+            builder.AppendLine("<br>");
+            builder.AppendLine("- Denis from EasyRank");
+
+            await this.emailSender.SendEmailAsync(
+                "vassdeniss@gmail.com",
+                "Denis Vasilev from EasyRank",
+                model.NewEmail,
+                "[DO NOT REPLY] Confirm your new email for EasyRank!",
+                builder.ToString());
+
+            this.TempData["StatusMessage"] = "Confirmation link to change email sent. Please check your email!";
+            return this.RedirectToAction("Email", "Manage");
         }
 
         /// <summary>
@@ -292,7 +301,7 @@ namespace EasyRank.Web.Controllers
 
             this.TempData["ConfirmedEmail"] = await this.manageService.IsEmailConfirmedAsync(this.User.Id());
             this.TempData["StatusMessage"] = "Verification email sent. Please check your email.";
-            return this.RedirectToAction("Email");
+            return this.RedirectToAction("Email", "Manage");
         }
 
         /// <summary>
@@ -371,7 +380,7 @@ namespace EasyRank.Web.Controllers
             }
 
             this.TempData["StatusMessage"] = "Your password has been changed.";
-            return this.RedirectToAction("ChangePassword");
+            return this.RedirectToAction("ChangePassword", "Manage");
         }
 
         /// <summary>

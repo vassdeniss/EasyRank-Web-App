@@ -16,11 +16,7 @@ using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Rank;
 using EasyRank.Web.UnitTests.Mocks;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using Moq;
 
 using NUnit.Framework;
 
@@ -339,7 +335,6 @@ namespace EasyRank.Web.UnitTests
             Assert.That(redirectResult.RouteValues["area"], Is.EqualTo("Admin"));
         }
 
-        // TODO: debug
         [Test]
         public async Task Test_Edit_Post_ValidModelState_RedirectsToMyRanks()
         {

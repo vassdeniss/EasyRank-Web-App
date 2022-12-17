@@ -18,18 +18,26 @@ using EasyRank.Services.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EasyRank.Services
 {
-    // TODO: document
-
+    /// <summary>
+    /// The AccountService class responsible for dealing with user accounts.
+    /// </summary>
+    /// <remarks>Implementation of <see cref="IAccountService"/>.</remarks>
     public class AccountService : IAccountService
     {
         private readonly UserManager<EasyRankUser> userManager;
         private readonly SignInManager<EasyRankUser> signInManager;
         private readonly IRepository repo;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountService"/> class.
+        /// Constructor for the account service class.
+        /// </summary>
+        /// <param name="userManager">The user manager for the service.</param>
+        /// <param name="signInManager">The sign in manager for the service.</param>
+        /// <param name="repo">The implementation of a repository to be used.</param>
         public AccountService(
             UserManager<EasyRankUser> userManager,
             SignInManager<EasyRankUser> signInManager,
@@ -40,6 +48,7 @@ namespace EasyRank.Services
             this.repo = repo;
         }
 
+        /// <inheritdoc />
         public async Task<IdentityResult> CreateUserAsync(
             string email,
             string? firstName,
@@ -64,6 +73,7 @@ namespace EasyRank.Services
             return result;
         }
 
+        /// <inheritdoc />
         public async Task<bool> IsEmailConfirmedAsync(string email)
         {
             EasyRankUser? user = await this.repo.AllReadonly<EasyRankUser>(

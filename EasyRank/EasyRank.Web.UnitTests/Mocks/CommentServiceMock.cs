@@ -8,7 +8,7 @@
 using System;
 
 using EasyRank.Services.Contracts;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Comment;
 
 using Moq;
 

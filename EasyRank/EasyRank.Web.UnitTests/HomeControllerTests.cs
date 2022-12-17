@@ -31,10 +31,7 @@ namespace EasyRank.Web.UnitTests
         [SetUp]
         public void SetUp()
         {
-            IManageService manageService = ManageServiceMock.MockManageService(new List<EasyRankUser>
-            {
-                this.testDb.GuestUser,
-            }).Object;
+            IManageService manageService = ManageServiceMock.MockManageService(this.testDb.GuestUser).Object;
 
             this.homeController = new HomeController(manageService);
             this.homeController.AddTempData();

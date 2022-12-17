@@ -11,7 +11,8 @@ using EasyRank.Infrastructure.Models;
 using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Services.Exceptions;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Email;
+using EasyRank.Services.Models.User;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

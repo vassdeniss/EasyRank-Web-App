@@ -20,7 +20,7 @@ namespace EasyRank.Web.UnitTests.Mocks
 {
     public class AccountServiceMock
     {
-        public static Mock<IAccountService> MockAccountService(List<EasyRankUser> userList)
+        public static Mock<IAccountService> MockAccountService(params EasyRankUser[] userList)
         {
             Mock<IAccountService> accountServiceMock = new Mock<IAccountService>();
             accountServiceMock.Setup(@as => @as.CreateUserAsync(
@@ -58,6 +58,18 @@ namespace EasyRank.Web.UnitTests.Mocks
                     It.IsAny<string>()))!
                 .ReturnsAsync((string email)
                     => userList.FirstOrDefault(u => u.Email == email) != null);
+
+            accountServiceMock.Setup(@as => @as.ResetPasswordAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))!
+                .ReturnsAsync((string email, string code, string pass) => code == "FailCheck"
+                    ? IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "123",
+                        Description = "error",
+                    })
+                    : IdentityResult.Success);
 
             return accountServiceMock;
         }

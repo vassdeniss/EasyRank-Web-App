@@ -13,6 +13,7 @@ using EasyRank.Infrastructure.Models.Accounts;
 using EasyRank.Services.Contracts;
 using EasyRank.Web.Controllers;
 using EasyRank.Web.Models.Account;
+using EasyRank.Web.Models.Manage;
 using EasyRank.Web.UnitTests.Mocks;
 
 using Microsoft.AspNetCore.Identity;
@@ -35,11 +36,9 @@ namespace EasyRank.Web.UnitTests
         {
             Mock<IManageService> manageServiceMock = new Mock<IManageService>();
 
-            this.accountService = AccountServiceMock.MockAccountService(new List<EasyRankUser>
-            {
+            this.accountService = AccountServiceMock.MockAccountService(
                 this.testDb.GuestUser,
-                this.testDb.UnconfirmedUser,
-            }).Object;
+                this.testDb.UnconfirmedUser).Object;
 
             this.accountController = new AccountController(
                 Mock.Of<IEmailSender>(),
@@ -628,6 +627,106 @@ namespace EasyRank.Web.UnitTests
             // Assert: view model is of type 'ResetPasswordViewModel'
             ViewResult viewResult = (result as ViewResult)!;
             Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<ResetPasswordViewModel>());
+        }
+
+        [Test]
+        public async Task Test_ResetPassword_Post_InvalidModelState_ReturnsSameView()
+        {
+            // Arrange: add model error to the model state
+            this.accountController.ModelState.AddModelError(string.Empty, "Some error");
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ResetPasswordAsync(new ResetPasswordViewModel());
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'ResetPasswordViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<ResetPasswordViewModel>());
+        }
+
+        [Test]
+        public async Task Test_ResetPassword_Post_UserDoesNotExist_ReturnsSameView()
+        {
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ResetPasswordAsync(new ResetPasswordViewModel
+            {
+                Code = "code",
+                Email = string.Empty,
+                Password = "123",
+                PasswordConfirm = "123",
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'ResetPasswordViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<ResetPasswordViewModel>());
+        }
+
+        [Test]
+        public async Task Test_ResetPassword_Post_FailedResult_ReturnsSameView_WithModelErrors()
+        {
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ResetPasswordAsync(new ResetPasswordViewModel
+            {
+                Code = "FailCheck",
+                Email = guestEmail,
+                Password = "123",
+                PasswordConfirm = "123",
+            });
+
+            // Assert: returned result is not null, it is a view
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+
+            // Assert: view model is of type 'ResetPasswordViewModel'
+            ViewResult viewResult = (result as ViewResult)!;
+            Assert.That(viewResult.ViewData.Model, Is.AssignableFrom<ResetPasswordViewModel>());
+
+            // Assert: model state errors exists
+            Assert.That(this.accountController.ModelState.ErrorCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task Test_ResetPassword_Post_PassedResult_RedirectsToAccountResetPasswordConfirmation()
+        {
+            // Arrange: get guest user email from test db
+            string guestEmail = this.testDb.GuestUser.Email;
+
+            // Arrange: clear the model state
+            this.accountController.ModelState.Clear();
+
+            // Act: invoke the controller method
+            IActionResult result = await this.accountController.ResetPasswordAsync(new ResetPasswordViewModel()
+            {
+                Code = "code",
+                Email = guestEmail,
+                Password = "123",
+                PasswordConfirm = "123",
+            });
+
+            // Assert: returned result is not null, it is a redirect
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+
+            // Assert: controller name is 'Account', action name is 'ResetPasswordConfirmation'
+            RedirectToActionResult redirectResult = (result as RedirectToActionResult)!;
+            Assert.That(redirectResult.ControllerName, Is.EqualTo("Account"));
+            Assert.That(redirectResult.ActionName, Is.EqualTo("ResetPasswordConfirmation"));
         }
 
         [Test]

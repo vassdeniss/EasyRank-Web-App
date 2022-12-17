@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using EasyRank.Services.Contracts;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Rank;
 using EasyRank.Web.Extensions;
 using EasyRank.Web.Models.Rank;
 

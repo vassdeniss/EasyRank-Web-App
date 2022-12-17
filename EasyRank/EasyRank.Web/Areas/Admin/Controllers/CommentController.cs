@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using EasyRank.Services.Contracts.Admin;
-using EasyRank.Services.Models;
+using EasyRank.Services.Models.Comment;
 using EasyRank.Web.Areas.Admin.Models.Comment;
 
 using Microsoft.AspNetCore.Mvc;
